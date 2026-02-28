@@ -782,6 +782,60 @@
     });
 
     renderCalendario();
+    // LIGHTBOX
+    const imagenes = [
+      'images/gonda/gonda_portada.jpg',
+      'images/gonda/gonda_faro.jpg',
+      'images/gonda/gonda_cala.jpg',
+      'images/gonda/gonda_hab.jpg',
+      'images/gonda/gonda_hab2.jpg',
+      'images/gonda/gonda_salon.jpg',
+      'images/gonda/gonda_salon2.jpg',
+      'images/gonda/gonda_cocina.jpg',
+      'images/gonda/gonda_bano.jpg',
+      'images/gonda/gonda_bano2.jpg',
+      'images/gonda/gonda_patio.jpg',
+      'images/gonda/gonda_ducha-ext.jpg',
+      'images/gonda/gonda_terraza.jpg',
+      'images/gonda/gonda_terraza2.jpg',
+      'images/gonda/gonda_porche.jpg',
+      'images/gonda/gonda_vistas.jpg'
+    ];
+    let indiceActual = 0;
+
+    function abrirLightbox(indice) {
+      indiceActual = indice;
+      actualizarImagen();
+      document.getElementById('lightbox').classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function cerrarLightbox() {
+      document.getElementById('lightbox').classList.remove('active');
+      document.body.style.overflow = 'auto';
+    }
+
+    function cambiarImagen(direccion) {
+      indiceActual += direccion;
+      if (indiceActual < 0) indiceActual = imagenes.length - 1;
+      if (indiceActual >= imagenes.length) indiceActual = 0;
+      actualizarImagen();
+    }
+
+    function actualizarImagen() {
+      document.getElementById('lightboxImage').src = imagenes[indiceActual];
+      document.getElementById('lightboxCounter').textContent = `${indiceActual + 1} / ${imagenes.length}`;
+    }
+
+    // Navegación con teclado
+    document.addEventListener('keydown', function(e) {
+      if (document.getElementById('lightbox').classList.contains('active')) {
+        if (e.key === 'Escape') cerrarLightbox();
+        if (e.key === 'ArrowLeft') cambiarImagen(-1);
+        if (e.key === 'ArrowRight') cambiarImagen(1);
+      }
+    });
+ 
   </script>
 </body>
 </html>
