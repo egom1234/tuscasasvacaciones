@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Casa Gonda - Alquiler turístico Cap d'Artrutx</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --verde-primario: #00796b;
+      --verde-oscuro: #004d40;
+      --verde-claro: #b2dfdb;
+      --blanco: #ffffff;
+      --gris-claro: #f8f9fa;
+      --gris: #6c757d;
+      --gris-oscuro: #495057;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      line-height: 1.6;
+      color: var(--gris-oscuro);
+      background: var(--gris-claro);
+    }
+
+    header {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      background: var(--blanco);
+      box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+      z-index: 1000;
+      padding: 1rem 0;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 1.5rem;
+    }
+
+    .header-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: var(--verde-primario);
+      text-decoration: none;
+    }
+
+    nav {
+      display: flex;
+      gap: 2rem;
+    }
+
+    nav a {
+      color: var(--gris);
+      text-decoration: none;
+      font-weight: 400;
+      font-size: 0.95rem;
+      transition: color 0.3s;
+    }
+
+    nav a:hover {
+      color: var(--verde-primario);
+    }
+
+    main {
+      padding-top: 80px;
+      min-height: calc(100vh - 200px);
+    }
+
+    .property-hero {
+      background: var(--blanco);
+      padding: 4rem 0 2rem;
+    }
+
+    .property-title {
+      font-size: 3rem;
+      font-weight: 300;
+      color: var(--verde-oscuro);
+      margin-bottom: 0.5rem;
+      letter-spacing: -1px;
+    }
+
+    .property-location {
+      font-size: 1.2rem;
+      color: var(--verde-primario);
+      font-weight: 500;
+      margin-bottom: 2rem;
+    }
+
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+      margin: 2rem 0;
+    }
+
+    .gallery-main {
+      grid-column: span 2;
+      grid-row: span 2;
+      height: 400px;
+      background-size: cover;
+      background-position: center;
+      border-radius: 15px;
+    }
+
+    .gallery-item {
+      height: 195px;
+      background-size: cover;
+      background-position: center;
+      border-radius: 15px;
+    }
+
+    .content-wrapper {
+      display: grid;
+      grid-template-columns: 1.5fr 1fr;
+      gap: 3rem;
+      padding: 3rem 0;
+    }
+
+    .property-details {
+      background: var(--blanco);
+      padding: 2rem;
+      border-radius: 20px;
+    }
+
+    .details-section {
+      margin-bottom: 2rem;
+    }
+
+    .details-section h3 {
+      font-size: 1.5rem;
+      font-weight: 500;
+      color: var(--verde-oscuro);
+      margin-bottom: 1rem;
+    }
+
+    .features {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .feature-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.8rem;
+      background: var(--gris-claro);
+      border-radius: 10px;
+    }
+
+    .feature-icon {
+      width: 24px;
+      height: 24px;
+      color: var(--verde-primario);
+    }
+
+    .price-highlight {
+      background: var(--verde-claro);
+      padding: 1.5rem;
+      border-radius: 15px;
+      margin: 2rem 0;
+    }
+
+    .price-highlight h4 {
+      font-size: 1.2rem;
+      color: var(--verde-oscuro);
+      margin-bottom: 0.5rem;
+    }
+
+    .price-amount {
+      font-size: 2rem;
+      font-weight: 600;
+      color: var(--verde-oscuro);
+    }
+
+    .booking-panel {
+      background: var(--blanco);
+      padding: 2rem;
+      border-radius: 20px;
+      position: sticky;
+      top: 100px;
+      height: fit-content;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+    }
+
+    .booking-title {
+      font-size: 1.8rem;
+      font-weight: 500;
+      color: var(--verde-oscuro);
+      margin-bottom: 1.5rem;
+    }
+
+    .calendar {
+      margin-bottom: 2rem;
+    }
+
+    .calendar-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+
+    .calendar-nav {
+      background: none;
+      border: 1px solid var(--verde-primario);
+      color: var(--verde-primario);
+      width: 35px;
+      height: 35px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 1.2rem;
+      transition: all 0.3s;
+    }
+
+    .calendar-nav:hover {
+      background: var(--verde-primario);
+      color: var(--blanco);
+    }
+
+    .calendar-month {
+      font-weight: 600;
+      color: var(--verde-oscuro);
+    }
+
+    .calendar-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 5px;
+    }
+
+    .calendar-day-name {
+      text-align: center;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--gris);
+      padding: 0.5rem 0;
+    }
+
+    .calendar-day {
+      aspect-ratio: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s;
+      font-size: 0.9rem;
+    }
+
+    .calendar-day:hover:not(.disabled):not(.empty) {
+      background: var(--verde-claro);
+    }
+
+    .calendar-day.disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+    }
+
+    .calendar-day.selected {
+      background: var(--verde-primario);
+      color: var(--blanco);
+      font-weight: 600;
+    }
+
+    .calendar-day.range {
+      background: var(--verde-claro);
+    }
+
+    .calendar-day.empty {
+      cursor: default;
+    }
+
+    .calendar-note {
+      font-size: 0.85rem;
+      color: var(--gris);
+      margin-top: 1rem;
+      text-align: center;
+    }
+
+    .booking-form {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .form-label {
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--gris-oscuro);
+      margin-bottom: 0.5rem;
+    }
+
+    .form-input {
+      padding: 0.8rem;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      font-size: 1rem;
+      transition: border 0.3s;
+    }
+
+    .form-input:focus {
+      outline: none;
+      border-color: var(--verde-primario);
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+    }
+
+    .submit-btn {
+      background: var(--verde-primario);
+      color: var(--blanco);
+      padding: 1rem;
+      border: none;
+      border-radius: 50px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      margin-top: 1rem;
+    }
+
+    .submit-btn:hover {
+      background: var(--verde-oscuro);
+      transform: translateY(-2px);
+      box-shadow: 0 10px 20px rgba(0,121,107,0.3);
+    }
+
+    .success-message {
+      display: none;
+      background: #d4edda;
+      border: 1px solid #c3e6cb;
+      color: #155724;
+      padding: 1rem;
+      border-radius: 10px;
+      margin-top: 1rem;
+      font-size: 0.95rem;
+    }
+
+    footer {
+      background: var(--verde-oscuro);
+      color: var(--blanco);
+      padding: 3rem 0 1.5rem;
+      text-align: center;
+      margin-top: 4rem;
+    }
+
+    .footer-text {
+      opacity: 0.9;
+      margin-bottom: 1rem;
+    }
+
+    @media (max-width: 992px) {
+      .content-wrapper {
+        grid-template-columns: 1fr;
+      }
+
+      .booking-panel {
+        position: static;
+      }
+
+      .gallery {
+        grid-template-columns: 1fr;
+      }
+
+      .gallery-main {
+        grid-column: span 1;
+        grid-row: span 1;
+        height: 300px;
+      }
+
+      .property-title {
+        font-size: 2.2rem;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .features {
+        grid-template-columns: 1fr;
+      }
+
+      .form-row {
+        grid-template-columns: 1fr;
+      }
+
+      nav {
+        gap: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <div class="header-content">
+        <a href="index.html" class="logo">Tus Casas</a>
+        <nav>
+          <a href="index.html">Inicio</a>
+          <a href="index.html#apartamentos">Apartamentos</a>
+          <a href="loft_binibeca.html">Binibeca</a>
+          <a href="apartamento_peniscola.html">Peñíscola</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="property-hero">
+      <div class="container">
+        <h1 class="property-title">Casa Gonda</h1>
+        <div class="property-location">📍 Cap d'Artrutx, Menorca</div>
+        
+        <div class="gallery">
+          <div class="gallery-main" style="background-image: url('https://images.pexels.com/photos/1396122/pexels-photo-1396122.jpeg')"></div>
+          <div class="gallery-item" style="background-image: url('https://images.pexels.com/photos/1457842/pexels-photo-1457842.jpeg')"></div>
+          <div class="gallery-item" style="background-image: url('https://images.pexels.com/photos/2631746/pexels-photo-2631746.jpeg')"></div>
+          <div class="gallery-item" style="background-image: url('https://images.pexels.com/photos/1428348/pexels-photo-1428348.jpeg')"></div>
+          <div class="gallery-item" style="background-image: url('https://images.pexels.com/photos/1643383/pexels-photo-1643383.jpeg')"></div>
+        </div>
+      </div>
+    </section>
+
+    <div class="container">
+      <div class="content-wrapper">
+        <!-- DETALLES DEL APARTAMENTO -->
+        <div class="property-details">
+          <div class="details-section">
+            <h3>Descripción</h3>
+            <p>Casa independiente con jardín y piscina privada en Cap d'Artrutx, uno de los rincones más espectaculares del sur de Menorca. Diseñada para familias y grupos que buscan privacidad, confort y tranquilidad junto al mar.</p>
+            <p style="margin-top: 1rem;">La vivienda dispone de tres amplios dormitorios, dos baños completos, salón-comedor luminoso con salida directa al jardín, cocina completamente equipada con electrodomésticos modernos, y zona exterior con porche cubierto, barbacoa, piscina privada y solárium. A pocos minutos a pie del faro de Artrutx y de calas de ensueño.</p>
+          </div>
+
+          <div class="price-highlight">
+            <h4>Precio por noche</h4>
+            <div class="price-amount">Desde 180€</div>
+            <p style="margin-top: 0.5rem; font-size: 0.9rem;">*Temporada alta. Consultar otras temporadas y descuentos por estancias largas.</p>
+          </div>
+
+          <div class="details-section">
+            <h3>Características</h3>
+            <div class="features">
+              <div class="feature-item">
+                <svg class="feature-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                </svg>
+                6-8 personas
+              </div>
+              <div class="feature-item">
+                <svg class="feature-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+                </svg>
+                3 dormitorios
+              </div>
+              <div class="feature-item">
+                <svg class="feature-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"></path>
+                </svg>
+                2 baños
+              </div>
+              <div class="feature-item">
+                <svg class="feature-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+                </svg>
+                WiFi fibra óptica
+              </div>
+              <div class="feature-item">
+                <svg class="feature-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z"></path>
+                </svg>
+                Aire acondicionado
+              </div>
+              <div class="feature-item">
+                <svg class="feature-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 10l-2 1m0 0l-2-1m2 1v2.5M20 7l-2 1m2-1l-2-1m2 1v2.5M14 4l-2-1-2 1M4 7l2-1M4 7l2 1M4 7v2.5M12 21l-2-1m2 1l2-1m-2 1v-2.5M6 18l-2-1v-2.5M18 18l2-1v-2.5"></path>
+                </svg>
+                Cocina completa
+              </div>
+              <div class="feature-item">
+                <svg class="feature-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path>
+                </svg>
+                Piscina privada
+              </div>
+              <div class="feature-item">
+                <svg class="feature-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
+                </svg>
+                Jardín y barbacoa
+              </div>
+              <div class="feature-item">
+                <svg class="feature-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                Parking privado
+              </div>
+              <div class="feature-item">
+                <svg class="feature-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                Lavadora y secadora
+              </div>
+              <div class="feature-item">
+                <svg class="feature-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01"></path>
+                </svg>
+                Ropa de cama incluida
+              </div>
+              <div class="feature-item">
+                <svg class="feature-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                Vistas al faro
+              </div>
+            </div>
+          </div>
+
+          <div class="details-section">
+            <h3>Información adicional</h3>
+            <ul style="padding-left: 1.5rem; line-height: 2;">
+              <li>Check-in: a partir de las 16:00h</li>
+              <li>Check-out: hasta las 11:00h</li>
+              <li>Estancia mínima: 7 noches en temporada alta</li>
+              <li>Se admiten mascotas pequeñas (consultar suplemento)</li>
+              <li>No se permite fumar en el interior</li>
+              <li>Parking privado para 2 coches</li>
+              <li>A 800m del Faro de Artrutx</li>
+              <li>A 5 min andando de Cala en Bosc</li>
+              <li>Limpieza final incluida</li>
+              <li>NRUA registrada</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- PANEL DE RESERVA -->
+        <div class="booking-panel">
+          <h2 class="booking-title">Reservar</h2>
+
+          <!-- CALENDARIO -->
+          <div class="calendar">
+            <div class="calendar-header">
+              <button class="calendar-nav" onclick="cambiarMes(-1)">‹</button>
+              <span class="calendar-month" id="mesActual"></span>
+              <button class="calendar-nav" onclick="cambiarMes(1)">›</button>
+            </div>
+            <div class="calendar-grid" id="calendarioGrid"></div>
+            <p class="calendar-note">Selecciona fecha de entrada y salida</p>
+          </div>
+
+          <!-- FORMULARIO -->
+          <form class="booking-form" id="formularioReserva">
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Entrada</label>
+                <input type="date" class="form-input" id="fechaEntrada" name="entrada" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Salida</label>
+                <input type="date" class="form-input" id="fechaSalida" name="salida" required>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Adultos</label>
+                <input type="number" class="form-input" name="adultos" min="1" max="8" value="2" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Niños</label>
+                <input type="number" class="form-input" name="ninos" min="0" max="4" value="0">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Nombre completo</label>
+              <input type="text" class="form-input" name="nombre" required>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Email</label>
+              <input type="email" class="form-input" name="email" required>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Teléfono</label>
+              <input type="tel" class="form-input" name="telefono" required>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Comentarios (opcional)</label>
+              <textarea class="form-input" name="comentarios" rows="3" placeholder="Hora aproximada de llegada, peticiones especiales, si viaja con mascota..."></textarea>
+            </div>
+
+            <button type="submit" class="submit-btn">Solicitar reserva</button>
+            
+            <div class="success-message" id="mensajeExito">
+              ✓ Tu solicitud se ha enviado correctamente. Te responderemos en breve con la confirmación y las instrucciones de pago.
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <div class="container">
+      <p class="footer-text">© 2026 Tus Casas Turísticas | Alquiler vacacional con NRUA</p>
+      <p>info@tuscasasturisticas.com | +34 600 000 000</p>
+    </div>
+  </footer>
+
+  <script>
+    const meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+    const diasSemana = ['L', 'M', 'X', 'J', 'V', 'S', 'D'];
+    
+    let fechaActual = new Date();
+    let mesActual = fechaActual.getMonth();
+    let anyoActual = fechaActual.getFullYear();
+    let fechaEntrada = null;
+    let fechaSalida = null;
+
+    function renderCalendario() {
+      const grid = document.getElementById('calendarioGrid');
+      const labelMes = document.getElementById('mesActual');
+      
+      grid.innerHTML = '';
+      labelMes.textContent = `${meses[mesActual]} ${anyoActual}`;
+
+      diasSemana.forEach(dia => {
+        const elem = document.createElement('div');
+        elem.className = 'calendar-day-name';
+        elem.textContent = dia;
+        grid.appendChild(elem);
+      });
+
+      const primerDia = new Date(anyoActual, mesActual, 1).getDay();
+      const ultimoDia = new Date(anyoActual, mesActual + 1, 0).getDate();
+      const offset = primerDia === 0 ? 6 : primerDia - 1;
+
+      for (let i = 0; i < offset; i++) {
+        const elem = document.createElement('div');
+        elem.className = 'calendar-day empty';
+        grid.appendChild(elem);
+      }
+
+      const hoy = new Date();
+      hoy.setHours(0, 0, 0, 0);
+
+      for (let dia = 1; dia <= ultimoDia; dia++) {
+        const fecha = new Date(anyoActual, mesActual, dia);
+        const elem = document.createElement('div');
+        elem.className = 'calendar-day';
+        elem.textContent = dia;
+
+        if (fecha < hoy) {
+          elem.classList.add('disabled');
+        } else {
+          elem.addEventListener('click', () => seleccionarFecha(fecha));
+        }
+
+        if (fechaEntrada && compararFechas(fecha, fechaEntrada)) {
+          elem.classList.add('selected');
+        }
+        if (fechaSalida && compararFechas(fecha, fechaSalida)) {
+          elem.classList.add('selected');
+        }
+        if (fechaEntrada && fechaSalida && fecha > fechaEntrada && fecha < fechaSalida) {
+          elem.classList.add('range');
+        }
+
+        grid.appendChild(elem);
+      }
+    }
+
+    function compararFechas(fecha1, fecha2) {
+      return fecha1.getFullYear() === fecha2.getFullYear() &&
+             fecha1.getMonth() === fecha2.getMonth() &&
+             fecha1.getDate() === fecha2.getDate();
+    }
+
+    function seleccionarFecha(fecha) {
+      if (!fechaEntrada || (fechaEntrada && fechaSalida)) {
+        fechaEntrada = fecha;
+        fechaSalida = null;
+      } else if (fecha > fechaEntrada) {
+        fechaSalida = fecha;
+      } else {
+        fechaEntrada = fecha;
+        fechaSalida = null;
+      }
+
+      const inputEntrada = document.getElementById('fechaEntrada');
+      const inputSalida = document.getElementById('fechaSalida');
+
+      if (fechaEntrada) {
+        inputEntrada.value = fechaEntrada.toISOString().split('T')[0];
+      }
+      if (fechaSalida) {
+        inputSalida.value = fechaSalida.toISOString().split('T')[0];
+      }
+
+      renderCalendario();
+    }
+
+    function cambiarMes(delta) {
+      mesActual += delta;
+      if (mesActual < 0) {
+        mesActual = 11;
+        anyoActual--;
+      } else if (mesActual > 11) {
+        mesActual = 0;
+        anyoActual++;
+      }
+      renderCalendario();
+    }
+
+    document.getElementById('formularioReserva').addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      const datos = new FormData(this);
+      const asunto = encodeURIComponent('Solicitud reserva Casa Gonda Cap d\'Artrutx');
+      const cuerpo = 
+        'CASA: Casa Gonda - Cap d\'Artrutx%0D%0A' +
+        'ENTRADA: ' + datos.get('entrada') + '%0D%0A' +
+        'SALIDA: ' + datos.get('salida') + '%0D%0A' +
+        'HUÉSPEDES: ' + datos.get('adultos') + ' adultos, ' + datos.get('ninos') + ' niños%0D%0A%0D%0A' +
+        'NOMBRE: ' + datos.get('nombre') + '%0D%0A' +
+        'EMAIL: ' + datos.get('email') + '%0D%0A' +
+        'TELÉFONO: ' + datos.get('telefono') + '%0D%0A%0D%0A' +
+        'COMENTARIOS: ' + (datos.get('comentarios') || 'Ninguno');
+
+      window.location.href = 'mailto:info@tuscasasturisticas.com?subject=' + asunto + '&body=' + cuerpo;
+      
+      document.getElementById('mensajeExito').style.display = 'block';
+      setTimeout(() => {
+        document.getElementById('mensajeExito').style.display = 'none';
+      }, 8000);
+    });
+
+    renderCalendario();
+  </script>
+</body>
+</html>
