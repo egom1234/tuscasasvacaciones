@@ -434,8 +434,7 @@
         <div class="property-location">📍 Cap d'Artrutx, Menorca</div>
         
         <div class="gallery">
-          <div class="gallery-main lightbox-trigger" data-index="0" style="background-image:url('images/gonda/gonda_portada.jpg')"></div>
-          <div class="gallery-main" style="background-image: url('images/gonda/gonda_portada.jpg')"></div>
+          <div class="gallery-main" style="background-image: url('images/gonda/gonda_portada.jpg')" onclick="abrirLightbox(0)"></div>
           <div class="gallery-item" style="background-image: url('images/gonda/gonda_faro.jpg')"></div>
           <div class="gallery-item" style="background-image: url('images/gonda/gonda_cala.jpg')"></div>
           <div class="gallery-item" style="background-image: url('images/gonda/gonda_hab.jpg')"></div>
@@ -446,7 +445,7 @@
           <div class="gallery-item" style="background-image: url('images/gonda/gonda_bano.jpg')"></div>
           <div class="gallery-item" style="background-image: url('images/gonda/gonda_bano2.jpg')"></div>
           <div class="gallery-item" style="background-image: url('images/gonda/gonda_patio.jpg')"></div>
-          <div class="gallery-main lightbox-trigger" data-index="0" style="background-image:url('images/gonda/gonda_ducha-ext.jpg')"></div>
+          <div class="gallery-item" style="background-image: url('images/gonda/gonda_ducha-ext.jpg')" onclick="abrirLightbox(11)"></div>
           <div class="gallery-item" style="background-image: url('images/gonda/gonda_terraza.jpg')"></div>
           <div class="gallery-item" style="background-image: url('images/gonda/gonda_terraza2.jpg')"></div>
           <div class="gallery-item" style="background-image: url('images/gonda/gonda_porche.jpg')"></div>
@@ -635,6 +634,17 @@
       </div>
     </div>
   </main>
+  <!-- LIGHTBOX -->
+  <div class="lightbox" id="lightbox" onclick="cerrarLightbox()">
+    <button class="lightbox-close" onclick="cerrarLightbox()">×</button>
+    <button class="lightbox-prev" onclick="event.stopPropagation(); cambiarImagen(-1)">‹</button>
+    <div class="lightbox-content" onclick="event.stopPropagation()">
+      <img class="lightbox-image" id="lightboxImage" src="" alt="Imagen ampliada">
+    </div>
+    <button class="lightbox-next" onclick="event.stopPropagation(); cambiarImagen(1)">›</button>
+    <div class="lightbox-counter" id="lightboxCounter">1 / 16</div>
+  </div>
+
   <footer>
     <div class="footer-content">
       <p class="footer-text">© 2026 Tus Casas Turísticas | NRUA registrada | Alquiler vacacional</p>
@@ -771,7 +781,60 @@
     });
 
     renderCalendario();
-    
+    // LIGHTBOX
+    const imagenes = [
+      'images/gonda/gonda_portada.jpg',
+      'images/gonda/gonda_faro.jpg',
+      'images/gonda/gonda_cala.jpg',
+      'images/gonda/gonda_hab.jpg',
+      'images/gonda/gonda_hab2.jpg',
+      'images/gonda/gonda_salon.jpg',
+      'images/gonda/gonda_salon2.jpg',
+      'images/gonda/gonda_cocina.jpg',
+      'images/gonda/gonda_bano.jpg',
+      'images/gonda/gonda_bano2.jpg',
+      'images/gonda/gonda_patio.jpg',
+      'images/gonda/gonda_ducha-ext.jpg',
+      'images/gonda/gonda_terraza.jpg',
+      'images/gonda/gonda_terraza2.jpg',
+      'images/gonda/gonda_porche.jpg',
+      'images/gonda/gonda_vistas.jpg'
+    ];
+
+    let indiceActual = 0;
+
+    function abrirLightbox(indice) {
+      indiceActual = indice;
+      actualizarImagen();
+      document.getElementById('lightbox').classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function cerrarLightbox() {
+      document.getElementById('lightbox').classList.remove('active');
+      document.body.style.overflow = 'auto';
+    }
+
+    function cambiarImagen(direccion) {
+      indiceActual += direccion;
+      if (indiceActual < 0) indiceActual = imagenes.length - 1;
+      if (indiceActual >= imagenes.length) indiceActual = 0;
+      actualizarImagen();
+    }
+
+    function actualizarImagen() {
+      document.getElementById('lightboxImage').src = imagenes[indiceActual];
+      document.getElementById('lightboxCounter').textContent = `${indiceActual + 1} / ${imagenes.length}`;
+    }
+
+    // Navegación con teclado
+    document.addEventListener('keydown', function(e) {
+      if (document.getElementById('lightbox').classList.contains('active')) {
+        if (e.key === 'Escape') cerrarLightbox();
+        if (e.key === 'ArrowLeft') cambiarImagen(-1);
+        if (e.key === 'ArrowRight') cambiarImagen(1);
+      }
+    });
   </script>
 </body>
 </html>
