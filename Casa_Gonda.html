@@ -634,12 +634,23 @@
       </div>
     </div>
   </main>
-
+  
+ <!-- LIGHTBOX -->
+  <div class="lightbox" id="lightbox" onclick="cerrarLightbox()">
+    <button class="lightbox-close" onclick="cerrarLightbox()">×</button>
+    <button class="lightbox-prev" onclick="event.stopPropagation(); cambiarImagen(-1)">‹</button>
+    <div class="lightbox-content" onclick="event.stopPropagation()">
+      <img class="lightbox-image" id="lightboxImage" src="" alt="Imagen ampliada">
+    </div>
+    <button class="lightbox-next" onclick="event.stopPropagation(); cambiarImagen(1)">›</button>
+    <div class="lightbox-counter" id="lightboxCounter">1 / 16</div>
+  </div>
   <footer>
     <div class="footer-content">
       <p class="footer-text">© 2026 Tus Casas Turísticas | NRUA registrada | Alquiler vacacional</p>
       <p>Email: casablavapeniscola@gmail.com | Telf./ Whatsapp <a href="https://wa.me/34613119183" target="_blank" rel="noopener noreferrer" class="hover:text-primary transition-colors" style="color: white !important;">+34 613 119 183</a></p>
     </div>
+    
   </footer>
 
   <script>
