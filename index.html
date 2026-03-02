@@ -309,86 +309,54 @@
       }
     }
  /* ===== MOBILE RESPONSIVE COMPLETO ===== */
-.menu-toggle {
+.mobile-menu-btn {
   display: none;
   background: none;
   border: none;
   font-size: 1.8rem;
   color: var(--verde-primario);
   cursor: pointer;
-  padding: 0.5rem;
 }
 
-@media (max-width: 992px) {
-  .content-wrapper {
-    grid-template-columns: 1fr;
-    gap: 2rem;
-  }
-  
-  .booking-panel {
-    position: static;
-  }
-  
-  .gallery {
-    grid-template-columns: 1fr;
-    gap: 1rem;
-  }
-  
-  .gallery-main {
-    grid-column: span 1 !important;
-    height: 280px;
-  }
-  
-  .gallery-item {
-    height: 180px;
-  }
-  
-  .property-title {
-    font-size: 2.2rem;
-    text-align: center;
-  }
-  
-  .features {
-    grid-template-columns: 1fr;
-  }
+#main-nav {
+  display: flex;
+  gap: 2rem;
 }
 
 @media (max-width: 768px) {
-  .menu-toggle {
+  .mobile-menu-btn {
     display: block !important;
     position: absolute;
     right: 1rem;
     top: 1.5rem;
   }
   
-  nav {
+  #main-nav {
     position: fixed;
     top: 0;
-    right: -320px;
-    width: 320px;
+    right: -100%;
+    width: 300px;
     height: 100vh;
     background: var(--blanco);
     flex-direction: column;
     gap: 2rem;
+    padding: 7rem 1.5rem 2rem;
     transition: right 0.3s ease;
-    padding: 8rem 1.5rem 2rem;
     box-shadow: -5px 0 25px rgba(0,0,0,0.2);
     z-index: 999;
   }
   
-  nav.active {
-    right: 0;
+  #main-nav.active {
+    right: 0 !important;
   }
   
-  nav a {
+  #main-nav a {
     font-size: 1.2rem;
     padding: 1rem 0;
     border-bottom: 1px solid var(--gris-claro);
+    text-align: center;
   }
-  
-  .form-row {
-    grid-template-columns: 1fr;
-  }
+}
   /* CONTACTO RESPONSIVE */
 .booking-panel {
   display: flex;
