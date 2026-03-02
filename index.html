@@ -604,11 +604,29 @@ document.addEventListener('click', (e) => {
     nav.classList.remove('active');
   }
 });
-</script>
-  <script>
+<script>
 function toggleMenu() {
-  document.querySelector('nav').classList.toggle('active');
+  const nav = document.querySelector('nav');
+  nav.classList.toggle('active');
 }
+
+// CIERRA al clickar cualquier enlace del menú
+document.addEventListener('click', function(e) {
+  const nav = document.querySelector('nav');
+  const toggle = document.querySelector('.menu-toggle');
+  const logo = document.querySelector('.logo-link');
+  
+  // Si click en enlace del menú → cerrar
+  if (e.target.tagName === 'A' && nav.contains(e.target)) {
+    nav.classList.remove('active');
+    return;
+  }
+  
+  // Si click fuera del menú, hamburguesa o logo → cerrar
+  if (!nav.contains(e.target) && !toggle.contains(e.target) && !logo?.contains(e.target)) {
+    nav.classList.remove('active');
+  }
+});
 </script>
 </body>
 </html>
