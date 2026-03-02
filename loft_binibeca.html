@@ -1,9 +1,12 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
+<link rel="icon" type="image/png" sizes="32x32" href="images/logo.png">
+<link rel="icon" type="image/png" sizes="16x16" href="images/logo.png">
+<link rel="apple-touch-icon" sizes="180x180" href="images/logo.png">
   <meta charset="UTF-8">
   <title>Loft Binibeca - Alquiler turístico Menorca</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
   <style>
     :root {
@@ -454,6 +457,151 @@
         gap: 1rem;
       }
     }
+     /* ===== MOBILE RESPONSIVE COMPLETO ===== */
+/* Menú hamburguesa */
+    .mobile-menu-btn {
+  display: none;
+  background: none;
+  border: none;
+  font-size: 1.8rem;
+  color: var(--verde-primario);
+  cursor: pointer;
+  z-index: 1001;
+}
+
+@media (max-width: 768px) {
+  .mobile-menu-btn {
+    display: block !important;
+    position: absolute;
+    right: 1rem;
+    top: 1.5rem;
+  }
+  
+  #main-nav {
+    position: fixed !important;
+    top: 0 !important;
+    right: -100% !important;
+    width: 80vw !important;
+    max-width: 300px !important;
+    height: 100vh !important;
+    background: var(--blanco) !important;
+    flex-direction: column !important;
+    gap: 2rem !important;
+    padding: 7rem 1.5rem 2rem !important;
+    transition: right 0.3s ease !important;
+    box-shadow: -5px 0 25px rgba(0,0,0,0.2) !important;
+    z-index: 999 !important;
+  }
+  
+  #main-nav.active {
+    right: 0 !important;
+  }
+  
+  #main-nav a {
+    font-size: 1.2rem !important;
+    padding: 1rem 0 !important;
+    border-bottom: 1px solid var(--gris-claro) !important;
+    text-align: center !important;
+    color: var(--gris-oscuro) !important;
+    text-decoration: none !important;
+  }
+}
+         nav {
+        position: fixed;
+        top: 0;
+        right: -100%;
+        width: 300px;
+        height: 100vh;
+        background: var(--blanco);
+        flex-direction: column;
+        gap: 2rem;
+        padding: 7rem 1.5rem 2rem;
+        transition: right 0.3s ease;
+        box-shadow: -5px 0 25px rgba(0,0,0,0.2);
+        z-index: 999;
+      }
+      
+     @media (max-width: 768px) {
+  nav.active {
+    right: 0 !important;
+  }
+      }
+      
+      nav a {
+        font-size: 1.2rem;
+        padding: 1rem 0;
+        border-bottom: 1px solid var(--gris-claro);
+        text-align: center;
+      }
+      
+      /* Contacto responsive */
+      .contact-wrapper {
+        grid-template-columns: 1fr !important;
+        gap: 2rem !important;
+      }
+      
+      /* Hero responsive */
+      .hero h1 {
+        font-size: 2rem;
+      }
+      
+      .hero p {
+        font-size: 1.1rem;
+      }
+      
+      /* Grid apartamentos */
+      .grid {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+      }
+    }
+  /* DESKTOP: lado a lado */
+@media (min-width: 769px) {
+  .booking-panel {
+    flex-direction: row;
+  }
+  
+  .contact-info {
+    flex: 1;
+    order: 1;
+  }
+  
+  .booking-form {
+    flex: 1;
+    order: 2;
+  }
+}
+
+/* MÓVIL: uno debajo otro */
+@media (max-width: 768px) {
+  .contact-wrapper {
+    grid-template-columns: 1fr !important;
+    gap: 2rem !important;
+  }
+}
+  
+  .contact-info {
+    order: 1;
+  }
+  
+  .booking-form {
+    order: 2;
+  }
+}
+  .gallery-main, .gallery-item {
+    height: 200px;
+  }
+}
+
+@media (max-width: 480px) {
+  .property-title {
+    font-size: 1.8rem;
+  }
+  
+  .gallery-main, .gallery-item {
+    height: 180px;
+  }
+}
   </style>
 </head>
 <body>
@@ -786,5 +934,29 @@
 
     renderCalendario();
   </script>
+  <script>
+function toggleMobileMenu() {
+  const nav = document.getElementById('main-nav');
+  if (nav) {
+    nav.classList.toggle('active');
+  }
+}
+
+// Cierra al clickar enlace
+document.querySelectorAll('#main-nav a').forEach(link => {
+  link.addEventListener('click', () => {
+    document.getElementById('main-nav').classList.remove('active');
+  });
+});
+
+// Cierra al clickar fuera
+document.addEventListener('click', (e) => {
+  const nav = document.getElementById('main-nav');
+  const btn = document.querySelector('.mobile-menu-btn');
+  if (nav && btn && !nav.contains(e.target) && !btn.contains(e.target)) {
+    nav.classList.remove('active');
+  }
+});
+</script>
 </body>
 </html>
