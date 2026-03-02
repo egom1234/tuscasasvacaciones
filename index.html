@@ -307,6 +307,88 @@
         gap: 1rem;
       }
     }
+    /* MOBILE FIRST - Header colapsable */
+@media (max-width: 768px) {
+  .header-content {
+    position: relative;
+  }
+  
+  nav {
+    position: fixed;
+    top: 0;
+    right: -100%;
+    width: 80%;
+    height: 100vh;
+    background: var(--blanco);
+    flex-direction: column;
+    justify-content: center;
+    gap: 2rem;
+    transition: right 0.3s;
+    padding: 2rem;
+    box-shadow: -5px 0 20px rgba(0,0,0,0.1);
+    z-index: 1001;
+  }
+  
+  nav.active {
+    right: 0;
+  }
+  
+  .menu-toggle {
+    display: block;
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    color: var(--verde-primario);
+    cursor: pointer;
+  }
+  
+  .property-title {
+    font-size: 2rem;
+    text-align: center;
+  }
+  
+  .gallery {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+  
+  .gallery-main, .gallery-item {
+    height: 250px;
+    grid-row: span 1 !important;
+  }
+  
+  .content-wrapper {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+  
+  .features {
+    grid-template-columns: 1fr;
+  }
+  
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+  
+  .booking-panel {
+    position: static !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 0 1rem;
+  }
+  
+  .property-hero {
+    padding: 2rem 0;
+  }
+  
+  .logo-img {
+    width: 35px;
+    height: 35px;
+  }
+}
   </style>
 </head>
 <body>
