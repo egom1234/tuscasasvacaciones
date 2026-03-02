@@ -569,6 +569,28 @@
       <p>Email: casablavapeniscola@gmail.com | Telf./ Whatsapp <a href="https://wa.me/34613119183" target="_blank" rel="noopener noreferrer" class="hover:text-primary transition-colors"style="color: white !important;">+34 613 119 183</a></p>
     </div>
   </footer>
+  <script>
+function toggleMenu() {
+  document.querySelector('.nav-menu').classList.toggle('active');
+}
+
+// Cierra menú al click enlace
+document.querySelectorAll('nav a').forEach(link => {
+  link.addEventListener('click', () => {
+    document.querySelector('.nav-menu').classList.remove('active');
+  });
+});
+
+// Scroll suave
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+  anchor.addEventListener('click', function (e) {
+    e.preventDefault();
+    document.querySelector(this.getAttribute('href')).scrollIntoView({
+      behavior: 'smooth'
+    });
+  });
+});
+</script>
 </body>
 </html>
 <!DOCTYPE html>
