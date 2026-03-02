@@ -308,13 +308,24 @@
         gap: 1rem;
       }
     }
-    /* MOBILE FIRST - Header colapsable */
+   /* HAMBURGUESA + MENÚ MÓVIL */
+.menu-toggle {
+  display: none; /* Oculto desktop */
+  background: none;
+  border: none;
+  font-size: 1.8rem;
+  color: var(--verde-primario);
+  cursor: pointer;
+  z-index: 1002;
+  padding: 0.5rem;
+}
+
 @media (max-width: 768px) {
-  .header-content {
-    position: relative;
+  .menu-toggle {
+    display: block; /* Visible móvil */
   }
   
-  nav {
+  .nav-menu {
     position: fixed;
     top: 0;
     right: -100%;
@@ -324,70 +335,21 @@
     flex-direction: column;
     justify-content: center;
     gap: 2rem;
-    transition: right 0.3s;
+    transition: right 0.3s ease;
     padding: 2rem;
     box-shadow: -5px 0 20px rgba(0,0,0,0.1);
     z-index: 1001;
-  }
-  
-  nav.active {
-    right: 0;
-  }
-  
-  .menu-toggle {
-    display: block;
-    background: none;
-    border: none;
-    font-size: 1.5rem;
-    color: var(--verde-primario);
-    cursor: pointer;
-  }
-  
-  .property-title {
-    font-size: 2rem;
     text-align: center;
   }
   
-  .gallery {
-    grid-template-columns: 1fr;
-    gap: 0.75rem;
+  .nav-menu.active {
+    right: 0;
   }
   
-  .gallery-main, .gallery-item {
-    height: 250px;
-    grid-row: span 1 !important;
-  }
-  
-  .content-wrapper {
-    grid-template-columns: 1fr;
-    gap: 2rem;
-  }
-  
-  .features {
-    grid-template-columns: 1fr;
-  }
-  
-  .form-row {
-    grid-template-columns: 1fr;
-  }
-  
-  .booking-panel {
-    position: static !important;
-  }
-}
-
-@media (max-width: 480px) {
-  .container {
-    padding: 0 1rem;
-  }
-  
-  .property-hero {
-    padding: 2rem 0;
-  }
-  
-  .logo-img {
-    width: 35px;
-    height: 35px;
+  .nav-menu a {
+    font-size: 1.3rem;
+    padding: 1rem;
+    display: block;
   }
 }
   </style>
@@ -401,7 +363,7 @@
         <img src="images/logo.png" alt="Casitas de Mar" class="logo-img">
         <span class="logo-text">Casitas de Mar</span>
       </a>
-        <!-- HAMBURGUESA MÓVIL -->
+       <!-- HAMBURGUESA ☰ -->
       <button class="menu-toggle" onclick="toggleMenu()">☰</button>
         <nav>
           <a href="#apartamentos">Alojamientos</a>
@@ -575,21 +537,20 @@ function toggleMenu() {
   document.querySelector('.nav-menu').classList.toggle('active');
 }
 
-// Cierra menú al click enlace
-document.querySelectorAll('nav a').forEach(link => {
+// Cierra menú al clickar enlace
+document.querySelectorAll('.nav-menu a').forEach(link => {
   link.addEventListener('click', () => {
     document.querySelector('.nav-menu').classList.remove('active');
   });
 });
 
-// Scroll suave
-document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-  anchor.addEventListener('click', function (e) {
-    e.preventDefault();
-    document.querySelector(this.getAttribute('href')).scrollIntoView({
-      behavior: 'smooth'
-    });
-  });
+// Cierra menú al clickar fuera
+document.addEventListener('click', (e) => {
+  const nav = document.querySelector('.nav-menu');
+  const toggle = document.querySelector('.menu-toggle');
+  if (!nav.contains(e.target) && !toggle.contains(e.target)) {
+    nav.classList.remove('active');
+  }
 });
 </script>
 </body>
