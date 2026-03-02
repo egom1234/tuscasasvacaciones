@@ -310,20 +310,53 @@
  /* ===== MOBILE RESPONSIVE COMPLETO ===== */
 /* Menú hamburguesa */
     .mobile-menu-btn {
-      display: none;
-      background: none;
-      border: none;
-      font-size: 1.8rem;
-      color: var(--verde-primario);
-      cursor: pointer;
-    }
-    
-    @media (max-width: 768px) {
-      .mobile-menu-btn {
-        display: block !important;
-      }
-      
-      nav {
+  display: none;
+  background: none;
+  border: none;
+  font-size: 1.8rem;
+  color: var(--verde-primario);
+  cursor: pointer;
+  z-index: 1001;
+}
+
+@media (max-width: 768px) {
+  .mobile-menu-btn {
+    display: block !important;
+    position: absolute;
+    right: 1rem;
+    top: 1.5rem;
+  }
+  
+  #main-nav {
+    position: fixed !important;
+    top: 0 !important;
+    right: -100% !important;
+    width: 80vw !important;
+    max-width: 300px !important;
+    height: 100vh !important;
+    background: var(--blanco) !important;
+    flex-direction: column !important;
+    gap: 2rem !important;
+    padding: 7rem 1.5rem 2rem !important;
+    transition: right 0.3s ease !important;
+    box-shadow: -5px 0 25px rgba(0,0,0,0.2) !important;
+    z-index: 999 !important;
+  }
+  
+  #main-nav.active {
+    right: 0 !important;
+  }
+  
+  #main-nav a {
+    font-size: 1.2rem !important;
+    padding: 1rem 0 !important;
+    border-bottom: 1px solid var(--gris-claro) !important;
+    text-align: center !important;
+    color: var(--gris-oscuro) !important;
+    text-decoration: none !important;
+  }
+}
+         nav {
         position: fixed;
         top: 0;
         right: -100%;
