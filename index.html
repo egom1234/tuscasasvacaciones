@@ -308,9 +308,15 @@
         gap: 1rem;
       }
     }
-  /* ===== RESPONSIVE MÓVIL COMPLETO ===== */
+ /* ===== MOBILE RESPONSIVE COMPLETO ===== */
 .menu-toggle {
   display: none;
+  background: none;
+  border: none;
+  font-size: 1.8rem;
+  color: var(--verde-primario);
+  cursor: pointer;
+  padding: 0.5rem;
 }
 
 @media (max-width: 992px) {
@@ -329,7 +335,7 @@
   }
   
   .gallery-main {
-    grid-column: span 1;
+    grid-column: span 1 !important;
     height: 280px;
   }
   
@@ -341,79 +347,61 @@
     font-size: 2.2rem;
     text-align: center;
   }
+  
+  .features {
+    grid-template-columns: 1fr;
+  }
 }
 
 @media (max-width: 768px) {
-  .header-content {
-    position: relative;
-    padding: 1rem 0;
-  }
-  
   .menu-toggle {
     display: block !important;
     position: absolute;
     right: 1rem;
-    top: 50%;
-    transform: translateY(-50%);
-    background: none;
-    border: none;
-    font-size: 1.8rem;
-    color: var(--verde-primario);
-    cursor: pointer;
-    z-index: 1002;
-    padding: 0.5rem;
+    top: 1.5rem;
   }
   
-  nav.nav-menu {
+  nav {
     position: fixed;
     top: 0;
-    right: -100%;
-    width: 280px;
+    right: -320px;
+    width: 320px;
     height: 100vh;
     background: var(--blanco);
     flex-direction: column;
-    justify-content: flex-start;
-    gap: 1.5rem;
-    transition: right 0.4s ease;
-    padding: 6rem 2rem 2rem;
-    box-shadow: -3px 0 20px rgba(0,0,0,0.15);
-    z-index: 1001;
-    overflow-y: auto;
+    gap: 2rem;
+    transition: right 0.3s ease;
+    padding: 8rem 1.5rem 2rem;
+    box-shadow: -5px 0 25px rgba(0,0,0,0.2);
+    z-index: 999;
   }
   
-  nav.nav-menu.active {
+  nav.active {
     right: 0;
   }
   
-  .features {
-    grid-template-columns: 1fr;
+  nav a {
+    font-size: 1.2rem;
+    padding: 1rem 0;
+    border-bottom: 1px solid var(--gris-claro);
   }
   
   .form-row {
     grid-template-columns: 1fr;
   }
   
-  .form-input {
-    font-size: 16px;
-  }
-  
   .gallery-main, .gallery-item {
-    height: 220px;
+    height: 200px;
   }
 }
 
 @media (max-width: 480px) {
-  .container {
-    padding: 0 1rem;
-  }
-  
   .property-title {
     font-size: 1.8rem;
   }
   
   .gallery-main, .gallery-item {
-    height: 200px;
-    border-radius: 12px;
+    height: 180px;
   }
 }
   </style>
@@ -616,6 +604,11 @@ document.addEventListener('click', (e) => {
     nav.classList.remove('active');
   }
 });
+</script>
+  <script>
+function toggleMenu() {
+  document.querySelector('nav').classList.toggle('active');
+}
 </script>
 </body>
 </html>
