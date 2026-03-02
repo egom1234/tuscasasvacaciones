@@ -633,45 +633,25 @@
     </div>
   </footer>
   <script>
-function toggleMenu() {
-  document.querySelector('.nav-menu').classList.toggle('active');
+function toggleMobileMenu() {
+  const nav = document.getElementById('main-nav');
+  if (nav) {
+    nav.classList.toggle('active');
+  }
 }
 
-// Cierra menú al clickar enlace
-document.querySelectorAll('.nav-menu a').forEach(link => {
+// Cierra al clickar enlace
+document.querySelectorAll('#main-nav a').forEach(link => {
   link.addEventListener('click', () => {
-    document.querySelector('.nav-menu').classList.remove('active');
+    document.getElementById('main-nav').classList.remove('active');
   });
 });
 
-// Cierra menú al clickar fuera
+// Cierra al clickar fuera
 document.addEventListener('click', (e) => {
-  const nav = document.querySelector('.nav-menu');
-  const toggle = document.querySelector('.menu-toggle');
-  if (!nav.contains(e.target) && !toggle.contains(e.target)) {
-    nav.classList.remove('active');
-  }
-});
-<script>
-function toggleMenu() {
-  const nav = document.querySelector('nav');
-  nav.classList.toggle('active');
-}
-
-// CIERRA al clickar cualquier enlace del menú
-document.addEventListener('click', function(e) {
-  const nav = document.querySelector('nav');
-  const toggle = document.querySelector('.menu-toggle');
-  const logo = document.querySelector('.logo-link');
-  
-  // Si click en enlace del menú → cerrar
-  if (e.target.tagName === 'A' && nav.contains(e.target)) {
-    nav.classList.remove('active');
-    return;
-  }
-  
-  // Si click fuera del menú, hamburguesa o logo → cerrar
-  if (!nav.contains(e.target) && !toggle.contains(e.target) && !logo?.contains(e.target)) {
+  const nav = document.getElementById('main-nav');
+  const btn = document.querySelector('.mobile-menu-btn');
+  if (nav && btn && !nav.contains(e.target) && !btn.contains(e.target)) {
     nav.classList.remove('active');
   }
 });
