@@ -389,7 +389,83 @@
   .form-row {
     grid-template-columns: 1fr;
   }
+  /* CONTACTO RESPONSIVE */
+.booking-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.contact-info {
+  order: 1;
+  background: var(--gris-claro);
+  padding: 1.5rem;
+  border-radius: 12px;
+  text-align: center;
+}
+
+.contact-info h4 {
+  color: var(--verde-oscuro);
+  margin-bottom: 1rem;
+}
+
+.contact-phones {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  font-size: 1.1rem;
+}
+
+.contact-phone {
+  color: var(--verde-primario);
+  text-decoration: none;
+  padding: 0.75rem;
+  background: var(--blanco);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.booking-form {
+  order: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* DESKTOP: lado a lado */
+@media (min-width: 769px) {
+  .booking-panel {
+    flex-direction: row;
+  }
   
+  .contact-info {
+    flex: 1;
+    order: 1;
+  }
+  
+  .booking-form {
+    flex: 1;
+    order: 2;
+  }
+}
+
+/* MÓVIL: uno debajo otro */
+@media (max-width: 768px) {
+  .form-row {
+    grid-template-columns: 1fr !important;
+    gap: 1rem;
+  }
+  
+  .contact-info {
+    order: 1;
+  }
+  
+  .booking-form {
+    order: 2;
+  }
+}
   .gallery-main, .gallery-item {
     height: 200px;
   }
