@@ -52,21 +52,7 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-       flex-wrap: wrap;
-  gap: 1rem;
-}
-.lang-selector {
-  margin-left: auto;           
-}
-.lang-selector select {
-  background: var(--blanco);
-  border: 1px solid var(--verde-primario);
-  padding: 0.5rem 1rem;
-  border-radius: 20px;
-  font-size: 0.9rem;
-  cursor: pointer;
-  color: var(--verde-primario);
-}
+    }
 
     .logo {
       font-size: 1.5rem;
@@ -471,17 +457,6 @@
         gap: 1rem;
       }
     }
-    /* Lenguaje en ingles */
-    .lang-selector select {
-  background: var(--blanco);
-  border: 1px solid var(--verde-primario);
-  padding: 0.5rem 1rem;
-  border-radius: 20px;
-  font-size: 0.9rem;
-  cursor: pointer;
-  color: var(--verde-primario);
-}
-
      /* ===== MOBILE RESPONSIVE COMPLETO ===== */
 /* Menú hamburguesa */
     .mobile-menu-btn {
@@ -643,14 +618,8 @@
           <a href="index.html#apartamentos">Alojamientos</a>
           <a href="Casa_blava.html">Peñíscola</a>
           <a href="Casa_Gonda.html">Casa Gonda</a>
-          <a href="Tarifa_loft.html">Tarifa Loft</a>
+          <a href="Tarifa_apartamento.html">Tarifa Loft</a>
         </nav>
-        <div class="lang-selector" style="margin-left: auto;">
-  <select id="langSelect" onchange="cambiarIdioma()">
-    <option value="es">🇪🇸 Español</option>
-    <option value="en">🇺🇸 English</option>
-  </select>
-</div>
       </div>
     </div>
   </header>
@@ -663,8 +632,6 @@
         
         <div class="gallery">
           <div class="gallery-main" style="background-image: url('images/binibeca/bini_entrada2.jpg')"></div>
-          <div class="gallery-item" style="background-image: url('images/binibeca/binibeca_iglesia.jpg')"></div>
-          <div class="gallery-item" style="background-image: url('images/binibeca/binibeca_plaza.JPG')"></div>
           <div class="gallery-item" style="background-image: url('images/binibeca/bini_salon.jpg')"></div>
         
         </div>
@@ -677,7 +644,7 @@
         <div class="property-details">
           <div class="details-section">
             <h3>Descripción</h3>
-            <p>Acogedor apartamento en Tarifa de 2 habitaciones.</p>
+            <p>Acogedor apartamento en Tarifa de 2 habitacion.</p>
             <p style="margin-top: 1rem;">El alojamiento cuenta con una decoración mediterránea, espacios luminosos y todas las comodidades necesarias para una estancia perfecta. Dispone de zona de estar, baño y cocina equipada.</p>
           </div>
 
@@ -694,7 +661,7 @@
                 <svg class="feature-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
                 </svg>
-                1-4 personas
+                2-4 personas
               </div>
               <div class="feature-item">
                 <svg class="feature-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -939,7 +906,7 @@
       e.preventDefault();
       
       const datos = new FormData(this);
-      const asunto = encodeURIComponent('Solicitud reserva Tarifa - Apartamento');
+      const asunto = encodeURIComponent('Solicitud reserva Apartamento Tarifa');
       const cuerpo = 
         'APARTAMENTO: Tarifa-Apartamento%0D%0A' +
         'ENTRADA: ' + datos.get('entrada') + '%0D%0A' +
@@ -983,47 +950,6 @@ document.addEventListener('click', (e) => {
     nav.classList.remove('active');
   }
 });
-</script>
-<script>
-function cambiarIdioma() {
-  const idioma = document.getElementById('langSelect').value;
-  console.log('✅ Idioma:', idioma);
-  
-  const traducciones = {
-    es: {
-      heroTitle: "Casas Turísticas del Mediterraneo",
-      heroDesc: "Alquiler vacacional directo sin comisiones en las mejores ubicaciones de la costa e islas baleares",
-      heroBtn: "Explorar alojamientos"
-    },
-    en: {
-      heroTitle: "Mediterranean Tourist Houses",
-      heroDesc: "Direct vacation rental no commissions in best coastal locations",
-      heroBtn: "Explore accommodations"
-    }
-  };
-  
-  // BUSCAR elementos
-  const h1 = document.querySelector('.hero h1');
-  const p = document.querySelector('.hero p');
-  const btn = document.querySelector('.cta-btn');
-  
-  console.log('H1 encontrado:', h1);
-  console.log('P encontrado:', p);
-  console.log('Btn encontrado:', btn);
-  
-  // CAMBIAR si existen
-  if (h1) h1.textContent = traducciones[idioma].heroTitle;
-  if (p) p.textContent = traducciones[idioma].heroDesc;
-  if (btn) btn.textContent = traducciones[idioma].heroBtn;
-  
-  localStorage.setItem('idioma', idioma);
-}
-
-window.onload = function() {
-  const idiomaGuardado = localStorage.getItem('idioma') || 'es';
-  document.getElementById('langSelect').value = idiomaGuardado;
-  cambiarIdioma();
-}
 </script>
 </body>
 </html>
