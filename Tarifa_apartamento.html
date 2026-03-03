@@ -52,6 +52,18 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
+       flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.lang-selector {
+  /* Posición perfecta */
+}
+@media (max-width: 768px) {
+  .lang-selector {
+    order: 3; /* Móvil: último */
+  }
+}
     }
 
     .logo {
@@ -457,6 +469,17 @@
         gap: 1rem;
       }
     }
+    /* Lenguaje en ingles */
+    .lang-selector select {
+  background: var(--blanco);
+  border: 1px solid var(--verde-primario);
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  color: var(--verde-primario);
+}
+
      /* ===== MOBILE RESPONSIVE COMPLETO ===== */
 /* Menú hamburguesa */
     .mobile-menu-btn {
@@ -620,6 +643,12 @@
           <a href="Casa_Gonda.html">Casa Gonda</a>
           <a href="Tarifa_loft.html">Tarifa Loft</a>
         </nav>
+        <div class="lang-selector" style="margin-left: auto;">
+  <select id="langSelect" onchange="cambiarIdioma()">
+    <option value="es">🇪🇸 Español</option>
+    <option value="en">🇺🇸 English</option>
+  </select>
+</div>
       </div>
     </div>
   </header>
@@ -952,6 +981,66 @@ document.addEventListener('click', (e) => {
     nav.classList.remove('active');
   }
 });
+</script>
+<script>
+const traducciones = {
+  es: {
+    // Hero
+    heroTitle: "Casas Turísticas del Mediterraneo",
+    heroDesc: "Alquiler vacacional directo sin comisiones en las mejores ubicaciones de la costa e islas baleares",
+    heroBtn: "Explorar alojamientos",
+    
+    // Cards
+    loftBinibeca: "Loft Binibeca",
+    casaBlava: "Casa en Casco Antiguo de Peñíscola",
+    casaGonda: "Casa Gonda - Cap d'Artrutx",
+    
+    // Secciones
+    destinos: "Destinos",
+    contacto: "Contacto"
+  },
+  en: {
+    // Hero
+    heroTitle: "Mediterranean Tourist Houses",
+    heroDesc: "Direct vacation rental without commissions in the best coast locations and Balearic Islands",
+    heroBtn: "Explore accommodations",
+    
+    // Cards
+    loftBinibeca: "Binibeca Loft",
+    casaBlava: "Casa en Peñíscola Old Town", 
+    casaGonda: "Casa gonda - Cap d'Artrutx",
+    
+    // Secciones
+    destinos: "Destinations",
+    contacto: "Contact"
+  }
+};
+
+function cambiarIdioma() {
+  const idioma = document.getElementById('langSelect').value;
+  localStorage.setItem('idioma', idioma);
+  
+  // Hero
+  document.querySelector('.hero h1').textContent = traducciones[idioma].heroTitle;
+  document.querySelector('.hero p').textContent = traducciones[idioma].heroDesc;
+  document.querySelector('.cta-btn').textContent = traducciones[idioma].heroBtn;
+  
+  // Cards
+  document.querySelectorAll('.card-title')[0].textContent = traducciones[idioma].loftBinibeca;
+  document.querySelectorAll('.card-title')[1].textContent = traducciones[idioma].casaBlava;
+  document.querySelectorAll('.card-title')[2].textContent = traducciones[idioma].casaGonda;
+  
+  // Secciones
+  document.querySelector('#apartamentos h2').textContent = traducciones[idioma].destinos;
+  document.querySelector('#contacto h2').textContent = traducciones[idioma].contacto;
+}
+
+// Cargar idioma guardado
+window.onload = function() {
+  const idiomaGuardado = localStorage.getItem('idioma') || 'es';
+  document.getElementById('langSelect').value = idiomaGuardado;
+  cambiarIdioma();
+}
 </script>
 </body>
 </html>
