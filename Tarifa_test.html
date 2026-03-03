@@ -5,7 +5,7 @@
 <link rel="icon" type="image/png" sizes="16x16" href="images/logo.png">
 <link rel="apple-touch-icon" sizes="180x180" href="images/logo.png">
   <meta charset="UTF-8">
-  <title>Loft Binibeca - Alquiler turístico Menorca</title>
+  <title>Apartamento Tarifa - Alquiler turístico en Cádiz</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
   <style>
@@ -592,6 +592,7 @@
     height: 200px;
   }
 
+
 @media (max-width: 480px) {
   .property-title {
     font-size: 1.8rem;
@@ -599,6 +600,63 @@
   
   .gallery-main, .gallery-item {
     height: 180px;
+  }
+}
+/* GOOGLE TRANSLATE - LIMPIO Y ELEGANTE */
+#google_translate_element {
+  margin-left: 10px;
+}
+
+/* ❌ OCULTAR TODO lo feo de Google */
+.goog-te-banner-frame,
+.goog-te-banner-frame.skiptranslate,
+.goog-te-menu-value,
+.goog-te-gadget .goog-logo-link,
+.goog-te-gadget-icon,
+.goog-text-highlight,
+span.goog-te-menu-value span[lang],
+body .goog-te-menu-value {
+  display: none !important;
+}
+
+/* ✅ Selector dropdown SOLO */
+.goog-te-combo {
+  background: var(--blanco) !important;
+  border: 1px solid var(--verde-primario) !important;
+  border-radius: 25px !important;
+  padding: 6px 12px !important;
+  font-family: 'Inter', sans-serif !important;
+  font-size: 0.9rem !important;
+  font-weight: 500 !important;
+  color: var(--verde-oscuro) !important;
+  min-width: 110px !important;
+  box-shadow: 0 2px 8px rgba(83, 126, 117, 0.1) !important;
+  cursor: pointer !important;
+  transition: all 0.3s !important;
+}
+
+.goog-te-combo:hover {
+  background: var(--verde-primario) !important;
+  color: var(--blanco) !important;
+  box-shadow: 0 4px 12px rgba(83, 126, 117, 0.3) !important;
+}
+
+/* Dropdown abierto */
+.goog-te-menu-frame .goog-te-menu-item {
+  font-family: 'Inter', sans-serif !important;
+  color: var(--gris-oscuro) !important;
+}
+
+.goog-te-menu-frame .goog-te-menu-item:hover {
+  background: var(--verde-claro) !important;
+}
+
+/* Móvil */
+@media (max-width: 768px) {
+  .goog-te-combo {
+    font-size: 0.8rem !important;
+    padding: 4px 8px !important;
+    min-width: 90px !important;
   }
 }
   </style>
@@ -615,11 +673,11 @@
 <nav id="main-nav">
           <a href="index.html">Inicio</a>
           <a href="index.html#apartamentos">Alojamientos</a>
+          <a href="Casa_blava.html">Peñíscola</a>
           <a href="Casa_Gonda.html">Casa Gonda</a>
-          <a href="Casa_blava.html">Peñíscola</a>          
-          <a href="Tarifa_apartamento.html">Tarifa Apt</a>
-          <a href="Tarifa_loft.html">Tarifa Loft</a>
+          <a href="Tarifa_apartamento.html">Tarifa Loft</a>
         </nav>
+        <div id="google_translate_element"></div>
       </div>
     </div>
   </header>
@@ -627,22 +685,13 @@
   <main>
     <section class="property-hero">
       <div class="container">
-        <h1 class="property-title">Loft Binibeca</h1>
-        <div class="property-location">📍 Binibeca, Menorca</div>
+        <h1 class="property-title">Tarifa - Apartamento</h1>
+        <div class="property-location">📍 Tarifa, Cádiz</div>
         
         <div class="gallery">
           <div class="gallery-main" style="background-image: url('images/binibeca/bini_entrada2.jpg')"></div>
-          <div class="gallery-item" style="background-image: url('images/binibeca/binibeca_iglesia.jpg')"></div>
-          <div class="gallery-item" style="background-image: url('images/binibeca/binibeca_plaza.JPG')"></div>
           <div class="gallery-item" style="background-image: url('images/binibeca/bini_salon.jpg')"></div>
-          <div class="gallery-item" style="background-image: url('images/binibeca/bini_saloncocina.jpg')"></div>
-          <div class="gallery-item" style="background-image: url('images/binibeca/bini_cocina.jpg')"></div>
-          <div class="gallery-item" style="background-image: url('images/binibeca/bini_cocina2.jpg')"></div>
-          <div class="gallery-item" style="background-image: url('images/binibeca/bini_hab.jpg')"></div>
-          <div class="gallery-item" style="background-image: url('images/binibeca/bini_hab2.jpg')"></div>
-          <div class="gallery-item" style="background-image: url('images/binibeca/bini_bano.jpg')"></div>
-          <div class="gallery-item" style="background-image: url('images/binibeca/bini_bano2.jpg')"></div>
-          <div class="gallery-item" style="background-image: url('images/binibeca/bini_cala.jpg')"></div>
+        
         </div>
       </div>
     </section>
@@ -653,8 +702,8 @@
         <div class="property-details">
           <div class="details-section">
             <h3>Descripción</h3>
-            <p>Acogedor loft en planta baja situado en pleno corazon de Binibeca Vell, una de las zonas más encantadoras de Menorca. Ideal para parejas que buscan tranquilidad y cercanía a la playa y calas.</p>
-            <p style="margin-top: 1rem;">El alojamiento cuenta con una decoración mediterránea, espacios luminosos y todas las comodidades necesarias para una estancia perfecta. Dispone de zona de estar, habitacion diáfana, y cocina equipada.</p>
+            <p>Acogedor apartamento en Tarifa de 2 habitacion.</p>
+            <p style="margin-top: 1rem;">El alojamiento cuenta con una decoración mediterránea, espacios luminosos y todas las comodidades necesarias para una estancia perfecta. Dispone de zona de estar, baño y cocina equipada.</p>
           </div>
 
           <div class="price-highlight">
@@ -670,13 +719,13 @@
                 <svg class="feature-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
                 </svg>
-                1-2 personas
+                2-4 personas
               </div>
               <div class="feature-item">
                 <svg class="feature-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
                 </svg>
-                1 dormitorio
+                2 dormitorios
               </div>
               <div class="feature-item">
                 <svg class="feature-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -694,7 +743,7 @@
                 <svg class="feature-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z"></path>
                 </svg>
-                Ventiladores
+                Aire Acondicionado
               </div>
               <div class="feature-item">
                 <svg class="feature-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -706,13 +755,13 @@
                 <svg class="feature-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
                 </svg>
-                Espacios comunitarios
+                Céntrico
               </div>
               <div class="feature-item">
                 <svg class="feature-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                 </svg>
-                A 20m de la cala
+                Servicios a pie de calle
               </div>
             </div>
           </div>
@@ -720,8 +769,8 @@
           <div class="details-section">
             <h3>Información adicional</h3>
             <ul style="padding-left: 1.5rem; line-height: 2;">
-              <li>Check-in: a partir de las 15:00h</li>
-              <li>Check-out: hasta las 10:00h</li>
+              <li>Check-in: a partir de las 16:00h</li>
+              <li>Check-out: hasta las 11:00h</li>
               <li>Estancia mínima: 4 noches en temporada alta</li>
               <li>No se admiten mascotas</li>
               <li>No se permite fumar en el interior</li>              
@@ -802,7 +851,7 @@
   <footer>
     <div class="footer-content">
       <p class="footer-text">© 2026 Tus Casas de Vacaciones | NRUA registrada | Alquiler vacacional</p>
-      <p>Email: casablavapeniscola@gmail.com | Telf./ Whatsapp <a href="https://wa.me/34690288196" target="_blank" rel="noopener noreferrer" class="hover:text-primary transition-colors"style="color: white !important;">+34 690 288 196</a></p>
+      <p>Email: casablavapeniscola@gmail.com | Telf./ Whatsapp <a href="https://wa.me/34652306031" target="_blank" rel="noopener noreferrer" class="hover:text-primary transition-colors"style="color: white !important;">+34 652 306 031</a></p>
     </div>
   </footer>
 
@@ -915,9 +964,9 @@
       e.preventDefault();
       
       const datos = new FormData(this);
-      const asunto = encodeURIComponent('Solicitud reserva Loft Binibeca');
+      const asunto = encodeURIComponent('Solicitud reserva Apartamento Tarifa');
       const cuerpo = 
-        'APARTAMENTO: Loft Binibeca%0D%0A' +
+        'APARTAMENTO: Tarifa-Apartamento%0D%0A' +
         'ENTRADA: ' + datos.get('entrada') + '%0D%0A' +
         'SALIDA: ' + datos.get('salida') + '%0D%0A' +
         'HUÉSPEDES: ' + datos.get('adultos') + ' adultos, ' + datos.get('ninos') + ' niños%0D%0A%0D%0A' +
@@ -960,5 +1009,14 @@ document.addEventListener('click', (e) => {
   }
 });
 </script>
+<script type="text/javascript">
+  function googleTranslateElementInit() {
+    new google.translate.TranslateElement({
+      pageLanguage: 'es',
+      autoDisplay: false
+    }, 'google_translate_element');
+  }
+</script>
+<script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 </body>
 </html>
