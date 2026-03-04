@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+  <!-- Favicon moderno -->
+<link rel="icon" type="image/png" sizes="32x32" href="images/logo.png">
+<link rel="icon" type="image/png" sizes="16x16" href="images/logo.png">
+<link rel="apple-touch-icon" sizes="180x180" href="images/logo.png">
+  <meta charset="UTF-8">
+  <title> Casitas de Mar - Alquiler vacacional</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --verde-primario: #537e75;
+      --verde-oscuro: #22584e;
+      --verde-claro: #84ada5;
+      --blanco: #ffffff;
+      --gris-claro: #f8f9fa;
+      --gris: #6c757d;
+      --gris-oscuro: #495057;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      line-height: 1.6;
+      color: var(--gris-oscuro);
+      background: var(--gris-claro);
+    }
+
+    /* HEADER */
+    header {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      background: var(--blanco);
+      box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+      z-index: 1000;
+      padding: 1rem 0;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 1.5rem;
+    }
+
+    .header-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: var(--verde-primario);
+      text-decoration: none;
+    }
+
+    nav {
+      display: flex;
+      gap: 2rem;
+    }
+
+    nav a {
+      color: var(--gris);
+      text-decoration: none;
+      font-weight: 400;
+      font-size: 0.95rem;
+      transition: color 0.3s;
+    }
+
+    nav a:hover {
+      color: var(--verde-primario);
+    }
+
+    /* HERO */
+    .hero {
+      height: 100vh;
+      background: linear-gradient(rgba(0,121,107,0.7), rgba(0,77,64,0.5)), 
+                  url('images/fotoportada1.jpeg') center/cover;
+      background-size: cover;
+      display: flex;
+      align-items: center;
+      text-align: center;
+      color: var(--blanco);
+    }
+
+    .hero-content {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 0 1rem;
+    }
+
+    .hero h1 {
+      font-size: 3.5rem;
+      font-weight: 300;
+      margin-bottom: 1rem;
+      letter-spacing: -1px;
+    }
+
+    .hero p {
+      font-size: 1.3rem;
+      margin-bottom: 2rem;
+      opacity: 0.95;
+    }
+
+    .cta-btn {
+      display: inline-block;
+      background: var(--blanco);
+      color: var(--verde-primario);
+      padding: 1rem 2.5rem;
+      border-radius: 50px;
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 1.1rem;
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+    .cta-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px rgba(255,255,255,0.3);
+    }
+/* LOGO HEADER */
+.logo-link {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  text-decoration: none;
+}
+
+.logo-img {
+  width: 45px;
+  height: 45px;
+  object-fit: contain; /* Mantiene proporciones */
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,121,107,0.2);
+  transition: all 0.3s;
+}
+
+.logo-img:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(0,121,107,0.3);
+}
+
+.logo-text {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--verde-primario);
+  letter-spacing: -0.5px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .logo-img {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .logo-text {
+    font-size: 1.3rem;
+  }
+  
+  nav {
+    gap: 1rem;
+  }
+}
+    /* SECCIÓN APARTAMENTOS */
+    .section {
+      padding: 8rem 0;
+    }
+
+    .section-title {
+      text-align: center;
+      font-size: 2.8rem;
+      font-weight: 300;
+      color: var(--verde-oscuro);
+      margin-bottom: 4rem;
+      letter-spacing: -0.5px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+      gap: 3rem;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 1.5rem;
+    }
+
+    .card {
+      background: var(--blanco);
+      border-radius: 20px;
+      overflow: hidden;
+      transition: transform 0.4s, box-shadow 0.4s;
+      cursor: pointer;
+      height: 100%;
+      text-decoration: none;
+    }
+
+    .card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 30px 60px rgba(0,0,0,0.15);
+    }
+
+    .card-image {
+      height: 400px;
+      background-size: cover;
+      background-position: center;
+      position: relative;
+    }
+
+    .card-image::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(transparent, rgba(0,0,0,0.3));
+    }
+
+    .card-content {
+      padding: 2rem;
+    }
+
+    .card-title {
+      font-size: 1.6rem;
+      font-weight: 500;
+      color: var(--verde-oscuro);
+      margin-bottom: 0.5rem;
+    }
+
+    .card-location {
+      color: var(--verde-primario);
+      font-weight: 500;
+      margin-bottom: 1rem;
+    }
+
+    .card-text {
+      color: var(--gris);
+      margin-bottom: 1.5rem;
+      line-height: 1.7;
+    }
+
+    .card-price {
+      font-size: 1.4rem;
+      font-weight: 600;
+      color: var(--verde-oscuro);
+      margin-bottom: 1rem;
+    }
+
+    .card-btn {
+      background: var(--verde-primario);
+      color: var(--blanco);
+      padding: 0.8rem 1.5rem;
+      border-radius: 50px;
+      text-decoration: none;
+      font-weight: 500;
+      display: inline-block;
+      transition: background 0.3s;
+    }
+
+    .card-btn:hover {
+      background: var(--verde-oscuro);
+    }
+
+    /* FOOTER */
+    footer {
+      background: var(--verde-oscuro);
+      color: var(--blanco);
+      padding: 3rem 0 1.5rem;
+      text-align: center;
+    }
+
+    .footer-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 1.5rem;
+    }
+
+    .footer-text {
+      opacity: 0.9;
+      margin-bottom: 1rem;
+    }
+
+    @media (max-width: 768px) {
+      .hero h1 {
+        font-size: 2.5rem;
+      }
+      
+      .section {
+        padding: 4rem 0;
+      }
+      
+      .section-title {
+        font-size: 2.2rem;
+      }
+      
+      nav {
+        gap: 1rem;
+      }
+    }
+ /* ===== MOBILE RESPONSIVE COMPLETO ===== */
+/* Menú hamburguesa */
+    .mobile-menu-btn {
+  display: none;
+  background: none;
+  border: none;
+  font-size: 1.8rem;
+  color: var(--verde-primario);
+  cursor: pointer;
+  z-index: 1001;
+}
+
+@media (max-width: 768px) {
+  .mobile-menu-btn {
+    display: block !important;
+    position: absolute;
+    right: 1rem;
+    top: 1.5rem;
+  }
+  
+  #main-nav {
+    position: fixed !important;
+    top: 0 !important;
+    right: -100% !important;
+    width: 80vw !important;
+    max-width: 300px !important;
+    height: 100vh !important;
+    background: var(--blanco) !important;
+    flex-direction: column !important;
+    gap: 2rem !important;
+    padding: 7rem 1.5rem 2rem !important;
+    transition: right 0.3s ease !important;
+    box-shadow: -5px 0 25px rgba(0,0,0,0.2) !important;
+    z-index: 999 !important;
+  }
+  
+  #main-nav.active {
+    right: 0 !important;
+  }
+  
+  #main-nav a {
+    font-size: 1.2rem !important;
+    padding: 1rem 0 !important;
+    border-bottom: 1px solid var(--gris-claro) !important;
+    text-align: center !important;
+    color: var(--gris-oscuro) !important;
+    text-decoration: none !important;
+  }
+}
+         nav {
+        position: fixed;
+        top: 0;
+        right: -100%;
+        width: 300px;
+        height: 100vh;
+        background: var(--blanco);
+        flex-direction: column;
+        gap: 2rem;
+        padding: 7rem 1.5rem 2rem;
+        transition: right 0.3s ease;
+        box-shadow: -5px 0 25px rgba(0,0,0,0.2);
+        z-index: 999;
+      }
+      
+     @media (max-width: 768px) {
+  nav.active {
+    right: 0 !important;
+  }
+      }
+      
+      nav a {
+        font-size: 1.2rem;
+        padding: 1rem 0;
+        border-bottom: 1px solid var(--gris-claro);
+        text-align: center;
+      }
+      
+      /* Contacto responsive */
+      .contact-wrapper {
+        grid-template-columns: 1fr !important;
+        gap: 2rem !important;
+      }
+      
+      /* Hero responsive */
+      .hero h1 {
+        font-size: 2rem;
+      }
+      
+      .hero p {
+        font-size: 1.1rem;
+      }
+      
+      /* Grid apartamentos */
+      .grid {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+      }
+    
+  /* DESKTOP: lado a lado */
+@media (min-width: 769px) {
+  .booking-panel {
+    flex-direction: row;
+  }
+  
+  .contact-info {
+    flex: 1;
+    order: 1;
+  }
+  
+  .booking-form {
+    flex: 1;
+    order: 2;
+  }
+}
+
+/* MÓVIL: uno debajo otro */
+@media (max-width: 768px) {
+  .contact-wrapper {
+    grid-template-columns: 1fr !important;
+    gap: 2rem !important;
+  }
+}
+  
+  .contact-info {
+    order: 1;
+  }
+  
+  .booking-form {
+    order: 2;
+  }
+
+  .gallery-main, .gallery-item {
+    height: 200px;
+  }
+
+
+@media (max-width: 480px) {
+  .property-title {
+    font-size: 1.8rem;
+  }
+  
+  .gallery-main, .gallery-item {
+    height: 180px;
+  }
+}
+  </style>
+</head>
+<body>
+  <!-- HEADER -->
+  <header>
+    <div class="container">
+      <div class="header-content">
+        <a href="index.html" class="logo-link">
+        <img src="images/logo.png" alt="Casitas de Mar" class="logo-img">
+        <span class="logo-text">Casitas de Mar</span>
+      </a>
+       <!-- HAMBURGUESA ☰ -->
+      <button class="mobile-menu-btn" onclick="toggleMobileMenu()">☰</button>
+<nav id="main-nav">        
+          <a href="#apartamentos">Alojamientos</a>
+          <a href="#contacto">Contacto</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-content">
+      <h1>Casas Turísticas del Mediterraneo</h1>
+      <p>Alquiler vacacional directo sin comisiones en las mejores ubicaciones de la costa e islas baleares</p>
+      <a href="#apartamentos" class="cta-btn">Explorar alojamientos</a>
+    </div>
+  </section>
+
+  <!-- APARTAMENTOS -->
+  <section id="apartamentos" class="section">
+    <h2 class="section-title">Destinos</h2>
+    <div class="grid">
+      <!-- LOFT BINIBECA -->
+      <a href="loft_binibeca.html" class="card">
+        <div class="card-image" style="background-image: url('images/binibeca_pueblo.JPG')">
+        </div>
+        <div class="card-content">
+          <h3 class="card-title">Loft Binibeca</h3>
+          <div class="card-location">Menorca</div>
+          <p class="card-text">Loft en planta baja a pocos metros del mar, ideal para parejas.</p>          
+          <div class="card-btn">Ver detalles</div>
+        </div>
+      </a>      
+        <!-- CASA GONDA -->
+      <a href="Casa_Gonda.html" class="card">
+        <div class="card-image" style="background-image: url('images/gonda/gonda_faro2.jpg')">
+        </div>
+        <div class="card-content">
+          <h3 class="card-title">Casa Gonda - Cap d'Artrutx</h3>
+          <div class="card-location">Menorca</div>
+          <p class="card-text">Bonita casa con a pie de cala, perfecto para parejas en cap de Artrutx.</p>
+          <div class="card-btn">Ver detalles</div>
+        </div>
+      </a>
+      <!-- PEÑÍSCOLA -->
+      <a href="Casa_blava.html" class="card">
+        <div class="card-image" style="background-image: url('images/portada_peniscola.JPG')">
+        </div>
+        <div class="card-content">
+          <h3 class="card-title">Casa en Casco Antiguo de Peñíscola</h3>
+          <div class="card-location">Costa Azahar</div>
+          <p class="card-text">Bonita casa con terraza, perfecto para vacaciones en familia en el casco antiguo de Peñíscola.</p>          
+          <div class="card-btn">Ver detalles</div>
+        </div>
+      </a>
+      <!-- Tarifa Apartamento-->
+      <a href="tarifa.html" class="card">
+        <div class="card-image" style="background-image: url('images/tarifa/tarifa_portada1.jpg')">
+        </div>
+        <div class="card-content">
+          <h3 class="card-title">COMING SOON: Apartamento en Tarifa</h3>
+          <div class="card-location">Punta de Tarifa - Cádiz</div>
+          <p class="card-text">-TBD-</p>          
+          <div class="card-btn">Ver detalles</div>
+        </div>
+      </a>
+      <!-- Tarifa Loft-->
+      <a href="tarifa.html" class="card">
+        <div class="card-image" style="background-image: url('images/tarifa/tarifa_portada1.jpg')">
+        </div>
+        <div class="card-content">
+          <h3 class="card-title">COMING SOON: Loft en Tarifa</h3>
+          <div class="card-location">Punta de Tarifa - Cádiz</div>
+          <p class="card-text">-TBD-</p>          
+          <div class="card-btn">Ver detalles</div>
+        </div>
+      </a>
+    </div>
+  </section>
+
+  <!-- SECCIÓN CONTACTO -->
+<section id="contacto" class="section">
+  <div class="container">
+    <h2 class="section-title">Contacto</h2>
+    
+    <div class="contact-wrapper" style="display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; max-width: 900px; margin: 0 auto;">
+      
+      <!-- INFO CONTACTO -->
+      <div>
+        <h3 style="font-size: 1.8rem; font-weight: 500; color: var(--verde-oscuro); margin-bottom: 1.5rem;">
+          Escríbenos directamente
+        </h3>
+        
+        <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+          
+          <!-- Teléfono WhatsApp -->
+          <div style="display: flex; align-items: center; gap: 1rem;">
+            <div style="width: 50px; height: 50px; background: var(--verde-primario); color: white; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem;">
+              📱
+            </div>
+            <div>
+              <div style="font-size: 0.9rem; color: var(--gris);">Llámanos o WhatsApp</div>
+              <div target="_blank" 
+                 style="color: var(--verde-primario); font-size: 0.9rem; font-weight: 600; text-decoration: none;">Peñíscola:</div>
+              <a href="https://wa.me/34613119183?text=Hola,%20estoy%20interesado/a%20en%20obtener%20mas%20información,%20gracias." 
+                 target="_blank" 
+                 style="color: var(--verde-primario); font-size: 0.9rem; font-weight: 600; text-decoration: none;">
+                +34 613 119 183
+              </a><br>
+              <div target="_blank" 
+                 style="color: var(--verde-primario); font-size: 0.9rem; font-weight: 600; text-decoration: none;">Menorca:</div>
+              <a href="https://wa.me/34690288196?text=Hola,%20estoy%20interesado/a%20en%20obtener%20mas%20información,%20gracias." 
+                 target="_blank" 
+                 style="color: var(--verde-primario); font-size: 0.9rem; font-weight: 600; text-decoration: none;">
+                +34 690 288 196
+              </a>
+            </div>
+          </div>
+
+          <!-- Email -->
+          <div style="display: flex; align-items: flex-start; gap: 1rem;">
+            <div style="width: 50px; height: 50px; background: var(--verde-primario); color: white; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; margin-top: 2px;">
+              ✉️
+            </div>
+            <div>
+              <div style="font-size: 0.9rem; color: var(--gris);">Email</div>
+              <a href="mailto:casablavapeniscola@gmail.com" 
+                 style="color: var(--verde-primario); font-size: 1.1rem; font-weight: 500; text-decoration: none;">
+                casablavapeniscola@gmail.com
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- FORMULARIO CONTACTO -->
+      <div style="background: var(--blanco); padding: 2.5rem; border-radius: 20px; box-shadow: 0 10px 40px rgba(0,0,0,0.08);">
+        <h3 style="font-size: 1.5rem; font-weight: 500; color: var(--verde-oscuro); margin-bottom: 1.5rem;">
+          Envíanos tu consulta
+        </h3>
+        
+        <form style="display: flex; flex-direction: column; gap: 1.2rem;">
+          
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div>
+              <label style="display: block; font-size: 0.9rem; font-weight: 500; color: var(--gris-oscuro); margin-bottom: 0.5rem;">Nombre</label>
+              <input type="text" required 
+                     style="width: 100%; padding: 1rem; border: 1px solid #ddd; border-radius: 12px; font-size: 1rem; transition: border 0.3s;">
+            </div>
+            <div>
+              <label style="display: block; font-size: 0.9rem; font-weight: 500; color: var(--gris-oscuro); margin-bottom: 0.5rem;">Teléfono</label>
+              <input type="tel" required 
+                     style="width: 100%; padding: 1rem; border: 1px solid #ddd; border-radius: 12px; font-size: 1rem; transition: border 0.3s;">
+            </div>
+          </div>
+
+          <div>
+            <label style="display: block; font-size: 0.9rem; font-weight: 500; color: var(--gris-oscuro); margin-bottom: 0.5rem;">Email</label>
+            <input type="email" required 
+                   style="width: 100%; padding: 1rem; border: 1px solid #ddd; border-radius: 12px; font-size: 1rem; transition: border 0.3s;">
+          </div>
+
+          <div>
+            <label style="display: block; font-size: 0.9rem; font-weight: 500; color: var(--gris-oscuro); margin-bottom: 0.5rem;">Mensaje</label>
+            <textarea rows="4" required 
+                      style="width: 100%; padding: 1rem; border: 1px solid #ddd; border-radius: 12px; font-size: 1rem; font-family: inherit; resize: vertical; transition: border 0.3s;"
+                      placeholder="¿En qué alojamiento estás interesado? ¿Fechas aproximadas? ¿Cuántas personas?..."></textarea>
+          </div>
+
+          <button type="submit" 
+                  style="background: var(--verde-primario); color: white; padding: 1.2rem; border: none; border-radius: 50px; font-size: 1.1rem; font-weight: 600; cursor: pointer; transition: all 0.3s;">
+                  Enviar mensaje
+          </button>
+
+        </form>
+      </div>
+
+    </div>
+    
+  </div>
+</section>
+
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-content">
+      <p class="footer-text">© 2026 Tus Casas de Vacaciones | NRUA registrada | Alquiler vacacional</p>
+      <p>Email: casablavapeniscola@gmail.com | Telf./ Whatsapp <a href="https://wa.me/34613119183" target="_blank" rel="noopener noreferrer" class="hover:text-primary transition-colors"style="color: white !important;">+34 613 119 183</a></p>
+    </div>
+  </footer>
+  <script>
+function toggleMobileMenu() {
+  const nav = document.getElementById('main-nav');
+  if (nav) {
+    nav.classList.toggle('active');
+  }
+}
+
+// Cierra al clickar enlace
+document.querySelectorAll('#main-nav a').forEach(link => {
+  link.addEventListener('click', () => {
+    document.getElementById('main-nav').classList.remove('active');
+  });
+});
+
+// Cierra al clickar fuera
+document.addEventListener('click', (e) => {
+  const nav = document.getElementById('main-nav');
+  const btn = document.querySelector('.mobile-menu-btn');
+  if (nav && btn && !nav.contains(e.target) && !btn.contains(e.target)) {
+    nav.classList.remove('active');
+  }
+});
+</script>
+</body>
+</html>
