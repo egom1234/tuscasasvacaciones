@@ -91,35 +91,20 @@
 }
 
 .logo-img {
-  width: 45px;
-  height: 45px;
+  width: 200px;
+  height: 90px;
   object-fit: contain; /* Mantiene proporciones */
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0,121,107,0.2);
-  transition: all 0.3s;
-}
-
-.logo-img:hover {
-  transform: scale(1.05);
-  box-shadow: 0 4px 12px rgba(0,121,107,0.3);
-}
-
-.logo-text {
-  font-size: 1.5rem;
-  font-weight: 600;
-  color: var(--verde-primario);
-  letter-spacing: -0.5px;
-}
+  }
 
 /* Responsive */
 @media (max-width: 768px) {
   .logo-img {
-    width: 40px;
-    height: 40px;
+    width: 150px;
+    height: 80px;
   }
   
   .logo-text {
-    font-size: 1.3rem;
+    font-size: 1.6rem;
   }
   
   nav {
@@ -609,9 +594,8 @@
     <div class="container">
       <div class="header-content">
         <a href="index.html" class="logo-link">
-        <img src="images/logo.png" alt="Casitas de Mar" class="logo-img">
-        <span class="logo-text">Casitas de Mar</span>
-      </a>       
+        <img src="images/Logo1.png" alt="Casitas de Mar" class="logo-img">
+              </a>       
           <button class="mobile-menu-btn" onclick="toggleMobileMenu()">☰</button>
 <nav id="main-nav">
           <a href="index.html">Inicio</a>
@@ -632,8 +616,8 @@
         <div class="property-location">📍 Tarifa, Cádiz</div>
         
         <div class="gallery">
-       
-        
+          <div class="gallery-main" style="background-image: url('images/tarifa/tarifa_portada1.jpg')"></div>
+                  
         </div>
       </div>
     </section>
