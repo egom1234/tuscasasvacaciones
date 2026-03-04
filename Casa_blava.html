@@ -64,6 +64,7 @@
     nav {
       display: flex;
       gap: 2rem;
+      align-items: center;
     }
 
     nav a {
@@ -490,28 +491,7 @@
     color: var(--gris-oscuro) !important;
     text-decoration: none !important;
   }
-}
-         nav {
-        position: fixed;
-        top: 0;
-        right: -100%;
-        width: 300px;
-        height: 100vh;
-        background: var(--blanco);
-        flex-direction: column;
-        gap: 2rem;
-        padding: 7rem 1.5rem 2rem;
-        transition: right 0.3s ease;
-        box-shadow: -5px 0 25px rgba(0,0,0,0.2);
-        z-index: 999;
-      }
-      
-     @media (max-width: 768px) {
-  nav.active {
-    right: 0 !important;
-  }
-      }
-      
+}            
       nav a {
         font-size: 1.2rem;
         padding: 1rem 0;
