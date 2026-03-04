@@ -41,7 +41,7 @@
       background: var(--blanco);
       box-shadow: 0 2px 10px rgba(0,0,0,0.08);
       z-index: 1000;
-      padding: 0.5rem 0;
+      padding: 0.3rem 0;
     }
 
     .container {
@@ -84,8 +84,8 @@
     /* HERO */
     .hero {
       height: 100vh;
-      background: linear-gradient(rgba(0,121,107,0.7), rgba(0,77,64,0.5)), 
-                  url('images/fotoportada1.jpeg') center/cover;
+       background: linear-gradient(rgba(255,255,255,0.4), rgba(255,255,255,0.2)),
+        url('images/fotoportada1.jpeg') center/cover;
       background-size: cover;
       display: flex;
       align-items: center;
@@ -95,20 +95,24 @@
 
     .hero-content {
       max-width: 600px;
-      margin: 0 auto;
+      margin: 11rem auto 0;
       padding: 0 1rem;
+      position: relative;       /* ← Base para posicionar */
+      top: 3rem;                /* ← Ajuste fino hacia abajo */
     }
 
     .hero h1 {
       font-size: 3.5rem;
       font-weight: 300;
-      margin-bottom: 1rem;
+      margin-top: 0rem;
+      margin-bottom: 0.5rem;
       letter-spacing: -1px;
     }
 
     .hero p {
       font-size: 1.3rem;
-      margin-bottom: 2rem;
+      margin-top: 00rem;
+      margin-bottom: 2.5rem;
       opacity: 0.95;
     }
 
@@ -116,8 +120,8 @@
       display: inline-block;
       background: var(--blanco);
       color: var(--verde-primario);
-      padding: 1rem 2.5rem;
-      border-radius: 50px;
+      padding: 0.5rem 2rem;
+      border-radius: 5px;
       text-decoration: none;
       font-weight: 500;
       font-size: 1.1rem;
@@ -138,7 +142,7 @@
 
 .logo-img {
   width: 200px;
-  height: 90px;
+  height: 80px;
   object-fit: contain; /* Mantiene proporciones */
   }
 
@@ -246,8 +250,8 @@
     .card-btn {
       background: var(--verde-primario);
       color: var(--blanco);
-      padding: 0.8rem 1.5rem;
-      border-radius: 50px;
+      padding: 0.5rem 1.5rem;
+      border-radius: 5px;
       text-decoration: none;
       font-weight: 500;
       display: inline-block;
