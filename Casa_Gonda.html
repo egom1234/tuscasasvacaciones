@@ -969,16 +969,26 @@ nav:not(.active) {
   <script>
 function toggleMobileMenu() {
   const nav = document.getElementById('main-nav');
-  nav.classList.toggle('active');
-  
-  // Auto-cerrar al click fuera
-  document.addEventListener('click', function cerrarMenu(e) {
-    if (!nav.contains(e.target) && !document.querySelector('.mobile-menu-btn').contains(e.target)) {
-      nav.classList.remove('active');
-      document.removeEventListener('click', cerrarMenu);
-    }
-  });
+  if (nav) {
+    nav.classList.toggle('active');
+  }
 }
+
+// Cierra al clickar enlace
+document.querySelectorAll('#main-nav a').forEach(link => {
+  link.addEventListener('click', () => {
+    document.getElementById('main-nav').classList.remove('active');
+  });
+});
+
+// Cierra al clickar fuera
+document.addEventListener('click', (e) => {
+  const nav = document.getElementById('main-nav');
+  const btn = document.querySelector('.mobile-menu-btn');
+  if (nav && btn && !nav.contains(e.target) && !btn.contains(e.target)) {
+    nav.classList.remove('active');
+  }
+});
 </script>
 </body>
 </html>
