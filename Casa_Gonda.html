@@ -452,26 +452,14 @@
   color: var(--verde-primario);
   cursor: pointer;
   z-index: 1001;
-  margin-left: 1rem;
 }
-nav:not(.active) {
-  display: flex;
-  gap: 2rem;
-}
+
 @media (max-width: 768px) {
-  nav {
-    position: fixed !important;
-    top: 0;
-    right: -100%;
-    width: 280px;
-    height: 100vh;
-    background: var(--blanco);
-    flex-direction: column;
-    gap: 1.5rem;
-    padding: 6rem 1.5rem 2rem;
-    transition: right 0.3s ease;
-    box-shadow: -4px 0 20px rgba(0,0,0,0.1);
-    z-index: 999;
+  .mobile-menu-btn {
+    display: block !important;
+    position: absolute;
+    right: 1rem;
+    top: 1.5rem;
   }
   
   #main-nav {
@@ -530,7 +518,6 @@ nav:not(.active) {
         border-bottom: 1px solid var(--gris-claro);
         text-align: center;
       }
-      
       /* Contacto responsive */
       .contact-wrapper {
         grid-template-columns: 1fr !important;
