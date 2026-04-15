@@ -800,8 +800,8 @@
 
   <!-- Campos ocultos Web3Forms -->
   <input type="hidden" name="access_key" value="ba4d4800-cc82-4659-86e0-f10021d29924">
-  <input type="hidden" name="subject" value="Nueva solicitud de reserva en Binibeca - Casitas de Mar">
-  <input type="hidden" name="from_name" value="Web Casitas de Mar - Binibeca">
+  <input type="hidden" name="subject" value="Nueva solicitud de reserva - Casitas de Mar">
+  <input type="hidden" name="from_name" value="Web Casitas de Mar">
   <input type="checkbox" name="botcheck" style="display: none;">
 
   <!-- MENSAJE ERROR -->
@@ -825,11 +825,11 @@
   <div class="form-row">
     <div class="form-group">
       <label class="form-label">Adultos</label>
-      <input type="number" class="form-input" name="adultos" min="1" max="2" value="2" required>
+      <input type="number" class="form-input" name="adultos" min="1" max="4" value="2" required>
     </div>
     <div class="form-group">
       <label class="form-label">Niños</label>
-      <input type="number" class="form-input" name="ninos" min="0" max="1" value="0">
+      <input type="number" class="form-input" name="ninos" min="0" max="2" value="0">
     </div>
   </div>
 
@@ -1028,8 +1028,33 @@
         anyoActual++;
       }
       renderCalendario();
-    };
-      </script>
+    }
+
+    document.getElementById('formularioReserva').addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      const datos = new FormData(this);
+      const asunto = encodeURIComponent('Solicitud reserva Loft Binibeca');
+      const cuerpo = 
+        'APARTAMENTO: Loft Binibeca%0D%0A' +
+        'ENTRADA: ' + datos.get('entrada') + '%0D%0A' +
+        'SALIDA: ' + datos.get('salida') + '%0D%0A' +
+        'HUÉSPEDES: ' + datos.get('adultos') + ' adultos, ' + datos.get('ninos') + ' niños%0D%0A%0D%0A' +
+        'NOMBRE: ' + datos.get('nombre') + '%0D%0A' +
+        'EMAIL: ' + datos.get('email') + '%0D%0A' +
+        'TELÉFONO: ' + datos.get('telefono') + '%0D%0A%0D%0A' +
+        'COMENTARIOS: ' + (datos.get('comentarios') || 'Ninguno');
+
+      window.location.href = 'mailto:info@casitasdemar.com?subject=' + asunto + '&body=' + cuerpo;
+      
+      document.getElementById('mensajeExito').style.display = 'block';
+      setTimeout(() => {
+        document.getElementById('mensajeExito').style.display = 'none';
+      }, 8000);
+    });
+
+    renderCalendario();
+  </script>
   <script>
 function toggleMobileMenu() {
   const nav = document.getElementById('main-nav');
