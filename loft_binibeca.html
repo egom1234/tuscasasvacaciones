@@ -831,7 +831,9 @@
       <input type="date" class="form-input" id="fechaSalida" name="salida" required>
     </div>
   </div>
-
+<span id="errorFechas" style="display:none; color:#e74c3c; font-size:0.82rem; margin-top:0.3rem;">
+  ⚠️ Debes seleccionar las fechas de entrada y salida
+</span>
   <div class="form-row">
     <div class="form-group">
       <label class="form-label">Adultos</label>
@@ -944,16 +946,87 @@
     return !tieneCaracteresInvalidos && valido;
   }
 
-  // Bloquear envío si el teléfono no es válido
+  function validarCampo(input) {
+    const valor = input.value.trim();
+    const msgId = input.dataset.errorId;
+    const msg   = document.getElementById(msgId);
+
+    const esEmail = input.type === 'email';
+    const emailValido = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(valor);
+
+    if (valor === '') {
+      input.style.borderColor = '#e74c3c';
+      if (msg) { msg.textContent = '⚠️ Este campo es obligatorio'; msg.style.display = 'block'; }
+      return false;
+    } else if (esEmail && !emailValido) {
+      input.style.borderColor = '#e74c3c';
+      if (msg) { msg.textContent = '⚠️ Introduce un email válido (ej: nombre@dominio.com)'; msg.style.display = 'block'; }
+      return false;
+    } else {
+      input.style.borderColor = '#27ae60';
+      if (msg) { msg.style.display = 'none'; }
+      return true;
+    }
+  }
+
+  function validarFechas() {
+    const inputEntrada = document.getElementById('fechaEntrada');
+    const inputSalida  = document.getElementById('fechaSalida');
+    let valido = true;
+
+    if (!inputEntrada || !inputSalida) return true; // Si no existen, no aplica
+
+    if (!inputEntrada.value) {
+      inputEntrada.style.borderColor = '#e74c3c';
+      inputEntrada.style.backgroundColor = '#fff5f5';
+      valido = false;
+    } else {
+      inputEntrada.style.borderColor = '#27ae60';
+      inputEntrada.style.backgroundColor = '';
+    }
+
+    if (!inputSalida.value) {
+      inputSalida.style.borderColor = '#e74c3c';
+      inputSalida.style.backgroundColor = '#fff5f5';
+      valido = false;
+    } else {
+      inputSalida.style.borderColor = '#27ae60';
+      inputSalida.style.backgroundColor = '';
+    }
+
+    const msgFecha = document.getElementById('errorFechas');
+    if (msgFecha) { msgFecha.style.display = valido ? 'none' : 'block'; }
+
+    return valido;
+  }
+
+  // Bloquear envío si algún campo no es válido
   document.querySelectorAll('form').forEach(form => {
     form.addEventListener('submit', function(e) {
-      const telInput = this.querySelector('input[name="telefono"]');
-      if (telInput && !validarTelefono(telInput)) {
+      let hayErrores = false;
+
+      const telInput    = this.querySelector('input[name="telefono"]');
+      const nombreInput = this.querySelector('input[name="name"], input[name="nombre"]');
+      const emailInput  = this.querySelector('input[name="email"]');
+
+      if (!validarFechas())                           { hayErrores = true; }
+      if (telInput    && !validarTelefono(telInput))  { hayErrores = true; }
+      if (nombreInput && !validarCampo(nombreInput))  { hayErrores = true; }
+      if (emailInput  && !validarCampo(emailInput))   { hayErrores = true; }
+
+      if (hayErrores) {
         e.stopImmediatePropagation();
         e.preventDefault();
-        telInput.focus();
+        this.querySelector('input[style*="e74c3c"]')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
       }
     }, true);
+
+    // Validación en tiempo real al salir de cada campo
+    const nombreInput = form.querySelector('input[name="name"], input[name="nombre"]');
+    const emailInput  = form.querySelector('input[name="email"]');
+
+    if (nombreInput) { nombreInput.addEventListener('blur', () => validarCampo(nombreInput)); }
+    if (emailInput)  { emailInput.addEventListener('blur',  () => validarCampo(emailInput));  }
   });
 </script>
         </div>
@@ -1053,7 +1126,7 @@
 
     if (fechaEntrada) document.getElementById('fechaEntrada').value = fechaEntrada.toISOString().split('T')[0];
     if (fechaSalida)  document.getElementById('fechaSalida').value  = fechaSalida.toISOString().split('T')[0];
-
+    validarFechas();
     renderCalendario();
   }
 

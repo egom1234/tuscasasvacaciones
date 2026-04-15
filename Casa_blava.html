@@ -1134,7 +1134,7 @@
 
     if (fechaEntrada) document.getElementById('fechaEntrada').value = fechaEntrada.toISOString().split('T')[0];
     if (fechaSalida)  document.getElementById('fechaSalida').value  = fechaSalida.toISOString().split('T')[0];
-
+    validarFechas();
     renderCalendario();
   }
 
