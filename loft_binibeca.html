@@ -800,8 +800,8 @@
 
   <!-- Campos ocultos Web3Forms -->
   <input type="hidden" name="access_key" value="ba4d4800-cc82-4659-86e0-f10021d29924">
-  <input type="hidden" name="subject" value="Nueva solicitud de reserva en Binibeca - Casitas de Mar">
-  <input type="hidden" name="from_name" value="Web Casitas de Mar - Binibeca">
+  <input type="hidden" name="subject" value="Nueva solicitud de reserva - Casitas de Mar">
+  <input type="hidden" name="from_name" value="Web Casitas de Mar">
   <input type="checkbox" name="botcheck" style="display: none;">
 
   <!-- MENSAJE ERROR -->
@@ -825,11 +825,11 @@
   <div class="form-row">
     <div class="form-group">
       <label class="form-label">Adultos</label>
-      <input type="number" class="form-input" name="adultos" min="1" max="2" value="2" required>
+      <input type="number" class="form-input" name="adultos" min="1" max="4" value="2" required>
     </div>
     <div class="form-group">
       <label class="form-label">Niños</label>
-      <input type="number" class="form-input" name="ninos" min="0" max="1" value="0">
+      <input type="number" class="form-input" name="ninos" min="0" max="2" value="0">
     </div>
   </div>
 
@@ -926,110 +926,96 @@
   <div class="lightbox-counter" id="lightbox-counter"></div>
 </div>
   <script>
-    const meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
-    const diasSemana = ['L', 'M', 'X', 'J', 'V', 'S', 'D'];
+  const meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+  const diasSemana = ['L', 'M', 'X', 'J', 'V', 'S', 'D'];
+  
+  let fechaActual = new Date();
+  let mesActual = fechaActual.getMonth();
+  let anyoActual = fechaActual.getFullYear();
+  let fechaEntrada = null;
+  let fechaSalida = null;
+
+  function renderCalendario() {
+    const grid = document.getElementById('calendarioGrid');
+    const labelMes = document.getElementById('mesActual');
     
-    let fechaActual = new Date();
-    let mesActual = fechaActual.getMonth();
-    let anyoActual = fechaActual.getFullYear();
-    let fechaEntrada = null;
-    let fechaSalida = null;
+    grid.innerHTML = '';
+    labelMes.textContent = `${meses[mesActual]} ${anyoActual}`;
 
-    function renderCalendario() {
-      const grid = document.getElementById('calendarioGrid');
-      const labelMes = document.getElementById('mesActual');
-      
-      grid.innerHTML = '';
-      labelMes.textContent = `${meses[mesActual]} ${anyoActual}`;
+    diasSemana.forEach(dia => {
+      const elem = document.createElement('div');
+      elem.className = 'calendar-day-name';
+      elem.textContent = dia;
+      grid.appendChild(elem);
+    });
 
-      diasSemana.forEach(dia => {
-        const elem = document.createElement('div');
-        elem.className = 'calendar-day-name';
-        elem.textContent = dia;
-        grid.appendChild(elem);
-      });
+    const primerDia = new Date(anyoActual, mesActual, 1).getDay();
+    const ultimoDia = new Date(anyoActual, mesActual + 1, 0).getDate();
+    const offset = primerDia === 0 ? 6 : primerDia - 1;
 
-      const primerDia = new Date(anyoActual, mesActual, 1).getDay();
-      const ultimoDia = new Date(anyoActual, mesActual + 1, 0).getDate();
-      const offset = primerDia === 0 ? 6 : primerDia - 1;
-
-      for (let i = 0; i < offset; i++) {
-        const elem = document.createElement('div');
-        elem.className = 'calendar-day empty';
-        grid.appendChild(elem);
-      }
-
-      const hoy = new Date();
-      hoy.setHours(0, 0, 0, 0);
-
-      for (let dia = 1; dia <= ultimoDia; dia++) {
-        const fecha = new Date(anyoActual, mesActual, dia);
-        const elem = document.createElement('div');
-        elem.className = 'calendar-day';
-        elem.textContent = dia;
-
-        if (fecha < hoy) {
-          elem.classList.add('disabled');
-        } else {
-          elem.addEventListener('click', () => seleccionarFecha(fecha));
-        }
-
-        if (fechaEntrada && compararFechas(fecha, fechaEntrada)) {
-          elem.classList.add('selected');
-        }
-        if (fechaSalida && compararFechas(fecha, fechaSalida)) {
-          elem.classList.add('selected');
-        }
-        if (fechaEntrada && fechaSalida && fecha > fechaEntrada && fecha < fechaSalida) {
-          elem.classList.add('range');
-        }
-
-        grid.appendChild(elem);
-      }
+    for (let i = 0; i < offset; i++) {
+      const elem = document.createElement('div');
+      elem.className = 'calendar-day empty';
+      grid.appendChild(elem);
     }
 
-    function compararFechas(fecha1, fecha2) {
-      return fecha1.getFullYear() === fecha2.getFullYear() &&
-             fecha1.getMonth() === fecha2.getMonth() &&
-             fecha1.getDate() === fecha2.getDate();
-    }
+    const hoy = new Date();
+    hoy.setHours(0, 0, 0, 0);
 
-    function seleccionarFecha(fecha) {
-      if (!fechaEntrada || (fechaEntrada && fechaSalida)) {
-        fechaEntrada = fecha;
-        fechaSalida = null;
-      } else if (fecha > fechaEntrada) {
-        fechaSalida = fecha;
+    for (let dia = 1; dia <= ultimoDia; dia++) {
+      const fecha = new Date(anyoActual, mesActual, dia);
+      const elem = document.createElement('div');
+      elem.className = 'calendar-day';
+      elem.textContent = dia;
+
+      if (fecha < hoy) {
+        elem.classList.add('disabled');
       } else {
-        fechaEntrada = fecha;
-        fechaSalida = null;
+        elem.addEventListener('click', () => seleccionarFecha(fecha));
       }
 
-      const inputEntrada = document.getElementById('fechaEntrada');
-      const inputSalida = document.getElementById('fechaSalida');
-
-      if (fechaEntrada) {
-        inputEntrada.value = fechaEntrada.toISOString().split('T')[0];
-      }
-      if (fechaSalida) {
-        inputSalida.value = fechaSalida.toISOString().split('T')[0];
+      if (fechaEntrada && compararFechas(fecha, fechaEntrada)) elem.classList.add('selected');
+      if (fechaSalida && compararFechas(fecha, fechaSalida))   elem.classList.add('selected');
+      if (fechaEntrada && fechaSalida && fecha > fechaEntrada && fecha < fechaSalida) {
+        elem.classList.add('range');
       }
 
-      renderCalendario();
+      grid.appendChild(elem);
+    }
+  }
+
+  function compararFechas(fecha1, fecha2) {
+    return fecha1.getFullYear() === fecha2.getFullYear() &&
+           fecha1.getMonth()    === fecha2.getMonth()    &&
+           fecha1.getDate()     === fecha2.getDate();
+  }
+
+  function seleccionarFecha(fecha) {
+    if (!fechaEntrada || (fechaEntrada && fechaSalida)) {
+      fechaEntrada = fecha;
+      fechaSalida = null;
+    } else if (fecha > fechaEntrada) {
+      fechaSalida = fecha;
+    } else {
+      fechaEntrada = fecha;
+      fechaSalida = null;
     }
 
-    function cambiarMes(delta) {
-      mesActual += delta;
-      if (mesActual < 0) {
-        mesActual = 11;
-        anyoActual--;
-      } else if (mesActual > 11) {
-        mesActual = 0;
-        anyoActual++;
-      }
-      renderCalendario();
-    };
-      </script>
+    if (fechaEntrada) document.getElementById('fechaEntrada').value = fechaEntrada.toISOString().split('T')[0];
+    if (fechaSalida)  document.getElementById('fechaSalida').value  = fechaSalida.toISOString().split('T')[0];
+
+    renderCalendario();
+  }
+
+  function cambiarMes(delta) {
+    mesActual += delta;
+    if (mesActual < 0)  { mesActual = 11; anyoActual--; }
+    if (mesActual > 11) { mesActual = 0;  anyoActual++; }
+    renderCalendario();
+  }
+
+  renderCalendario();
+</script>
   <script>
 function toggleMobileMenu() {
   const nav = document.getElementById('main-nav');
