@@ -702,6 +702,46 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     }
   });
 </script>
+<script>
+  function validarTelefono(input) {
+    const tel = input.value.trim();
+    const tieneCaracteresInvalidos = /[^0-9+\s\-]/.test(input.value);
+
+    const valido = (
+      /^[6-9]\d{8}$/.test(tel.replace(/\s/g, ''))        ||
+      /^\+34[6-9]\d{8}$/.test(tel.replace(/\s/g, ''))    ||
+      /^\+[1-9]\d{6,14}$/.test(tel.replace(/\s/g, ''))
+    );
+
+    const msgId = input.dataset.errorId;
+    const msg   = document.getElementById(msgId);
+
+    if (tieneCaracteresInvalidos) {
+      input.style.borderColor = '#e74c3c';
+      if (msg) { msg.textContent = '⚠️ Solo se permiten números, espacios, guiones y el símbolo +'; msg.style.display = 'block'; }
+    } else if (!valido && tel.length > 0) {
+      input.style.borderColor = '#e74c3c';
+      if (msg) { msg.textContent = '⚠️ Introduce un teléfono válido (ej: 612 345 678 o +34 612 345 678)'; msg.style.display = 'block'; }
+    } else {
+      input.style.borderColor = tel.length > 0 ? '#27ae60' : '#ddd';
+      if (msg) { msg.style.display = 'none'; }
+    }
+
+    return !tieneCaracteresInvalidos && valido;
+  }
+
+  // Bloquear envío si el teléfono no es válido
+  document.querySelectorAll('form').forEach(form => {
+    form.addEventListener('submit', function(e) {
+      const telInput = this.querySelector('input[name="telefono"]');
+      if (telInput && !validarTelefono(telInput)) {
+        e.stopImmediatePropagation();
+        e.preventDefault();
+        telInput.focus();
+      }
+    }, true);
+  });
+</script>
 
     </div>
     
