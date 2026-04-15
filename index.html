@@ -595,46 +595,54 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       </div>
 
       <!-- FORMULARIO CONTACTO -->
-      <div style="background: var(--blanco); padding: 2.5rem; border-radius: 20px; box-shadow: 0 10px 40px rgba(0,0,0,0.08);">
-        <h3 style="font-size: 1.5rem; font-weight: 500; color: var(--verde-oscuro); margin-bottom: 1.5rem;">
-          Envíanos tu consulta
-        </h3>
-        
-        <form style="display: flex; flex-direction: column; gap: 1.2rem;">
-          
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
-            <div>
-              <label style="display: block; font-size: 0.9rem; font-weight: 500; color: var(--gris-oscuro); margin-bottom: 0.5rem;">Nombre</label>
-              <input type="text" required 
-                     style="width: 100%; padding: 1rem; border: 1px solid #ddd; border-radius: 12px; font-size: 1rem; transition: border 0.3s;">
-            </div>
-            <div>
-              <label style="display: block; font-size: 0.9rem; font-weight: 500; color: var(--gris-oscuro); margin-bottom: 0.5rem;">Teléfono</label>
-              <input type="tel" required 
-                     style="width: 100%; padding: 1rem; border: 1px solid #ddd; border-radius: 12px; font-size: 1rem; transition: border 0.3s;">
-            </div>
-          </div>
+<div style="background: var(--blanco); padding: 2.5rem; border-radius: 20px; box-shadow: 0 10px 40px rgba(0,0,0,0.08);">
+  <h3 style="font-size: 1.5rem; font-weight: 500; color: var(--verde-oscuro); margin-bottom: 1.5rem;">
+    Envíanos tu consulta
+  </h3>
+  
+  <form action="https://api.web3forms.com/submit" method="POST"
+        style="display: flex; flex-direction: column; gap: 1.2rem;">
 
-          <div>
-            <label style="display: block; font-size: 0.9rem; font-weight: 500; color: var(--gris-oscuro); margin-bottom: 0.5rem;">Email</label>
-            <input type="email" required 
-                   style="width: 100%; padding: 1rem; border: 1px solid #ddd; border-radius: 12px; font-size: 1rem; transition: border 0.3s;">
-          </div>
+    <!-- Campos ocultos Web3Forms -->
+    <input type="hidden" name="access_key" value="ba4d4800-cc82-4659-86e0-f10021d29924">
+    <input type="hidden" name="subject" value="Nueva consulta - Casitas de Mar">
+    <input type="hidden" name="from_name" value="Web Casitas de Mar">
+    <input type="checkbox" name="botcheck" style="display: none;">
+    <input type="hidden" name="redirect" value="https://casitasdemar.com/index.html">
 
-          <div>
-            <label style="display: block; font-size: 0.9rem; font-weight: 500; color: var(--gris-oscuro); margin-bottom: 0.5rem;">Mensaje</label>
-            <textarea rows="4" required 
-                      style="width: 100%; padding: 1rem; border: 1px solid #ddd; border-radius: 12px; font-size: 1rem; font-family: inherit; resize: vertical; transition: border 0.3s;"
-                      placeholder="¿En qué alojamiento estás interesado? ¿Fechas aproximadas? ¿Cuántas personas?..."></textarea>
-          </div>
-
-          <button type="submit" 
-                  style="background: var(--verde-primario); color: white; padding: 1.2rem; border: none; border-radius: 50px; font-size: 1.1rem; font-weight: 600; cursor: pointer; transition: all 0.3s;">
-                  Enviar mensaje
-          </button>
-
-        </form>
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+      <div>
+        <label style="display: block; font-size: 0.9rem; font-weight: 500; color: var(--gris-oscuro); margin-bottom: 0.5rem;">Nombre</label>
+        <input type="text" name="name" required 
+               style="width: 100%; padding: 1rem; border: 1px solid #ddd; border-radius: 12px; font-size: 1rem; transition: border 0.3s;">
       </div>
+      <div>
+        <label style="display: block; font-size: 0.9rem; font-weight: 500; color: var(--gris-oscuro); margin-bottom: 0.5rem;">Teléfono</label>
+        <input type="tel" name="telefono" required 
+               style="width: 100%; padding: 1rem; border: 1px solid #ddd; border-radius: 12px; font-size: 1rem; transition: border 0.3s;">
+      </div>
+    </div>
+
+    <div>
+      <label style="display: block; font-size: 0.9rem; font-weight: 500; color: var(--gris-oscuro); margin-bottom: 0.5rem;">Email</label>
+      <input type="email" name="email" required 
+             style="width: 100%; padding: 1rem; border: 1px solid #ddd; border-radius: 12px; font-size: 1rem; transition: border 0.3s;">
+    </div>
+
+    <div>
+      <label style="display: block; font-size: 0.9rem; font-weight: 500; color: var(--gris-oscuro); margin-bottom: 0.5rem;">Mensaje</label>
+      <textarea name="message" rows="4" required 
+                style="width: 100%; padding: 1rem; border: 1px solid #ddd; border-radius: 12px; font-size: 1rem; font-family: inherit; resize: vertical; transition: border 0.3s;"
+                placeholder="¿En qué alojamiento estás interesado? ¿Fechas aproximadas? ¿Cuántas personas?..."></textarea>
+    </div>
+
+    <button type="submit" 
+            style="background: var(--verde-primario); color: white; padding: 1.2rem; border: none; border-radius: 50px; font-size: 1.1rem; font-weight: 600; cursor: pointer; transition: all 0.3s;">
+      Enviar mensaje
+    </button>
+
+  </form>
+</div>
 
     </div>
     
