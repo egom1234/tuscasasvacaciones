@@ -599,16 +599,32 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   <h3 style="font-size: 1.5rem; font-weight: 500; color: var(--verde-oscuro); margin-bottom: 1.5rem;">
     Envíanos tu consulta
   </h3>
-  
-  <form action="https://api.web3forms.com/submit" method="POST"
+
+  <!-- MENSAJE ÉXITO (oculto por defecto) -->
+  <div id="form-success" style="display: none; text-align: center; padding: 2rem 1rem;">
+    <div style="font-size: 3.5rem; margin-bottom: 1rem;">✅</div>
+    <h4 style="font-size: 1.3rem; font-weight: 600; color: var(--verde-oscuro); margin-bottom: 0.5rem;">
+      ¡Mensaje enviado correctamente!
+    </h4>
+    <p style="color: var(--gris-oscuro); font-size: 1rem;">
+      Gracias por contactarnos. Te responderemos en breve.
+    </p>
+  </div>
+
+  <!-- MENSAJE ERROR (oculto por defecto) -->
+  <div id="form-error" style="display: none; text-align: center; padding: 1rem; background: #fff0f0; border-radius: 12px; margin-bottom: 1rem;">
+    <p style="color: #c0392b; font-size: 0.95rem;">
+      ⚠️ Hubo un problema al enviar el mensaje. Por favor, inténtalo de nuevo.
+    </p>
+  </div>
+
+  <form id="contactForm" action="https://api.web3forms.com/submit" method="POST"
         style="display: flex; flex-direction: column; gap: 1.2rem;">
 
-    <!-- Campos ocultos Web3Forms -->
     <input type="hidden" name="access_key" value="ba4d4800-cc82-4659-86e0-f10021d29924">
     <input type="hidden" name="subject" value="Nueva consulta - Casitas de Mar">
     <input type="hidden" name="from_name" value="Web Casitas de Mar">
     <input type="checkbox" name="botcheck" style="display: none;">
-    <input type="hidden" name="redirect" value="https://casitasdemar.com/index.html">
 
     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
       <div>
@@ -636,13 +652,56 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                 placeholder="¿En qué alojamiento estás interesado? ¿Fechas aproximadas? ¿Cuántas personas?..."></textarea>
     </div>
 
-    <button type="submit" 
+    <button type="submit" id="submitBtn"
             style="background: var(--verde-primario); color: white; padding: 1.2rem; border: none; border-radius: 50px; font-size: 1.1rem; font-weight: 600; cursor: pointer; transition: all 0.3s;">
       Enviar mensaje
     </button>
 
   </form>
 </div>
+
+<script>
+  const form = document.getElementById('contactForm');
+  const submitBtn = document.getElementById('submitBtn');
+  const successMsg = document.getElementById('form-success');
+  const errorMsg = document.getElementById('form-error');
+
+  form.addEventListener('submit', async function(e) {
+    e.preventDefault();
+
+    // Estado cargando en el botón
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Enviando...';
+    submitBtn.style.opacity = '0.7';
+    errorMsg.style.display = 'none';
+
+    const formData = new FormData(form);
+
+    try {
+      const response = await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        body: formData
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        // Ocultar formulario y mostrar éxito
+        form.style.display = 'none';
+        successMsg.style.display = 'block';
+      } else {
+        throw new Error('Error en el envío');
+      }
+
+    } catch (error) {
+      // Mostrar error y restaurar botón
+      errorMsg.style.display = 'block';
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Enviar mensaje';
+      submitBtn.style.opacity = '1';
+    }
+  });
+</script>
 
     </div>
     
