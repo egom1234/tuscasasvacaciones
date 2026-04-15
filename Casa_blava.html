@@ -924,6 +924,44 @@
     }
   });
 </script>
+<script>
+  function validarTelefono(input) {
+    // Elimina todo lo que no sea dígito, +, espacios o guiones
+    input.value = input.value.replace(/[^0-9+\s\-]/g, '');
+
+    const tel = input.value.trim();
+    const valido = (
+      /^[6-9]\d{8}$/.test(tel.replace(/\s/g, ''))        || // España móvil/fijo: 612345678
+      /^\+34[6-9]\d{8}$/.test(tel.replace(/\s/g, ''))    || // España con prefijo: +34612345678
+      /^\+[1-9]\d{6,14}$/.test(tel.replace(/\s/g, ''))      // Internacional genérico: +33123456789
+    );
+
+    const msgId = input.dataset.errorId;
+    const msg   = document.getElementById(msgId);
+
+    if (!valido && tel.length > 0) {
+      input.style.borderColor = '#e74c3c';
+      if (msg) { msg.style.display = 'block'; }
+    } else {
+      input.style.borderColor = tel.length > 0 ? '#27ae60' : '#ddd';
+      if (msg) { msg.style.display = 'none'; }
+    }
+
+    return valido;
+  }
+
+  // Bloquear envío si el teléfono no es válido
+  document.querySelectorAll('form').forEach(form => {
+    form.addEventListener('submit', function(e) {
+      const telInput = this.querySelector('input[name="telefono"]');
+      if (telInput && !validarTelefono(telInput)) {
+        e.stopImmediatePropagation(); // Detiene también el listener de Web3Forms
+        e.preventDefault();
+        telInput.focus();
+      }
+    }, true); // true = captura antes que el listener de Web3Forms
+  });
+</script>
         </div>
       </div>
     </div>
