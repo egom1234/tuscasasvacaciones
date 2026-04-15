@@ -805,57 +805,74 @@
           </div>
 
           <!-- FORMULARIO -->
-          <form action="enviar.php" method="POST" class="booking-form">
-            <!-- Campo oculto con nombre de página -->
-  <input type="hidden" name="pagina" value="Casa Blava Peñiscola">
-            <div class="form-row">
-              <div class="form-group">
-                <label class="form-label">Entrada</label>
-                <input type="date" class="form-input" id="fechaEntrada" name="entrada" required>
-              </div>
-              <div class="form-group">
-                <label class="form-label">Salida</label>
-                <input type="date" class="form-input" id="fechaSalida" name="salida" required>
-              </div>
-            </div>
+<form class="booking-form" id="formularioReserva" action="https://api.web3forms.com/submit" method="POST" novalidate>
 
-            <div class="form-row">
-              <div class="form-group">
-                <label class="form-label">Adultos</label>
-                <input type="number" class="form-input" name="adultos" min="1" max="6" value="2" required>
-              </div>
-              <div class="form-group">
-                <label class="form-label">Niños</label>
-                <input type="number" class="form-input" name="ninos" min="0" max="3" value="0">
-              </div>
-            </div>
+  <!-- Campos ocultos Web3Forms -->
+  <input type="hidden" name="access_key" value="ba4d4800-cc82-4659-86e0-f10021d29924">
+  <input type="hidden" name="subject" value="Nueva solicitud de reserva - Casa Blava">
+  <input type="hidden" name="from_name" value="Web Casitas de Mar - Casa Blava">
+  <input type="checkbox" name="botcheck" style="display: none;">
 
-            <div class="form-group">
-              <label class="form-label">Nombre completo</label>
-              <input type="text" class="form-input" name="nombre" required>
-            </div>
+  <!-- MENSAJE ERROR -->
+  <div id="mensajeError" style="display: none; padding: 1rem; background: #fff0f0; border-radius: 10px; margin-bottom: 1rem;">
+    <p style="color: #c0392b; font-size: 0.95rem; margin: 0;">
+      ⚠️ Hubo un problema al enviar la solicitud. Por favor, inténtalo de nuevo.
+    </p>
+  </div>
 
-            <div class="form-group">
-              <label class="form-label">Email</label>
-              <input type="email" class="form-input" name="email" required>
-            </div>
+  <div class="form-row">
+    <div class="form-group">
+      <label class="form-label">Entrada</label>
+      <input type="date" class="form-input" id="fechaEntrada" name="entrada" required>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Salida</label>
+      <input type="date" class="form-input" id="fechaSalida" name="salida" required>
+    </div>
+  </div>
 
-            <div class="form-group">
-              <label class="form-label">Teléfono</label>
-              <input type="tel" class="form-input" name="telefono" required>
-            </div>
+  <div class="form-row">
+    <div class="form-group">
+      <label class="form-label">Adultos</label>
+      <input type="number" class="form-input" name="adultos" min="1" max="6" value="6" required>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Niños</label>
+      <input type="number" class="form-input" name="ninos" min="0" max="5" value="0">
+    </div>
+  </div>
 
-            <div class="form-group">
-              <label class="form-label">Comentarios (opcional)</label>
-              <textarea class="form-input" name="comentarios" rows="3" placeholder="Hora aproximada de llegada, peticiones especiales, si viaja con mascota..."></textarea>
-            </div>
+  <div class="form-group">
+    <label class="form-label">Nombre completo</label>
+    <input type="text" class="form-input" name="name" required>
+  </div>
 
-            <button type="submit" class="submit-btn">Solicitar reserva</button>
-            
-            <div class="success-message" id="mensajeExito">
-              ✓ Tu solicitud se ha enviado correctamente. Te responderemos en breve con la confirmación y las instrucciones de pago.
-            </div>
-          </form>
+  <div class="form-group">
+    <label class="form-label">Email</label>
+    <input type="email" class="form-input" name="email" required>
+  </div>
+
+  <div class="form-group">
+    <label class="form-label">Teléfono</label>
+    <input type="tel" class="form-input" name="telefono" required>
+  </div>
+
+  <div class="form-group">
+    <label class="form-label">Comentarios (opcional)</label>
+    <textarea class="form-input" name="message" rows="3" 
+              placeholder="Hora aproximada de llegada, peticiones especiales..."></textarea>
+  </div>
+
+  <button type="submit" class="submit-btn" id="submitBtnReserva">
+    Solicitar reserva
+  </button>
+
+  <!-- MENSAJE ÉXITO -->
+  <div class="success-message" id="mensajeExito" style="display: none;">
+    ✓ Tu solicitud se ha enviado correctamente. Te responderemos en breve.
+  </div>
+
+</form>
         </div>
       </div>
     </div>
@@ -875,137 +892,97 @@
   <button class="lightbox-arrow lightbox-next" onclick="changeImage(1)">›</button>
   <div class="lightbox-counter" id="lightbox-counter"></div>
 </div>
-
   <script>
-    const meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
-    const diasSemana = ['L', 'M', 'X', 'J', 'V', 'S', 'D'];
+  const meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+  const diasSemana = ['L', 'M', 'X', 'J', 'V', 'S', 'D'];
+  
+  let fechaActual = new Date();
+  let mesActual = fechaActual.getMonth();
+  let anyoActual = fechaActual.getFullYear();
+  let fechaEntrada = null;
+  let fechaSalida = null;
+
+  function renderCalendario() {
+    const grid = document.getElementById('calendarioGrid');
+    const labelMes = document.getElementById('mesActual');
     
-    let fechaActual = new Date();
-    let mesActual = fechaActual.getMonth();
-    let anyoActual = fechaActual.getFullYear();
-    let fechaEntrada = null;
-    let fechaSalida = null;
+    grid.innerHTML = '';
+    labelMes.textContent = `${meses[mesActual]} ${anyoActual}`;
 
-    function renderCalendario() {
-      const grid = document.getElementById('calendarioGrid');
-      const labelMes = document.getElementById('mesActual');
-      
-      grid.innerHTML = '';
-      labelMes.textContent = `${meses[mesActual]} ${anyoActual}`;
-
-      diasSemana.forEach(dia => {
-        const elem = document.createElement('div');
-        elem.className = 'calendar-day-name';
-        elem.textContent = dia;
-        grid.appendChild(elem);
-      });
-
-      const primerDia = new Date(anyoActual, mesActual, 1).getDay();
-      const ultimoDia = new Date(anyoActual, mesActual + 1, 0).getDate();
-      const offset = primerDia === 0 ? 6 : primerDia - 1;
-
-      for (let i = 0; i < offset; i++) {
-        const elem = document.createElement('div');
-        elem.className = 'calendar-day empty';
-        grid.appendChild(elem);
-      }
-
-      const hoy = new Date();
-      hoy.setHours(0, 0, 0, 0);
-
-      for (let dia = 1; dia <= ultimoDia; dia++) {
-        const fecha = new Date(anyoActual, mesActual, dia);
-        const elem = document.createElement('div');
-        elem.className = 'calendar-day';
-        elem.textContent = dia;
-
-        if (fecha < hoy) {
-          elem.classList.add('disabled');
-        } else {
-          elem.addEventListener('click', () => seleccionarFecha(fecha));
-        }
-
-        if (fechaEntrada && compararFechas(fecha, fechaEntrada)) {
-          elem.classList.add('selected');
-        }
-        if (fechaSalida && compararFechas(fecha, fechaSalida)) {
-          elem.classList.add('selected');
-        }
-        if (fechaEntrada && fechaSalida && fecha > fechaEntrada && fecha < fechaSalida) {
-          elem.classList.add('range');
-        }
-
-        grid.appendChild(elem);
-      }
-    }
-
-    function compararFechas(fecha1, fecha2) {
-      return fecha1.getFullYear() === fecha2.getFullYear() &&
-             fecha1.getMonth() === fecha2.getMonth() &&
-             fecha1.getDate() === fecha2.getDate();
-    }
-
-    function seleccionarFecha(fecha) {
-      if (!fechaEntrada || (fechaEntrada && fechaSalida)) {
-        fechaEntrada = fecha;
-        fechaSalida = null;
-      } else if (fecha > fechaEntrada) {
-        fechaSalida = fecha;
-      } else {
-        fechaEntrada = fecha;
-        fechaSalida = null;
-      }
-
-      const inputEntrada = document.getElementById('fechaEntrada');
-      const inputSalida = document.getElementById('fechaSalida');
-
-      if (fechaEntrada) {
-        inputEntrada.value = fechaEntrada.toISOString().split('T')[0];
-      }
-      if (fechaSalida) {
-        inputSalida.value = fechaSalida.toISOString().split('T')[0];
-      }
-
-      renderCalendario();
-    }
-
-    function cambiarMes(delta) {
-      mesActual += delta;
-      if (mesActual < 0) {
-        mesActual = 11;
-        anyoActual--;
-      } else if (mesActual > 11) {
-        mesActual = 0;
-        anyoActual++;
-      }
-      renderCalendario();
-    }
-
-    document.getElementById('formularioReserva').addEventListener('submit', function(e) {
-      e.preventDefault();
-      
-      const datos = new FormData(this);
-      const asunto = encodeURIComponent('Solicitud reserva Apartamento Peñíscola');
-      const cuerpo = 
-        'APARTAMENTO: Apartamento Peñíscola%0D%0A' +
-        'ENTRADA: ' + datos.get('entrada') + '%0D%0A' +
-        'SALIDA: ' + datos.get('salida') + '%0D%0A' +
-        'HUÉSPEDES: ' + datos.get('adultos') + ' adultos, ' + datos.get('ninos') + ' niños%0D%0A%0D%0A' +
-        'NOMBRE: ' + datos.get('nombre') + '%0D%0A' +
-        'EMAIL: ' + datos.get('email') + '%0D%0A' +
-        'TELÉFONO: ' + datos.get('telefono') + '%0D%0A%0D%0A' +
-        'COMENTARIOS: ' + (datos.get('comentarios') || 'Ninguno');
-
-      window.location.href = 'mailto:info@casitasdemar.com?subject=' + asunto + '&body=' + cuerpo;
-      
-      document.getElementById('mensajeExito').style.display = 'block';
-      setTimeout(() => {
-        document.getElementById('mensajeExito').style.display = 'none';
-      }, 8000);
+    diasSemana.forEach(dia => {
+      const elem = document.createElement('div');
+      elem.className = 'calendar-day-name';
+      elem.textContent = dia;
+      grid.appendChild(elem);
     });
 
+    const primerDia = new Date(anyoActual, mesActual, 1).getDay();
+    const ultimoDia = new Date(anyoActual, mesActual + 1, 0).getDate();
+    const offset = primerDia === 0 ? 6 : primerDia - 1;
+
+    for (let i = 0; i < offset; i++) {
+      const elem = document.createElement('div');
+      elem.className = 'calendar-day empty';
+      grid.appendChild(elem);
+    }
+
+    const hoy = new Date();
+    hoy.setHours(0, 0, 0, 0);
+
+    for (let dia = 1; dia <= ultimoDia; dia++) {
+      const fecha = new Date(anyoActual, mesActual, dia);
+      const elem = document.createElement('div');
+      elem.className = 'calendar-day';
+      elem.textContent = dia;
+
+      if (fecha < hoy) {
+        elem.classList.add('disabled');
+      } else {
+        elem.addEventListener('click', () => seleccionarFecha(fecha));
+      }
+
+      if (fechaEntrada && compararFechas(fecha, fechaEntrada)) elem.classList.add('selected');
+      if (fechaSalida && compararFechas(fecha, fechaSalida))   elem.classList.add('selected');
+      if (fechaEntrada && fechaSalida && fecha > fechaEntrada && fecha < fechaSalida) {
+        elem.classList.add('range');
+      }
+
+      grid.appendChild(elem);
+    }
+  }
+
+  function compararFechas(fecha1, fecha2) {
+    return fecha1.getFullYear() === fecha2.getFullYear() &&
+           fecha1.getMonth()    === fecha2.getMonth()    &&
+           fecha1.getDate()     === fecha2.getDate();
+  }
+
+  function seleccionarFecha(fecha) {
+    if (!fechaEntrada || (fechaEntrada && fechaSalida)) {
+      fechaEntrada = fecha;
+      fechaSalida = null;
+    } else if (fecha > fechaEntrada) {
+      fechaSalida = fecha;
+    } else {
+      fechaEntrada = fecha;
+      fechaSalida = null;
+    }
+
+    if (fechaEntrada) document.getElementById('fechaEntrada').value = fechaEntrada.toISOString().split('T')[0];
+    if (fechaSalida)  document.getElementById('fechaSalida').value  = fechaSalida.toISOString().split('T')[0];
+
     renderCalendario();
-  </script>
+  }
+
+  function cambiarMes(delta) {
+    mesActual += delta;
+    if (mesActual < 0)  { mesActual = 11; anyoActual--; }
+    if (mesActual > 11) { mesActual = 0;  anyoActual++; }
+    renderCalendario();
+  }
+
+  renderCalendario();
+</script>
   <script>
 function toggleMobileMenu() {
   const nav = document.getElementById('main-nav');
