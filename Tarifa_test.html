@@ -1018,5 +1018,466 @@ document.addEventListener('click', (e) => {
   }
 </script>
 <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+  <!-- CHATBOT FAQ + WHATSAPP -->
+<style>
+  :root{
+    --chat-primary:#1f6b5c;
+    --chat-primary-hover:#185347;
+    --chat-whatsapp:#25D366;
+    --chat-bg:#ffffff;
+    --chat-surface:#f6f8f7;
+    --chat-border:#d9e2de;
+    --chat-text:#1e2a26;
+    --chat-muted:#66756f;
+    --chat-shadow:0 10px 30px rgba(0,0,0,.15);
+    --chat-radius:18px;
+  }
+
+  .faq-chatbot-launcher{
+    position:fixed;
+    right:20px;
+    bottom:20px;
+    z-index:9999;
+    display:flex;
+    align-items:center;
+    gap:10px;
+    border:none;
+    border-radius:999px;
+    background:var(--chat-primary);
+    color:#fff;
+    padding:14px 18px;
+    font:600 15px/1.2 Arial, sans-serif;
+    cursor:pointer;
+    box-shadow:var(--chat-shadow);
+    transition:transform .2s ease, background .2s ease;
+  }
+
+  .faq-chatbot-launcher:hover{
+    background:var(--chat-primary-hover);
+    transform:translateY(-2px);
+  }
+
+  .faq-chatbot-launcher:focus-visible,
+  .faq-chatbot-close:focus-visible,
+  .faq-chatbot-send:focus-visible,
+  .faq-chatbot-chip:focus-visible,
+  .faq-chatbot-whatsapp:focus-visible{
+    outline:3px solid rgba(37,211,102,.35);
+    outline-offset:3px;
+  }
+
+  .faq-chatbot{
+    position:fixed;
+    right:20px;
+    bottom:86px;
+    width:min(380px, calc(100vw - 24px));
+    height:min(620px, calc(100vh - 110px));
+    display:none;
+    flex-direction:column;
+    background:var(--chat-bg);
+    border:1px solid var(--chat-border);
+    border-radius:var(--chat-radius);
+    overflow:hidden;
+    box-shadow:var(--chat-shadow);
+    z-index:9998;
+    font-family:Arial, sans-serif;
+  }
+
+  .faq-chatbot.is-open{
+    display:flex;
+  }
+
+  .faq-chatbot-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:12px;
+    background:var(--chat-primary);
+    color:#fff;
+    padding:16px 18px;
+  }
+
+  .faq-chatbot-title{
+    margin:0;
+    font-size:16px;
+    font-weight:700;
+  }
+
+  .faq-chatbot-subtitle{
+    margin:4px 0 0;
+    font-size:13px;
+    opacity:.9;
+  }
+
+  .faq-chatbot-close{
+    border:none;
+    background:transparent;
+    color:#fff;
+    font-size:24px;
+    line-height:1;
+    cursor:pointer;
+  }
+
+  .faq-chatbot-body{
+    flex:1;
+    background:var(--chat-surface);
+    padding:16px;
+    overflow:auto;
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+  }
+
+  .faq-chatbot-msg{
+    max-width:85%;
+    padding:12px 14px;
+    border-radius:16px;
+    font-size:14px;
+    line-height:1.45;
+    white-space:pre-line;
+  }
+
+  .faq-chatbot-msg.bot{
+    align-self:flex-start;
+    background:#fff;
+    color:var(--chat-text);
+    border:1px solid var(--chat-border);
+  }
+
+  .faq-chatbot-msg.user{
+    align-self:flex-end;
+    background:var(--chat-primary);
+    color:#fff;
+  }
+
+  .faq-chatbot-choices{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+    margin-top:4px;
+  }
+
+  .faq-chatbot-chip{
+    border:1px solid var(--chat-border);
+    background:#fff;
+    color:var(--chat-text);
+    border-radius:999px;
+    padding:10px 12px;
+    font-size:13px;
+    cursor:pointer;
+    transition:all .2s ease;
+  }
+
+  .faq-chatbot-chip:hover{
+    border-color:var(--chat-primary);
+    color:var(--chat-primary);
+  }
+
+  .faq-chatbot-footer{
+    border-top:1px solid var(--chat-border);
+    background:#fff;
+    padding:12px;
+  }
+
+  .faq-chatbot-form{
+    display:flex;
+    gap:8px;
+    margin-bottom:10px;
+  }
+
+  .faq-chatbot-input{
+    flex:1;
+    min-width:0;
+    border:1px solid var(--chat-border);
+    border-radius:12px;
+    padding:12px 14px;
+    font-size:14px;
+    color:var(--chat-text);
+  }
+
+  .faq-chatbot-send{
+    border:none;
+    border-radius:12px;
+    background:var(--chat-primary);
+    color:#fff;
+    padding:12px 14px;
+    font-weight:700;
+    cursor:pointer;
+  }
+
+  .faq-chatbot-whatsapp{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:10px;
+    width:100%;
+    text-decoration:none;
+    border-radius:14px;
+    background:var(--chat-whatsapp);
+    color:#fff;
+    padding:13px 14px;
+    font-size:14px;
+    font-weight:700;
+    transition:transform .2s ease, filter .2s ease;
+  }
+
+  .faq-chatbot-whatsapp:hover{
+    transform:translateY(-1px);
+    filter:brightness(.96);
+  }
+
+  .faq-chatbot-note{
+    margin-top:8px;
+    font-size:12px;
+    color:var(--chat-muted);
+    text-align:center;
+  }
+
+  @media (max-width: 640px){
+    .faq-chatbot{
+      right:12px;
+      bottom:78px;
+      width:calc(100vw - 24px);
+      height:min(70vh, 620px);
+    }
+
+    .faq-chatbot-launcher{
+      right:12px;
+      bottom:12px;
+      padding:13px 16px;
+    }
+  }
+</style>
+
+<button
+  class="faq-chatbot-launcher"
+  id="faqChatbotLauncher"
+  type="button"
+  aria-expanded="false"
+  aria-controls="faqChatbotPanel"
+>
+  💬 Ayuda rápida
+</button>
+
+<section
+  class="faq-chatbot"
+  id="faqChatbotPanel"
+  aria-label="Chat de ayuda"
+  aria-hidden="true"
+>
+  <div class="faq-chatbot-header">
+    <div>
+      <h3 class="faq-chatbot-title">¿Necesitas ayuda?</h3>
+      <p class="faq-chatbot-subtitle">Respuestas rápidas y acceso directo a WhatsApp</p>
+    </div>
+    <button class="faq-chatbot-close" id="faqChatbotClose" type="button" aria-label="Cerrar chat">
+      ×
+    </button>
+  </div>
+
+  <div class="faq-chatbot-body" id="faqChatbotBody">
+    <!-- mensajes dinámicos -->
+  </div>
+
+  <div class="faq-chatbot-footer">
+    <form class="faq-chatbot-form" id="faqChatbotForm">
+      <input
+        class="faq-chatbot-input"
+        id="faqChatbotInput"
+        type="text"
+        placeholder="Escribe tu pregunta..."
+        aria-label="Escribe tu pregunta"
+      />
+      <button class="faq-chatbot-send" type="submit">Enviar</button>
+    </form>
+
+    <a
+      class="faq-chatbot-whatsapp"
+      id="faqChatbotWhatsapp"
+      href="https://wa.me/34613119183?text=Hola%2C%20quiero%20informaci%C3%B3n%20sobre%20una%20reserva"
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label="Contactar por WhatsApp"
+    >
+      WhatsApp
+    </a>
+
+    <div class="faq-chatbot-note">
+      Si no encuentras la respuesta, escríbenos por WhatsApp.
+    </div>
+  </div>
+</section>
+
+<script>
+  (function () {
+    const launcher = document.getElementById('faqChatbotLauncher');
+    const panel = document.getElementById('faqChatbotPanel');
+    const closeBtn = document.getElementById('faqChatbotClose');
+    const body = document.getElementById('faqChatbotBody');
+    const form = document.getElementById('faqChatbotForm');
+    const input = document.getElementById('faqChatbotInput');
+    const whatsappBtn = document.getElementById('faqChatbotWhatsapp');
+
+    const WHATSAPP_NUMBER = '34613119183';
+    const DEFAULT_MESSAGE = 'Hola, quiero información sobre una reserva';
+
+    const faqData = [
+      {
+        keywords: ['check in', 'check-in', 'entrada', 'hora entrada', 'llegada'],
+        question: 'Horario de check-in',
+        answer: 'El check-in se realiza según la información indicada para tu reserva. Si quieres confirmar tu hora de llegada, te atendemos por WhatsApp.'
+      },
+      {
+        keywords: ['check out', 'check-out', 'salida', 'hora salida'],
+        question: 'Horario de check-out',
+        answer: 'La hora de salida depende de la reserva y de la disponibilidad del alojamiento. Si quieres confirmarlo, escríbenos por WhatsApp.'
+      },
+      {
+        keywords: ['cancelacion', 'cancelación', 'cancelar', 'politica', 'política'],
+        question: 'Política de cancelación',
+        answer: 'La política de cancelación puede variar según la reserva y las fechas. Te recomendamos escribirnos por WhatsApp para darte la información exacta.'
+      },
+      {
+        keywords: ['mascotas', 'mascota', 'perro', 'animales'],
+        question: 'Mascotas',
+        answer: 'La aceptación de mascotas depende del alojamiento. Escríbenos y te confirmamos el caso concreto por WhatsApp.'
+      },
+      {
+        keywords: ['parking', 'aparcamiento', 'coche', 'garaje'],
+        question: 'Parking',
+        answer: 'La disponibilidad de parking depende de cada alojamiento. Te confirmamos ese detalle por WhatsApp.'
+      },
+      {
+        keywords: ['precio', 'precios', 'tarifa', 'coste', 'costo'],
+        question: 'Precio y disponibilidad',
+        answer: 'Para consultar precio y disponibilidad actualizada, te recomendamos escribirnos directamente por WhatsApp.'
+      },
+      {
+        keywords: ['reservar', 'reserva', 'disponibilidad', 'fechas'],
+        question: 'Reservas',
+        answer: 'Podemos ayudarte con disponibilidad, precios y reservas. Pulsa el botón de WhatsApp y te atendemos personalmente.'
+      },
+      {
+        keywords: ['contacto', 'telefono', 'teléfono', 'whatsapp'],
+        question: 'Contacto',
+        answer: 'Puedes escribirnos directamente por WhatsApp y te responderemos lo antes posible.'
+      }
+    ];
+
+    function normalizeText(text) {
+      return text
+        .toLowerCase()
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .trim();
+    }
+
+    function createMessage(text, type = 'bot') {
+      const msg = document.createElement('div');
+      msg.className = `faq-chatbot-msg ${type}`;
+      msg.textContent = text;
+      body.appendChild(msg);
+      body.scrollTop = body.scrollHeight;
+    }
+
+    function createChoices() {
+      const wrap = document.createElement('div');
+      wrap.className = 'faq-chatbot-choices';
+
+      faqData.slice(0, 6).forEach(item => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'faq-chatbot-chip';
+        btn.textContent = item.question;
+        btn.addEventListener('click', () => {
+          createMessage(item.question, 'user');
+          createMessage(item.answer, 'bot');
+          updateWhatsapp(item.question);
+        });
+        wrap.appendChild(btn);
+      });
+
+      body.appendChild(wrap);
+      body.scrollTop = body.scrollHeight;
+    }
+
+    function updateWhatsapp(contextText) {
+      const message = `Hola, necesito información sobre: ${contextText}`;
+      whatsappBtn.href = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
+    }
+
+    function getBestAnswer(userText) {
+      const normalized = normalizeText(userText);
+
+      for (const item of faqData) {
+        const found = item.keywords.some(keyword => normalized.includes(normalizeText(keyword)));
+        if (found) return item;
+      }
+
+      return null;
+    }
+
+    function welcome() {
+      body.innerHTML = '';
+      createMessage('Hola. Puedo ayudarte con preguntas frecuentes sobre reservas, check-in, cancelación, mascotas, parking y contacto.');
+      createMessage('También puedes pulsar en una opción rápida o escribir tu pregunta abajo.');
+      createChoices();
+      updateWhatsapp(DEFAULT_MESSAGE);
+    }
+
+    function openChat() {
+      panel.classList.add('is-open');
+      panel.setAttribute('aria-hidden', 'false');
+      launcher.setAttribute('aria-expanded', 'true');
+      setTimeout(() => input.focus(), 100);
+    }
+
+    function closeChat() {
+      panel.classList.remove('is-open');
+      panel.setAttribute('aria-hidden', 'true');
+      launcher.setAttribute('aria-expanded', 'false');
+      launcher.focus();
+    }
+
+    launcher.addEventListener('click', () => {
+      const isOpen = panel.classList.contains('is-open');
+      if (isOpen) {
+        closeChat();
+      } else {
+        openChat();
+      }
+    });
+
+    closeBtn.addEventListener('click', closeChat);
+
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      const userText = input.value.trim();
+      if (!userText) return;
+
+      createMessage(userText, 'user');
+      input.value = '';
+
+      const result = getBestAnswer(userText);
+
+      if (result) {
+        createMessage(result.answer, 'bot');
+        updateWhatsapp(result.question);
+      } else {
+        createMessage('No tengo una respuesta exacta para eso todavía. Pulsa el botón de WhatsApp y te ayudamos personalmente.', 'bot');
+        updateWhatsapp(userText);
+      }
+    });
+
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && panel.classList.contains('is-open')) {
+        closeChat();
+      }
+    });
+
+    welcome();
+  })();
+</script>
+<!-- FIN CHATBOT FAQ + WHATSAPP -->
 </body>
 </html>
