@@ -13,16 +13,29 @@ const DIAS  = ['L','M','X','J','V','S','D'];
 function parseIcal(text) {
   const ocupadas = new Set();
   const eventos = text.split('BEGIN:VEVENT');
+
   for (let i = 1; i < eventos.length; i++) {
     const bloque = eventos[i];
-    const dtstart = bloque.match(/DTSTART(?:;VALUE=DATE)?[;:](\d{8})/);
-    const dtend   = bloque.match(/DTEND(?:;VALUE=DATE)?[;:](\d{8})/);
+
+    // ✅ Captura TODOS los formatos de Airbnb:
+    // DTSTART;VALUE=DATE:20260501
+    // DTSTART:20260510T100000Z
+    // DTSTART;TZID=Europe/Madrid:20260520T160000  ← antes fallaba
+    const dtstart = bloque.match(/DTSTART[^:]*:(\d{8})/);
+    const dtend   = bloque.match(/DTEND[^:]*:(\d{8})/);
+
     if (dtstart && dtend) {
       let inicio = parseFechaIcal(dtstart[1]);
       const fin  = parseFechaIcal(dtend[1]);
-      while (inicio < fin) {
+
+      if (inicio.getTime() === fin.getTime()) {
+        // ✅ Bloqueo de 1 día exacto
         ocupadas.add(toYMD(inicio));
-        inicio.setDate(inicio.getDate() + 1);
+      } else {
+        while (inicio < fin) {
+          ocupadas.add(toYMD(inicio));
+          inicio.setDate(inicio.getDate() + 1);
+        }
       }
     }
   }
