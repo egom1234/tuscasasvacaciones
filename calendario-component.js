@@ -4,7 +4,7 @@
  * Llama a initCalendario({ propiedad, containerId }) tras cargar el DOM.
  */
 
-const WORKER_BASE = 'tuscasasvacaciones.eduardgomez-4.workers.dev';
+const WORKER_BASE = 'https://tuscasasvacaciones.eduardgomez-4.workers.dev';
 
 const MESES = ['Enero','Febrero','Marzo','Abril','Mayo','Junio',
                'Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
@@ -80,9 +80,22 @@ async function initCalendario({ propiedad, containerId }) {
     </div>`;
 
   try {
-    const res  = await fetch(`${WORKER_BASE}/ical/${propiedad}`);
-    const text = await res.text();
-    ocupadas   = parseIcal(text);
+    // Llama a ambas fuentes en paralelo
+    const [resAirbnb, resBooking] = await Promise.all([
+      fetch(`${WORKER_BASE}/ical/${propiedad}-airbnb`),
+      fetch(`${WORKER_BASE}/ical/${propiedad}-booking`),
+    ]);
+
+    const [icsAirbnb, icsBooking] = await Promise.all([
+      resAirbnb.ok  ? resAirbnb.text()  : Promise.resolve(''),
+      resBooking.ok ? resBooking.text() : Promise.resolve(''),
+    ]);
+
+    ocupadas = new Set([
+      ...parseIcal(icsAirbnb),
+      ...parseIcal(icsBooking),
+    ]);
+
   } catch(e) { console.warn('iCal error:', e); }
 
   document.getElementById(`${containerId}-loading`).style.display = 'none';
