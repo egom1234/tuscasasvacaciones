@@ -405,48 +405,51 @@
   // ============================================================
   // ICAL AIRBNB — Lee reservas y bloquea días en el calendario
   // ============================================================
-  const ICAL_URL = 'https://www.airbnb.es/calendar/ical/1167479354827715217.ics?t=f2bb77075da448b59f3b20a51f4dba82';
-  // Proxy CORS público. Reemplaza por tu Cloudflare Worker cuando lo tengas:
-  // const PROXY = 'https://ical-proxy.TU-USUARIO.workers.dev/?url=';
-  const PROXY = 'https://tuscasasvacaciones.eduardgomez-4.workers.dev/';
+const ICAL_URL = 'https://www.airbnb.es/calendar/ical/1167479354827715217.ics?t=f2bb77075da448b59f3b20a51f4dba82';
+const PROXY    = 'https://tuscasasvacaciones.eduardgomez-4.workers.dev/?url=';
 
-  let fechasReservadas = new Set();
+let fechasReservadas = new Set();
 
-  async function cargarIcal() {
-    const dot  = document.getElementById('syncDot');
-    const text = document.getElementById('syncText');
-    try {
-      const res = await fetch(PROXY + encodeURIComponent(ICAL_URL));
-      if (!res.ok) throw new Error('Error HTTP ' + res.status);
-      const icsText = await res.text();
-      fechasReservadas = parsearIcal(icsText);
-      dot.className  = 'sync-dot ok';
-      text.textContent = 'Sincronizado con Airbnb · ' + fechasReservadas.size + ' días reservados';
-    } catch (e) {
-      dot.className  = 'sync-dot error';
-      text.textContent = 'Sin conexión con Airbnb — mostrando sin reservas';
-    }
-    renderCalendario();
+async function cargarIcal() {
+  const dot  = document.getElementById('syncDot');
+  const text = document.getElementById('syncText');
+  try {
+    const res = await fetch(PROXY + encodeURIComponent(ICAL_URL));
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const icsText = await res.text();
+    fechasReservadas = parsearIcal(icsText);
+    dot.className    = 'sync-dot ok';
+    text.textContent = 'Sincronizado con Airbnb · ' + fechasReservadas.size + ' días reservados';
+  } catch (e) {
+    dot.className    = 'sync-dot error';
+    text.textContent = 'Sin conexión con Airbnb — mostrando sin reservas';
+    console.error('iCal error:', e);
   }
+  renderCalendario();
+}
 
-  function parsearIcal(texto) {
-    const fechas = new Set();
-    const lineas = texto.replace(/\r\n /g, '').split(/\r?\n/);
-    let enEvento = false, dtStart = null, dtEnd = null;
-    for (const linea of lineas) {
-      if (linea === 'BEGIN:VEVENT') { enEvento = true; dtStart = null; dtEnd = null; }
-      if (!enEvento) continue;
-      if (linea.startsWith('DTSTART')) dtStart = linea.split(':').slice(1).join(':').replace(/T.*/,'').replace(/-/g,'');
-      if (linea.startsWith('DTEND'))   dtEnd   = linea.split(':').slice(1).join(':').replace(/T.*/,'').replace(/-/g,'');
-      if (linea === 'END:VEVENT' && dtStart && dtEnd) {
-        let cur = parseFecha(dtStart);
-        const fin = parseFecha(dtEnd);
-        while (cur < fin) { fechas.add(toKey(cur)); cur = new Date(cur.getTime() + 86400000); }
-        enEvento = false;
+function parsearIcal(texto) {
+  const fechas  = new Set();
+  const eventos = texto.split('BEGIN:VEVENT');
+  for (let i = 1; i < eventos.length; i++) {
+    const bloque  = eventos[i];
+    const dtStart = bloque.match(/DTSTART[^:]*:(\d{8})/);
+    const dtEnd   = bloque.match(/DTEND[^:]*:(\d{8})/);
+    if (dtStart && dtEnd) {
+      let cur     = parseFecha(dtStart[1]);
+      const fin   = parseFecha(dtEnd[1]);
+      if (cur.getTime() === fin.getTime()) {
+        fechas.add(toKey(cur));
+      } else {
+        while (cur < fin) {
+          fechas.add(toKey(cur));
+          cur = new Date(cur.getTime() + 86400000);
+        }
       }
     }
-    return fechas;
   }
+  return fechas;
+}
 
   function parseFecha(str) {
     return new Date(parseInt(str.slice(0,4)), parseInt(str.slice(4,6))-1, parseInt(str.slice(6,8)));
