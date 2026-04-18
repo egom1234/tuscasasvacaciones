@@ -987,6 +987,7 @@ async function cargarIcal() {
     // Descarga ambos iCals en paralelo
     const [resAirbnb, resBooking] = await Promise.all([
       fetch(WORKER + '/ical/gonda-airbnb'),
+      fetch(WORKER + '/ical/gonda-booking'),
       ]);
 
     const [icsAirbnb, icsBooking] = await Promise.all([
