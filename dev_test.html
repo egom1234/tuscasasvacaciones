@@ -442,22 +442,23 @@ async function cargarIcal() {
 }
 
 function parsearIcal(texto) {
-  const fechas  = new Set();
-  // Normalizar saltos de línea (Booking usa \r\n)
+  const fechas = new Set();
   const textoNorm = texto.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
   const eventos = textoNorm.split('BEGIN:VEVENT');
+  const hoy = new Date(); hoy.setHours(0,0,0,0);
+
   for (let i = 1; i < eventos.length; i++) {
     const bloque  = eventos[i];
     const dtStart = bloque.match(/DTSTART[^:\n]*:(\d{8})/);
     const dtEnd   = bloque.match(/DTEND[^:\n]*:(\d{8})/);
     if (dtStart && dtEnd) {
-      let cur     = parseFecha(dtStart[1]);
-      const fin   = parseFecha(dtEnd[1]);
+      let cur      = parseFecha(dtStart[1]);
+      const fin    = parseFecha(dtEnd[1]);
       if (cur.getTime() === fin.getTime()) {
-        fechas.add(toKey(cur));
+        if (cur >= hoy) fechas.add(toKey(cur));
       } else {
         while (cur < fin) {
-          fechas.add(toKey(cur));
+          if (cur >= hoy) fechas.add(toKey(cur));
           cur = new Date(cur.getTime() + 86400000);
         }
       }
