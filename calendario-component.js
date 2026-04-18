@@ -4,7 +4,7 @@
  * Llama a initCalendario({ propiedad, containerId }) tras cargar el DOM.
  */
 
-const WORKER_BASE = 'tuscasasvacaciones.eduardgomez-4.workers.dev';
+const WORKER_BASE = 'eduardgomez-4.workers.dev';
 
 const MESES = ['Enero','Febrero','Marzo','Abril','Mayo','Junio',
                'Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
