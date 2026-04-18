@@ -837,14 +837,28 @@
         <div class="booking-panel">
           <h2 class="booking-title">Reservar</h2>
 
-          <!-- CALENDARIO -->
+<!-- CALENDARIO CON ICAL AIRBNB -->
           <div class="calendar">
             <div class="calendar-header">
               <button class="calendar-nav" onclick="cambiarMes(-1)">‹</button>
               <span class="calendar-month" id="mesActual"></span>
               <button class="calendar-nav" onclick="cambiarMes(1)">›</button>
             </div>
+
+            <!-- Estado sincronización Airbnb -->
+            <div class="sync-status">
+              <div class="sync-dot loading" id="syncDot"></div>
+              <span id="syncText">Cargando disponibilidad de Airbnb...</span>
+            </div>
+
             <div class="calendar-grid" id="calendarioGrid"></div>
+
+          <!-- Leyenda -->
+            <div class="calendar-legend">
+              <div class="legend-item"><div class="legend-dot available"></div> Disponible</div>
+              <div class="legend-item"><div class="legend-dot booked"></div> Reservado</div>
+              <div class="legend-item"><div class="legend-dot selected"></div> Seleccionado</div>
+            </div>
             <p class="calendar-note">Selecciona fecha de entrada y salida</p>
           </div>
 
