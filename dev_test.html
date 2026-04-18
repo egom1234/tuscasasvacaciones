@@ -570,12 +570,20 @@ function parsearIcal(texto) {
     renderCalendario();
   }
 
-  function cambiarMes(delta) {
-    mesActual += delta;
-    if (mesActual < 0)  { mesActual = 11; anyoActual--; }
-    if (mesActual > 11) { mesActual = 0;  anyoActual++; }
-    renderCalendario();
-  }
+ function cambiarMes(delta) {
+  const hoy    = new Date();
+  const minMes = new Date(hoy.getFullYear(), hoy.getMonth(), 1);
+  const maxMes = new Date(hoy.getFullYear(), hoy.getMonth() + 9, 1);
+
+  const siguiente = new Date(anyoActual, mesActual + delta, 1);
+  if (siguiente < minMes) return;
+  if (siguiente > maxMes) return;
+
+  mesActual += delta;
+  if (mesActual < 0)  { mesActual = 11; anyoActual--; }
+  if (mesActual > 11) { mesActual = 0;  anyoActual++; }
+  renderCalendario();
+}
 
   // Iniciar: primero mostrar calendario vacío y luego cargar iCal
   renderCalendario();
