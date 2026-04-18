@@ -793,14 +793,28 @@
         <div class="booking-panel">
           <h2 class="booking-title">Reservar</h2>
 
-          <!-- CALENDARIO -->
+         <!-- CALENDARIO CON ICAL AIRBNB -->
           <div class="calendar">
             <div class="calendar-header">
               <button class="calendar-nav" onclick="cambiarMes(-1)">‹</button>
               <span class="calendar-month" id="mesActual"></span>
               <button class="calendar-nav" onclick="cambiarMes(1)">›</button>
             </div>
+
+            <!-- Estado sincronización Airbnb -->
+            <div class="sync-status">
+              <div class="sync-dot loading" id="syncDot"></div>
+              <span id="syncText">Cargando disponibilidad de Airbnb...</span>
+            </div>
+
             <div class="calendar-grid" id="calendarioGrid"></div>
+
+            <!-- Leyenda -->
+            <div class="calendar-legend">
+              <div class="legend-item"><div class="legend-dot available"></div> Disponible</div>
+              <div class="legend-item"><div class="legend-dot booked"></div> Reservado</div>
+              <div class="legend-item"><div class="legend-dot selected"></div> Seleccionado</div>
+            </div>
             <p class="calendar-note">Selecciona fecha de entrada y salida</p>
           </div>
 
@@ -1057,6 +1071,79 @@
   <div class="lightbox-counter" id="lightbox-counter"></div>
 </div>
   <script>
+  // ============================================================
+  // ICAL AIRBNB — Lee reservas y bloquea días en el calendario
+  // ============================================================
+const ICAL_URL = 'https://www.airbnb.es/calendar/ical/1167479354827715217.ics?t=f2bb77075da448b59f3b20a51f4dba82';
+const ICAL_URL = 'https://ical.booking.com/v1/export?t=a460c389-9693-4160-b631-eb16bc84bf39';
+const WORKER = 'https://tuscasasvacaciones.eduardgomez-4.workers.dev';
+
+let fechasReservadas = new Set();
+
+async function cargarIcal() {
+  const dot  = document.getElementById('syncDot');
+  const text = document.getElementById('syncText');
+  try {
+    // Descarga ambos iCals en paralelo
+    const [resAirbnb, resBooking] = await Promise.all([
+      fetch(WORKER + '/ical/casa-blava-airbnb'),
+      fetch(WORKER + '/ical/casa-blava-booking'),
+    ]);
+
+    const [icsAirbnb, icsBooking] = await Promise.all([
+      resAirbnb.ok  ? resAirbnb.text()  : Promise.resolve(''),
+      resBooking.ok ? resBooking.text() : Promise.resolve(''),
+    ]);
+
+    // Fusiona ambas fuentes
+    fechasReservadas = new Set([
+      ...parsearIcal(icsAirbnb),
+      ...parsearIcal(icsBooking),
+    ]);
+
+    dot.className    = 'sync-dot ok';
+    text.textContent = 'Sincronizado · ';
+  } catch (e) {
+    dot.className    = 'sync-dot error';
+    text.textContent = 'Sin conexión — mostrando sin reservas';
+    console.error('iCal error:', e);
+  }
+  renderCalendario();
+}
+
+function parsearIcal(texto) {
+  const fechas = new Set();
+  const textoNorm = texto.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
+  const eventos = textoNorm.split('BEGIN:VEVENT');
+  const hoy = new Date(); hoy.setHours(0,0,0,0);
+
+  for (let i = 1; i < eventos.length; i++) {
+    const bloque  = eventos[i];
+    const dtStart = bloque.match(/DTSTART[^:\n]*:(\d{8})/);
+    const dtEnd   = bloque.match(/DTEND[^:\n]*:(\d{8})/);
+    if (dtStart && dtEnd) {
+      let cur      = parseFecha(dtStart[1]);
+      const fin    = parseFecha(dtEnd[1]);
+      if (cur.getTime() === fin.getTime()) {
+        if (cur >= hoy) fechas.add(toKey(cur));
+      } else {
+        while (cur < fin) {
+          if (cur >= hoy) fechas.add(toKey(cur));
+          cur = new Date(cur.getTime() + 86400000);
+        }
+      }
+    }
+  }
+  return fechas;
+}
+
+  function parseFecha(str) {
+    return new Date(parseInt(str.slice(0,4)), parseInt(str.slice(4,6))-1, parseInt(str.slice(6,8)));
+  }
+
+  function toKey(d) {
+    return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+  }
   const meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
   const diasSemana = ['L', 'M', 'X', 'J', 'V', 'S', 'D'];
   
@@ -1083,6 +1170,7 @@
     const primerDia = new Date(anyoActual, mesActual, 1).getDay();
     const ultimoDia = new Date(anyoActual, mesActual + 1, 0).getDate();
     const offset = primerDia === 0 ? 6 : primerDia - 1;
+    const hoy        = new Date(); hoy.setHours(0,0,0,0);
 
     for (let i = 0; i < offset; i++) {
       const elem = document.createElement('div');
@@ -1090,8 +1178,6 @@
       grid.appendChild(elem);
     }
 
-    const hoy = new Date();
-    hoy.setHours(0, 0, 0, 0);
 
     for (let dia = 1; dia <= ultimoDia; dia++) {
       const fecha = new Date(anyoActual, mesActual, dia);
@@ -1103,6 +1189,18 @@
         elem.classList.add('disabled');
       } else {
         elem.addEventListener('click', () => seleccionarFecha(fecha));
+      }
+      const esPasado   = fecha < hoy;
+      const esReservado = fechasReservadas.has(key);
+
+      if (esPasado) {
+        el.classList.add('disabled');
+      } else if (esReservado) {
+        el.classList.add('booked');
+        el.title = 'Reservado en Airbnb';
+      } else {
+        // Disponible — puede seleccionarse
+        el.addEventListener('click', () => seleccionarFecha(fecha));
       }
 
       if (fechaEntrada && compararFechas(fecha, fechaEntrada)) elem.classList.add('selected');
@@ -1122,16 +1220,27 @@
   }
 
   function seleccionarFecha(fecha) {
+    const key = toKey(fecha);
+    if (fechasReservadas.has(key)) return; // No permitir seleccionar reservados
     if (!fechaEntrada || (fechaEntrada && fechaSalida)) {
-      fechaEntrada = fecha;
-      fechaSalida = null;
+      fechaEntrada = fecha; fechaSalida = null;
     } else if (fecha > fechaEntrada) {
-      fechaSalida = fecha;
+      // Verificar que no haya días reservados en el rango
+      let cur = new Date(fechaEntrada.getTime() + 86400000);
+      let hayConflicto = false;
+      while (cur < fecha) {
+        if (fechasReservadas.has(toKey(cur))) { hayConflicto = true; break; }
+        cur = new Date(cur.getTime() + 86400000);
+      }
+      if (hayConflicto) {
+        alert('No puedes seleccionar un rango que incluya días ya reservados.');
+        fechaEntrada = fecha; fechaSalida = null;
+      } else {
+        fechaSalida = fecha;
+      }
     } else {
-      fechaEntrada = fecha;
-      fechaSalida = null;
+      fechaEntrada = fecha; fechaSalida = null;
     }
-
     if (fechaEntrada) document.getElementById('fechaEntrada').value = fechaEntrada.toISOString().split('T')[0];
     if (fechaSalida)  document.getElementById('fechaSalida').value  = fechaSalida.toISOString().split('T')[0];
     validarFechas();
@@ -1139,14 +1248,24 @@
   }
 
   function cambiarMes(delta) {
-    mesActual += delta;
-    if (mesActual < 0)  { mesActual = 11; anyoActual--; }
-    if (mesActual > 11) { mesActual = 0;  anyoActual++; }
-    renderCalendario();
-  }
+  const hoy    = new Date();
+  const minMes = new Date(hoy.getFullYear(), hoy.getMonth(), 1);
+  const maxMes = new Date(hoy.getFullYear(), hoy.getMonth() + 9, 1);
 
+  const siguiente = new Date(anyoActual, mesActual + delta, 1);
+  if (siguiente < minMes) return;
+  if (siguiente > maxMes) return;
+
+  mesActual += delta;
+  if (mesActual < 0)  { mesActual = 11; anyoActual--; }
+  if (mesActual > 11) { mesActual = 0;  anyoActual++; }
   renderCalendario();
-</script>
+  }
+  // Iniciar: primero mostrar calendario vacío y luego cargar iCal
+  renderCalendario();
+  cargarIcal();
+  </script>
+
   <script>
 function toggleMobileMenu() {
   const nav = document.getElementById('main-nav');
