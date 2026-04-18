@@ -432,7 +432,7 @@ async function cargarIcal() {
     ]);
 
     dot.className    = 'sync-dot ok';
-    text.textContent = 'Sincronizado · ' + fechasReservadas.size + ' días reservados';
+    text.textContent = 'Sincronizado · ';
   } catch (e) {
     dot.className    = 'sync-dot error';
     text.textContent = 'Sin conexión — mostrando sin reservas';
