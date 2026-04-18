@@ -406,7 +406,7 @@
   // ICAL AIRBNB — Lee reservas y bloquea días en el calendario
   // ============================================================
 const ICAL_URL = 'https://www.airbnb.es/calendar/ical/1167479354827715217.ics?t=f2bb77075da448b59f3b20a51f4dba82';
-const PROXY    = 'https://tuscasasvacaciones.eduardgomez-4.workers.dev/';
+const WORKER = 'https://tuscasasvacaciones.eduardgomez-4.workers.dev';
 
 let fechasReservadas = new Set();
 
@@ -414,15 +414,28 @@ async function cargarIcal() {
   const dot  = document.getElementById('syncDot');
   const text = document.getElementById('syncText');
   try {
-    const res = await fetch(PROXY + encodeURIComponent(ICAL_URL));
-    if (!res.ok) throw new Error('HTTP ' + res.status);
-    const icsText = await res.text();
-    fechasReservadas = parsearIcal(icsText);
+    // Descarga ambos iCals en paralelo
+    const [resAirbnb, resBooking] = await Promise.all([
+      fetch(WORKER + '/ical/casa-blava-airbnb'),
+      fetch(WORKER + '/ical/casa-blava-booking'),
+    ]);
+
+    const [icsAirbnb, icsBooking] = await Promise.all([
+      resAirbnb.ok  ? resAirbnb.text()  : Promise.resolve(''),
+      resBooking.ok ? resBooking.text() : Promise.resolve(''),
+    ]);
+
+    // Fusiona ambas fuentes
+    fechasReservadas = new Set([
+      ...parsearIcal(icsAirbnb),
+      ...parsearIcal(icsBooking),
+    ]);
+
     dot.className    = 'sync-dot ok';
-    text.textContent = 'Sincronizado con Airbnb · ' + fechasReservadas.size + ' días reservados';
+    text.textContent = 'Sincronizado · ' + fechasReservadas.size + ' días reservados';
   } catch (e) {
     dot.className    = 'sync-dot error';
-    text.textContent = 'Sin conexión con Airbnb — mostrando sin reservas';
+    text.textContent = 'Sin conexión — mostrando sin reservas';
     console.error('iCal error:', e);
   }
   renderCalendario();
