@@ -354,6 +354,7 @@
               <div class="form-group">
                 <label class="form-label">Adultos</label>
                 <input type="number" class="form-input" name="adultos" min="1" max="6" value="6" required>
+
               </div>
               <div class="form-group">
                 <label class="form-label">Niños</label>
@@ -592,6 +593,34 @@ function parsearIcal(texto) {
   // Iniciar: primero mostrar calendario vacío y luego cargar iCal
   renderCalendario();
   cargarIcal();
+  //Bloquear calendario a 1 año vista
+  const hoyStr = new Date().toISOString().split('T')[0];
+  const maxFecha = new Date();
+  maxFecha.setFullYear(maxFecha.getFullYear() + 1);
+  const maxStr = maxFecha.toISOString().split('T')[0];
+
+  const inputEntrada = document.getElementById('fechaEntrada');
+  const inputSalida  = document.getElementById('fechaSalida');
+
+  if (inputEntrada) {
+    inputEntrada.min = hoyStr;
+    inputEntrada.max = maxStr;
+  }
+  if (inputSalida) {
+    inputSalida.min = hoyStr;
+    inputSalida.max = maxStr;
+  }
+
+  inputEntrada?.addEventListener('change', function() {
+    if (this.value) {
+      const minSalida = new Date(this.value);
+      minSalida.setDate(minSalida.getDate() + 1);
+      inputSalida.min = minSalida.toISOString().split('T')[0];
+      if (inputSalida.value && inputSalida.value <= this.value) {
+        inputSalida.value = '';
+      }
+    }
+  });
   </script>
   <script>
 function validarNombre(input) {
@@ -639,7 +668,19 @@ formReserva.addEventListener('submit', async function(e) {
   if (nombreInput && !validarNombre(nombreInput)) hayErrores = true;
   if (telInput    && !validarTelefono(telInput))  hayErrores = true;
   if (emailInput  && !validarCampo(emailInput))   hayErrores = true;
-
+  
+  const inputAdultos = formReserva.querySelector('input[name="adultos"]');
+  if (inputAdultos) {
+    const val = parseInt(inputAdultos.value);
+    const min = parseInt(inputAdultos.min);
+    const max = parseInt(inputAdultos.max);
+    if (isNaN(val) || val < min || val > max) {
+      inputAdultos.style.borderColor = '#e74c3c';
+      hayErrores = true;
+    } else {
+      inputAdultos.style.borderColor = '#27ae60';
+    }
+  }
   if (hayErrores) {
     formReserva.querySelector('input[style*="e74c3c"]')
       ?.scrollIntoView({ behavior: 'smooth', block: 'center' });
