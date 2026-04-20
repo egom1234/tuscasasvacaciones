@@ -901,7 +901,8 @@
   <div class="form-group">
   <label class="form-label">Nombre completo</label>
   <input type="text" class="form-input" name="name" required
-         oninput="validarNombre(this)">
+         oninput="validarNombre(this)"
+         onblur="validarNombre(this)">
   <span class="error-nombre" style="display:none; color:#e74c3c; font-size:0.82rem; margin-top:0.3rem;">
     ⚠️ El nombre solo puede contener letras
   </span>
@@ -992,21 +993,26 @@
 function validarNombre(input) {
   const valor = input.value.trim();
   const msg = input.parentElement.querySelector('.error-nombre, #errorNombre');
-
   const valido = /^[a-zA-ZáéíóúàèìòùäëïöüÁÉÍÓÚÀÈÌÒÙÄËÏÖÜñÑçÇ\s\-']+$/.test(valor);
 
   if (valor === '') {
-    input.style.borderColor = '#ddd';
-    if (msg) msg.style.display = 'none';
-    return false; // vacío = inválido para el submit
+    input.style.borderColor = '#e74c3c'; // ← rojo si vacío
+    if (msg) {
+      msg.textContent = '⚠️ El nombre es obligatorio';
+      msg.style.display = 'block';
+    }
+    return false;
   } else if (!valido) {
     input.style.borderColor = '#e74c3c';
-    if (msg) msg.style.display = 'block';
-    return false; // tiene caracteres inválidos
+    if (msg) {
+      msg.textContent = '⚠️ El nombre solo puede contener letras';
+      msg.style.display = 'block';
+    }
+    return false;
   } else {
-    input.style.borderColor = '#27ae60';
+    input.style.borderColor = '#27ae60'; // ← verde si válido
     if (msg) msg.style.display = 'none';
-    return true; // ✅ válido
+    return true;
   }
 }
 </script>
