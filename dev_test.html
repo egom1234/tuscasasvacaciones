@@ -773,6 +773,7 @@ function parsearIcal(texto) {
 </div>
 
 <style>
+/* Aislamos todos los estilos con .wa-container para evitar conflictos */
 .wa-container {
   position: fixed;
   bottom: 2rem;
@@ -784,7 +785,7 @@ function parsearIcal(texto) {
   z-index: 9999;
 }
 
-.wa-btn {
+.wa-container .wa-btn {
   width: 60px;
   height: 60px;
   border-radius: 50%;
@@ -798,15 +799,15 @@ function parsearIcal(texto) {
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-.wa-btn:hover {
+.wa-container .wa-btn:hover {
   box-shadow: 0 6px 25px rgba(37, 211, 102, 0.5);
 }
 
-.wa-btn.open {
+.wa-container .wa-btn.open {
   transform: rotate(45deg);
 }
 
-.wa-options {
+.wa-container .wa-options {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
@@ -817,61 +818,59 @@ function parsearIcal(texto) {
   transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
-.wa-options.open {
+.wa-container .wa-options.open {
   opacity: 1;
   pointer-events: all;
   transform: translateY(0);
 }
 
-.wa-option {
+.wa-container .wa-option {
   display: flex;
   align-items: center;
   text-decoration: none;
   background: white;
   padding: 0.7rem 1.3rem;
   border-radius: 50px;
+  border-left: 3px solid #25D366;
   box-shadow: 0 2px 12px rgba(0,0,0,0.15);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
   white-space: nowrap;
 }
 
-.wa-option:hover {
+.wa-container .wa-option:hover {
   transform: translateX(-4px);
   box-shadow: 0 4px 16px rgba(0,0,0,0.2);
 }
 
-.wa-label {
+.wa-container .wa-label {
   font-family: 'Inter', sans-serif;
   font-size: 0.95rem;
   font-weight: 500;
   color: #333;
 }
 
-/* Línea verde izquierda como acento */
-.wa-option {
-  border-left: 3px solid #25D366;
-}
+/* MÓVIL */
 @media (max-width: 768px) {
   .wa-container {
     bottom: 1.2rem;
     right: 1.2rem;
   }
 
-  .wa-btn {
+  .wa-container .wa-btn {
     width: 50px;
     height: 50px;
   }
 
-  .wa-btn svg {
+  .wa-container .wa-btn svg {
     width: 22px;
     height: 22px;
   }
 
-  .wa-option {
+  .wa-container .wa-option {
     padding: 0.55rem 1rem;
   }
 
-  .wa-label {
+  .wa-container .wa-label {
     font-size: 0.85rem;
   }
 }
@@ -885,7 +884,6 @@ function toggleWA() {
   btn.classList.toggle('open');
 }
 
-// Cierra al hacer clic fuera
 document.addEventListener('click', (e) => {
   const container = document.querySelector('.wa-container');
   if (container && !container.contains(e.target)) {
