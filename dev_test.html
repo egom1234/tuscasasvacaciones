@@ -752,14 +752,17 @@ function parsearIcal(texto) {
     <a href="https://wa.me/34613119183?text=Hola,%20estoy%20interesado/a%20en%20obtener%20más%20información,%20gracias." 
        target="_blank" rel="noopener noreferrer" class="wa-option">
       <span class="wa-label">Peñíscola</span>
+      <div class="wa-icon-sm">📱</div>
     </a>
     <a href="https://wa.me/34690288196?text=Hola,%20estoy%20interesado/a%20en%20obtener%20más%20información,%20gracias." 
        target="_blank" rel="noopener noreferrer" class="wa-option">
       <span class="wa-label">Menorca</span>
+      <div class="wa-icon-sm">📱</div>
     </a>
     <a href="https://wa.me/34652306031?text=Hola,%20estoy%20interesado/a%20en%20obtener%20más%20información,%20gracias." 
        target="_blank" rel="noopener noreferrer" class="wa-option">
       <span class="wa-label">Tarifa</span>
+      <div class="wa-icon-sm">📱</div>
     </a>
   </div>
 
@@ -848,6 +851,16 @@ function parsearIcal(texto) {
   font-weight: 500;
   color: #333;
 }
+.wa-icon-sm {
+  width: 32px;
+  height: 32px;
+  background: #25D366;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+}
 
 /* MÓVIL */
 @media (max-width: 768px) {
@@ -873,9 +886,12 @@ function parsearIcal(texto) {
   .wa-container .wa-label {
     font-size: 0.85rem;
   }
+  .wa-icon-sm {
+  width: 22px;
+  height: 22px;
+  }
 }
 </style>
-
 <script>
 function toggleWA() {
   const options = document.getElementById('waOptions');
