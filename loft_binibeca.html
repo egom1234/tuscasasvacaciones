@@ -1179,7 +1179,6 @@ function parsearIcal(texto) {
 <script>
 function validarNombre(input) {
   const valor = input.value.trim();
-  // Busca el span de error hermano del input
   const msg = input.parentElement.querySelector('.error-nombre, #errorNombre');
 
   const valido = /^[a-zA-ZáéíóúàèìòùäëïöüÁÉÍÓÚÀÈÌÒÙÄËÏÖÜñÑçÇ\s\-']+$/.test(valor);
@@ -1187,15 +1186,16 @@ function validarNombre(input) {
   if (valor === '') {
     input.style.borderColor = '#ddd';
     if (msg) msg.style.display = 'none';
+    return false; // vacío = inválido para el submit
   } else if (!valido) {
     input.style.borderColor = '#e74c3c';
     if (msg) msg.style.display = 'block';
+    return false; // tiene caracteres inválidos
   } else {
     input.style.borderColor = '#27ae60';
     if (msg) msg.style.display = 'none';
+    return true; // ✅ válido
   }
-
-  return valor !== '' && valido;
 }
 </script>
 <script>
