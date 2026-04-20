@@ -669,18 +669,35 @@ formReserva.addEventListener('submit', async function(e) {
   if (telInput    && !validarTelefono(telInput))  hayErrores = true;
   if (emailInput  && !validarCampo(emailInput))   hayErrores = true;
   
-  const inputAdultos = formReserva.querySelector('input[name="adultos"]');
-  if (inputAdultos) {
-    const val = parseInt(inputAdultos.value);
-    const min = parseInt(inputAdultos.min);
-    const max = parseInt(inputAdultos.max);
-    if (isNaN(val) || val < min || val > max) {
-      inputAdultos.style.borderColor = '#e74c3c';
-      hayErrores = true;
-    } else {
-      inputAdultos.style.borderColor = '#27ae60';
-    }
+  // Validar adultos
+const inputAdultos = formReserva.querySelector('input[name="adultos"]');
+if (inputAdultos) {
+  const val = parseInt(inputAdultos.value);
+  const min = parseInt(inputAdultos.min) || 1;
+  const max = parseInt(inputAdultos.max) || 6;
+  if (isNaN(val) || val < min || val > max) {
+    inputAdultos.style.borderColor = '#e74c3c';
+    inputAdultos.value = Math.min(Math.max(val || min, min), max); // corrige el valor
+    hayErrores = true;
+  } else {
+    inputAdultos.style.borderColor = '#27ae60';
   }
+}
+
+// Validar niños
+const inputNinos = formReserva.querySelector('input[name="ninos"]');
+if (inputNinos) {
+  const val = parseInt(inputNinos.value);
+  const min = parseInt(inputNinos.min) || 0;
+  const max = parseInt(inputNinos.max);
+  if (!isNaN(val) && (val < min || val > max)) {
+    inputNinos.style.borderColor = '#e74c3c';
+    inputNinos.value = Math.min(Math.max(val, min), max); // corrige el valor
+    hayErrores = true;
+  } else {
+    inputNinos.style.borderColor = '#27ae60';
+  }
+}
   if (hayErrores) {
     formReserva.querySelector('input[style*="e74c3c"]')
       ?.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -752,15 +769,49 @@ formReserva.addEventListener('submit', async function(e) {
   }
 
   function validarFechas() {
-    const inputEntrada = document.getElementById('fechaEntrada');
-    const inputSalida  = document.getElementById('fechaSalida');
-    let valido = true;
-    if (!inputEntrada.value) { inputEntrada.style.borderColor = '#e74c3c'; valido = false; } else { inputEntrada.style.borderColor = '#27ae60'; }
-    if (!inputSalida.value)  { inputSalida.style.borderColor  = '#e74c3c'; valido = false; } else { inputSalida.style.borderColor  = '#27ae60'; }
-    const msgFecha = document.getElementById('errorFechas');
-    if (msgFecha) msgFecha.style.display = valido ? 'none' : 'block';
-    return valido;
+  const inputEntrada = document.getElementById('fechaEntrada');
+  const inputSalida  = document.getElementById('fechaSalida');
+  const msgFecha     = document.getElementById('errorFechas');
+  let valido = true;
+
+  const hoy = new Date();
+  hoy.setHours(0, 0, 0, 0);
+
+  const maxFecha = new Date();
+  maxFecha.setFullYear(maxFecha.getFullYear() + 2);
+
+  // Validar entrada
+  if (!inputEntrada.value) {
+    inputEntrada.style.borderColor = '#e74c3c';
+    valido = false;
+  } else {
+    const entrada = new Date(inputEntrada.value);
+    if (entrada < hoy || entrada > maxFecha) {
+      inputEntrada.style.borderColor = '#e74c3c';
+      valido = false;
+    } else {
+      inputEntrada.style.borderColor = '#27ae60';
+    }
   }
+
+  // Validar salida
+  if (!inputSalida.value) {
+    inputSalida.style.borderColor = '#e74c3c';
+    valido = false;
+  } else {
+    const salida  = new Date(inputSalida.value);
+    const entrada = new Date(inputEntrada.value);
+    if (salida < hoy || salida > maxFecha || salida <= entrada) {
+      inputSalida.style.borderColor = '#e74c3c';
+      valido = false;
+    } else {
+      inputSalida.style.borderColor = '#27ae60';
+    }
+  }
+
+  if (msgFecha) msgFecha.style.display = valido ? 'none' : 'block';
+  return valido;
+}
 
   document.querySelectorAll('form').forEach(form => {
     form.addEventListener('submit', function(e) {
