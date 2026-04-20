@@ -576,10 +576,14 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
       <div>
-        <label style="display: block; font-size: 0.9rem; font-weight: 500; color: var(--gris-oscuro); margin-bottom: 0.5rem;">Nombre</label>
-        <input type="text" name="name" required 
-               style="width: 100%; padding: 1rem; border: 1px solid #ddd; border-radius: 12px; font-size: 1rem; transition: border 0.3s;">
-      </div>
+  <label style="display: block; font-size: 0.9rem; font-weight: 500; color: var(--gris-oscuro); margin-bottom: 0.5rem;">Nombre</label>
+  <input type="text" name="name" id="inputNombre" required 
+         oninput="validarNombre(this)"
+         style="width: 100%; padding: 1rem; border: 1px solid #ddd; border-radius: 12px; font-size: 1rem; transition: border 0.3s;">
+  <span id="errorNombre" style="display:none; color:#e74c3c; font-size:0.82rem; margin-top:0.3rem; display:none;">
+    ⚠️ El nombre solo puede contener letras
+  </span>
+</div>
       <div>
         <label style="display: block; font-size: 0.9rem; font-weight: 500; color: var(--gris-oscuro); margin-bottom: 0.5rem;">Teléfono</label>
         <input type="tel" name="telefono" required 
@@ -607,7 +611,28 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
   </form>
 </div>
+<script>
+function validarNombre(input) {
+  const valor = input.value.trim();
+  const msg = document.getElementById('errorNombre');
+  
+  // Solo letras, espacios, tildes y guión
+  const valido = /^[a-zA-ZáéíóúàèìòùäëïöüÁÉÍÓÚÀÈÌÒÙÄËÏÖÜñÑçÇ\s\-']+$/.test(valor);
 
+  if (valor === '') {
+    input.style.borderColor = '#ddd';
+    msg.style.display = 'none';
+  } else if (!valido) {
+    input.style.borderColor = '#e74c3c';
+    msg.style.display = 'block';
+  } else {
+    input.style.borderColor = '#27ae60';
+    msg.style.display = 'none';
+  }
+
+  return valido;
+}
+</script>
 <script>
   const form = document.getElementById('contactForm');
   const submitBtn = document.getElementById('submitBtn');
@@ -649,6 +674,10 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       submitBtn.style.opacity = '1';
     }
   });
+</script>
+<script>
+const nombreInput = this.querySelector('input[name="name"]');
+if (nombreInput && !validarNombre(nombreInput)) { hayErrores = true; }
 </script>
 <script>
   function validarTelefono(input) {
