@@ -586,18 +586,29 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   </span>
 </div>
       <div>
-        <label style="display: block; font-size: 0.9rem; font-weight: 500; color: var(--gris-oscuro); margin-bottom: 0.5rem;">Teléfono</label>
-        <input type="tel" name="telefono" required 
-               style="width: 100%; padding: 1rem; border: 1px solid #ddd; border-radius: 12px; font-size: 1rem; transition: border 0.3s;">
-      </div>
+  <label style="display: block; font-size: 0.9rem; font-weight: 500; color: var(--gris-oscuro); margin-bottom: 0.5rem;">Teléfono</label>
+  <input type="tel" name="telefono" required
+         oninput="validarTelefono(this)"
+         onblur="validarTelefono(this)"
+         data-error-id="errorTelefono"
+         style="width: 100%; padding: 1rem; border: 1px solid #ddd; border-radius: 12px; font-size: 1rem; transition: border 0.3s;">
+  <span id="errorTelefono" style="display:none; color:#e74c3c; font-size:0.82rem; margin-top:0.3rem;">
+    ⚠️ Introduce un teléfono válido
+  </span>
+</div>
     </div>
 
     <div>
-      <label style="display: block; font-size: 0.9rem; font-weight: 500; color: var(--gris-oscuro); margin-bottom: 0.5rem;">Email</label>
-      <input type="email" name="email" required 
-             style="width: 100%; padding: 1rem; border: 1px solid #ddd; border-radius: 12px; font-size: 1rem; transition: border 0.3s;">
-    </div>
-
+  <label style="display: block; font-size: 0.9rem; font-weight: 500; color: var(--gris-oscuro); margin-bottom: 0.5rem;">Email</label>
+  <input type="email" name="email" required
+         oninput="validarCampo(this)"
+         onblur="validarCampo(this)"
+         data-error-id="errorEmail"
+         style="width: 100%; padding: 1rem; border: 1px solid #ddd; border-radius: 12px; font-size: 1rem; transition: border 0.3s;">
+  <span id="errorEmail" style="display:none; color:#e74c3c; font-size:0.82rem; margin-top:0.3rem;">
+    ⚠️ Introduce un email válido (ej: nombre@dominio.com)
+  </span>
+  </div> 
     <div>
       <label style="display: block; font-size: 0.9rem; font-weight: 500; color: var(--gris-oscuro); margin-bottom: 0.5rem;">Mensaje</label>
       <textarea name="message" rows="4" required 
@@ -640,50 +651,54 @@ function validarNombre(input) {
 }
 </script>
 <script>
-  const form = document.getElementById('contactForm');
-  const submitBtn = document.getElementById('submitBtn');
+  const form       = document.getElementById('contactForm');
+  const submitBtn  = document.getElementById('submitBtn');
   const successMsg = document.getElementById('form-success');
-  const errorMsg = document.getElementById('form-error');
+  const errorMsg   = document.getElementById('form-error');
 
   form.addEventListener('submit', async function(e) {
     e.preventDefault();
 
-    // Estado cargando en el botón
-    submitBtn.disabled = true;
-    submitBtn.textContent = 'Enviando...';
-    submitBtn.style.opacity = '0.7';
-    errorMsg.style.display = 'none';
+    // ✅ Validaciones ANTES de enviar
+    const nombreInput = form.querySelector('input[name="name"]');
+    const telInput    = form.querySelector('input[name="telefono"]');
+    const emailInput  = form.querySelector('input[name="email"]');
 
-    const formData = new FormData(form);
+    let hayErrores = false;
+    if (nombreInput && !validarNombre(nombreInput)) hayErrores = true;
+    if (telInput    && !validarTelefono(telInput))  hayErrores = true;
+    if (emailInput  && !validarCampo(emailInput))   hayErrores = true;
+
+    if (hayErrores) {
+      form.querySelector('input[style*="e74c3c"]')
+        ?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return;
+    }
+
+    submitBtn.disabled      = true;
+    submitBtn.textContent   = 'Enviando...';
+    submitBtn.style.opacity = '0.7';
+    errorMsg.style.display  = 'none';
 
     try {
       const response = await fetch('https://api.web3forms.com/submit', {
         method: 'POST',
-        body: formData
+        body: new FormData(form)
       });
-
       const data = await response.json();
-
       if (data.success) {
-        // Ocultar formulario y mostrar éxito
-        form.style.display = 'none';
+        form.style.display       = 'none';
         successMsg.style.display = 'block';
       } else {
-        throw new Error('Error en el envío');
+        throw new Error('Error');
       }
-
-    } catch (error) {
-      // Mostrar error y restaurar botón
-      errorMsg.style.display = 'block';
-      submitBtn.disabled = false;
-      submitBtn.textContent = 'Enviar mensaje';
+    } catch(error) {
+      errorMsg.style.display  = 'block';
+      submitBtn.disabled      = false;
+      submitBtn.textContent   = 'Enviar mensaje';
       submitBtn.style.opacity = '1';
     }
   });
-</script>
-<script>
-const nombreInput = this.querySelector('input[name="name"]');
-if (nombreInput && !validarNombre(nombreInput)) { hayErrores = true; }
 </script>
 <script>
   function validarTelefono(input) {
@@ -724,6 +739,33 @@ if (nombreInput && !validarNombre(nombreInput)) { hayErrores = true; }
       }
     }, true);
   });
+  function validarCampo(input) {
+  const valor  = input.value.trim();
+  const msgId  = input.dataset.errorId;
+  const msg    = document.getElementById(msgId);
+  const esEmail = input.type === 'email';
+  const emailValido = /^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$/.test(valor);
+
+  if (valor === '') {
+    input.style.borderColor = '#e74c3c';
+    if (msg) {
+      msg.textContent = '⚠️ Este campo es obligatorio';
+      msg.style.display = 'block';
+    }
+    return false;
+  } else if (esEmail && !emailValido) {
+    input.style.borderColor = '#e74c3c';
+    if (msg) {
+      msg.textContent = '⚠️ Introduce un email válido (ej: nombre@dominio.com)';
+      msg.style.display = 'block';
+    }
+    return false;
+  } else {
+    input.style.borderColor = '#27ae60';
+    if (msg) msg.style.display = 'none';
+    return true;
+  }
+}
 </script>
 
     </div>

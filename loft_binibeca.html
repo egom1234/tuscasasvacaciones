@@ -1252,7 +1252,7 @@ function validarNombre(input) {
     const msg   = document.getElementById(msgId);
 
     const esEmail = input.type === 'email';
-    const emailValido = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(valor);
+    const emailValido = /^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$/.test(valor);
 
     if (valor === '') {
       input.style.borderColor = '#e74c3c';
