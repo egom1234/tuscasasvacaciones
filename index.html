@@ -579,6 +579,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   <label style="display: block; font-size: 0.9rem; font-weight: 500; color: var(--gris-oscuro); margin-bottom: 0.5rem;">Nombre</label>
   <input type="text" name="name" id="inputNombre" required 
          oninput="validarNombre(this)"
+         onblur="validarNombre(this)"
          style="width: 100%; padding: 1rem; border: 1px solid #ddd; border-radius: 12px; font-size: 1rem; transition: border 0.3s;">
   <span id="errorNombre" style="display:none; color:#e74c3c; font-size:0.82rem; margin-top:0.3rem; display:none;">
     ⚠️ El nombre solo puede contener letras
@@ -614,23 +615,28 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <script>
 function validarNombre(input) {
   const valor = input.value.trim();
-  const msg = document.getElementById('errorNombre');
-  
-  // Solo letras, espacios, tildes y guión
+  const msg = input.parentElement.querySelector('.error-nombre, #errorNombre');
   const valido = /^[a-zA-ZáéíóúàèìòùäëïöüÁÉÍÓÚÀÈÌÒÙÄËÏÖÜñÑçÇ\s\-']+$/.test(valor);
 
   if (valor === '') {
-    input.style.borderColor = '#ddd';
-    msg.style.display = 'none';
+    input.style.borderColor = '#e74c3c'; // ← rojo si vacío
+    if (msg) {
+      msg.textContent = '⚠️ El nombre es obligatorio';
+      msg.style.display = 'block';
+    }
+    return false;
   } else if (!valido) {
     input.style.borderColor = '#e74c3c';
-    msg.style.display = 'block';
+    if (msg) {
+      msg.textContent = '⚠️ El nombre solo puede contener letras';
+      msg.style.display = 'block';
+    }
+    return false;
   } else {
-    input.style.borderColor = '#27ae60';
-    msg.style.display = 'none';
+    input.style.borderColor = '#27ae60'; // ← verde si válido
+    if (msg) msg.style.display = 'none';
+    return true;
   }
-
-  return valido;
 }
 </script>
 <script>
