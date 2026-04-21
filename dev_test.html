@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
+  <!-- Google tag (gtag.js) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-2F51L7T7FV"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
@@ -9,13 +10,13 @@
     gtag('config', 'G-2F51L7T7FV');
   </script>
 
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Casa Blava Peñíscola - Alquiler turístico Costa Azahar</title>
-
   <link rel="icon" type="image/png" sizes="32x32" href="images/logo.png">
   <link rel="icon" type="image/png" sizes="16x16" href="images/logo.png">
   <link rel="apple-touch-icon" sizes="180x180" href="images/logo.png">
+
+  <meta charset="UTF-8">
+  <title>Casa Blava Peñíscola - Alquiler turístico Costa Azahar</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 
   <style>
@@ -27,20 +28,22 @@
       --gris-claro: #f8f9fa;
       --gris: #6c757d;
       --gris-oscuro: #495057;
-      --rojo: #e74c3c;
+      --gris-borde: #dddddd;
+      --rojo-error: #e74c3c;
       --verde-ok: #27ae60;
-      --borde: #ddd;
-      --radio-sm: 8px;
-      --radio-md: 10px;
-      --radio-lg: 15px;
-      --radio-xl: 20px;
-      --sombra-sm: 0 2px 10px rgba(0,0,0,0.08);
-      --sombra-md: 0 10px 40px rgba(0,0,0,0.08);
+      --shadow-soft: 0 10px 40px rgba(0,0,0,0.08);
+      --radius-sm: 8px;
+      --radius-md: 10px;
+      --radius-lg: 15px;
+      --radius-xl: 20px;
       --transition: 0.3s ease;
-      --max-width: 1200px;
     }
 
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
     body {
       font-family: 'Inter', sans-serif;
@@ -49,44 +52,20 @@
       background: var(--gris-claro);
     }
 
-    img { max-width: 100%; display: block; }
-
-    a { text-decoration: none; }
-
-    button, input, textarea {
-      font: inherit;
-    }
-
-    .container {
-      max-width: var(--max-width);
-      margin: 0 auto;
-      padding: 0 1.5rem;
-    }
-
-    .hidden { display: none !important; }
-
-    .is-valid { border-color: var(--verde-ok) !important; }
-    .is-error { border-color: var(--rojo) !important; }
-
-    .error-text {
-      display: none;
-      color: var(--rojo);
-      font-size: 0.82rem;
-      margin-top: 0.3rem;
-    }
-
-    .error-text.visible {
-      display: block;
-    }
-
     header {
       position: fixed;
       top: 0;
       width: 100%;
       background: var(--blanco);
-      box-shadow: var(--sombra-sm);
+      box-shadow: 0 2px 10px rgba(0,0,0,0.08);
       z-index: 1000;
       padding: 0.5rem 0;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 1.5rem;
     }
 
     .header-content {
@@ -100,6 +79,7 @@
       display: flex;
       align-items: center;
       gap: 0.75rem;
+      text-decoration: none;
     }
 
     .logo-img {
@@ -116,6 +96,7 @@
 
     nav a {
       color: var(--gris);
+      text-decoration: none;
       font-weight: 400;
       font-size: 0.95rem;
       transition: color var(--transition);
@@ -171,9 +152,9 @@
     .gallery-item {
       background-size: cover;
       background-position: center;
-      border-radius: var(--radio-lg);
+      border-radius: var(--radius-lg);
       cursor: pointer;
-      transition: opacity 0.2s;
+      transition: opacity 0.2s ease;
     }
 
     .gallery-main:hover,
@@ -202,14 +183,14 @@
     .booking-panel {
       background: var(--blanco);
       padding: 2rem;
-      border-radius: var(--radio-xl);
+      border-radius: var(--radius-xl);
     }
 
     .booking-panel {
       position: sticky;
       top: 100px;
       height: fit-content;
-      box-shadow: var(--sombra-md);
+      box-shadow: var(--shadow-soft);
     }
 
     .details-section {
@@ -223,10 +204,19 @@
       margin-bottom: 1rem;
     }
 
+    .text-spaced {
+      margin-top: 1rem;
+    }
+
+    .info-list {
+      padding-left: 1.5rem;
+      line-height: 2;
+    }
+
     .price-highlight {
       background: var(--verde-claro);
       padding: 1.5rem;
-      border-radius: var(--radio-lg);
+      border-radius: var(--radius-lg);
       margin: 2rem 0;
     }
 
@@ -242,6 +232,11 @@
       color: var(--verde-oscuro);
     }
 
+    .price-note {
+      margin-top: 0.5rem;
+      font-size: 0.9rem;
+    }
+
     .features {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
@@ -255,7 +250,7 @@
       gap: 0.5rem;
       padding: 0.8rem;
       background: var(--gris-claro);
-      border-radius: var(--radio-md);
+      border-radius: var(--radius-md);
     }
 
     .feature-icon {
@@ -263,11 +258,6 @@
       height: 24px;
       color: var(--verde-primario);
       flex-shrink: 0;
-    }
-
-    .info-list {
-      padding-left: 1.5rem;
-      line-height: 2;
     }
 
     .booking-title {
@@ -329,7 +319,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      border-radius: var(--radio-sm);
+      border-radius: var(--radius-sm);
       cursor: pointer;
       transition: all var(--transition);
       font-size: 0.9rem;
@@ -393,9 +383,19 @@
       border-radius: 3px;
     }
 
-    .legend-dot.available { background: #e8f5e9; border: 1px solid var(--verde-primario); }
-    .legend-dot.booked { background: #f0e6e6; border: 1px solid #c09090; }
-    .legend-dot.selected { background: var(--verde-primario); }
+    .legend-dot.available {
+      background: #e8f5e9;
+      border: 1px solid var(--verde-primario);
+    }
+
+    .legend-dot.booked {
+      background: #f0e6e6;
+      border: 1px solid #c09090;
+    }
+
+    .legend-dot.selected {
+      background: var(--verde-primario);
+    }
 
     .sync-status {
       display: flex;
@@ -413,15 +413,21 @@
       background: #ccc;
     }
 
-    .sync-dot.ok { background: #4caf50; }
-    .sync-dot.error { background: #e57373; }
+    .sync-dot.ok {
+      background: #4caf50;
+    }
+
+    .sync-dot.error {
+      background: #e57373;
+    }
+
     .sync-dot.loading {
       background: #ffb74d;
       animation: blink 1s infinite;
     }
 
     @keyframes blink {
-      0%,100% { opacity: 1; }
+      0%, 100% { opacity: 1; }
       50% { opacity: 0.3; }
     }
 
@@ -438,15 +444,15 @@
       gap: 1rem;
     }
 
-    .form-group {
-      display: flex;
-      flex-direction: column;
-    }
-
     .form-row {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
       gap: 1rem;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
     }
 
     .form-label {
@@ -458,15 +464,79 @@
 
     .form-input {
       padding: 0.8rem;
-      border: 1px solid var(--borde);
-      border-radius: var(--radio-md);
+      border: 1px solid var(--gris-borde);
+      border-radius: var(--radius-md);
       font-size: 1rem;
-      transition: border var(--transition);
+      transition: border-color var(--transition), box-shadow var(--transition);
     }
 
     .form-input:focus {
       outline: none;
       border-color: var(--verde-primario);
+      box-shadow: 0 0 0 3px rgba(83, 126, 117, 0.12);
+    }
+
+    .form-input.is-error {
+      border-color: var(--rojo-error);
+    }
+
+    .form-input.is-valid {
+      border-color: var(--verde-ok);
+    }
+
+    .form-error {
+      display: none;
+      color: var(--rojo-error);
+      font-size: 0.82rem;
+      margin-top: 0.3rem;
+    }
+
+    .form-error.visible {
+      display: block;
+    }
+
+    .message-box {
+      display: none;
+      padding: 1rem;
+      border-radius: var(--radius-md);
+      margin-bottom: 1rem;
+      font-size: 0.95rem;
+    }
+
+    .message-box.visible {
+      display: block;
+    }
+
+    .message-box.error {
+      background: #fff0f0;
+      color: #c0392b;
+    }
+
+    .success-state {
+      display: none;
+      text-align: center;
+      padding: 2rem 1rem;
+    }
+
+    .success-state.visible {
+      display: block;
+    }
+
+    .success-icon {
+      font-size: 3.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .success-title {
+      font-size: 1.3rem;
+      font-weight: 600;
+      color: var(--verde-oscuro);
+      margin-bottom: 0.5rem;
+    }
+
+    .success-text {
+      color: var(--gris-oscuro);
+      font-size: 1rem;
     }
 
     .submit-btn {
@@ -494,38 +564,12 @@
       transform: none;
     }
 
-    .message-box {
-      display: none;
-      padding: 1rem;
-      border-radius: var(--radio-md);
-      margin-bottom: 1rem;
-      font-size: 0.95rem;
-    }
-
-    .message-box.visible {
+    .hidden-after-success {
       display: block;
     }
 
-    .message-box.error {
-      background: #fff0f0;
-      color: #c0392b;
-    }
-
-    .message-box.success {
-      background: #d4edda;
-      border: 1px solid #c3e6cb;
-      color: #155724;
-      margin-top: 1rem;
-    }
-
-    .form-success {
+    .hidden-after-success.is-hidden {
       display: none;
-      text-align: center;
-      padding: 2rem 1rem;
-    }
-
-    .form-success.visible {
-      display: block;
     }
 
     footer {
@@ -549,6 +593,8 @@
       display: none;
       position: fixed;
       inset: 0;
+      width: 100%;
+      height: 100%;
       background: rgba(0,0,0,0.92);
       z-index: 9999;
       align-items: center;
@@ -563,24 +609,20 @@
       max-width: 90vw;
       max-height: 85vh;
       object-fit: contain;
-      border-radius: var(--radio-sm);
+      border-radius: 8px;
       box-shadow: 0 0 40px rgba(0,0,0,0.5);
     }
 
-    .lightbox-close,
-    .lightbox-arrow {
-      position: absolute;
-      color: white;
-      border: none;
-      cursor: pointer;
-      line-height: 1;
-    }
-
     .lightbox-close {
+      position: absolute;
       top: 1.5rem;
       right: 2rem;
+      color: white;
       font-size: 2.5rem;
+      cursor: pointer;
       background: none;
+      border: none;
+      line-height: 1;
       opacity: 0.8;
       transition: opacity 0.2s;
     }
@@ -590,12 +632,16 @@
     }
 
     .lightbox-arrow {
+      position: absolute;
       top: 50%;
       transform: translateY(-50%);
+      color: white;
       font-size: 3rem;
+      cursor: pointer;
       background: rgba(255,255,255,0.1);
+      border: none;
       padding: 0.5rem 1rem;
-      border-radius: var(--radio-sm);
+      border-radius: 8px;
       transition: background 0.2s;
       user-select: none;
     }
@@ -604,8 +650,13 @@
       background: rgba(255,255,255,0.25);
     }
 
-    .lightbox-prev { left: 1rem; }
-    .lightbox-next { right: 1rem; }
+    .lightbox-prev {
+      left: 1rem;
+    }
+
+    .lightbox-next {
+      right: 1rem;
+    }
 
     .lightbox-counter {
       position: absolute;
@@ -617,16 +668,115 @@
       opacity: 0.7;
     }
 
+    .wa-container {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 0.75rem;
+      z-index: 9999;
+    }
+
+    .wa-btn {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: #25D366;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 20px rgba(37, 211, 102, 0.4);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .wa-btn:hover {
+      box-shadow: 0 6px 25px rgba(37, 211, 102, 0.5);
+    }
+
+    .wa-btn.open {
+      transform: rotate(45deg);
+    }
+
+    .wa-options {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      align-items: flex-end;
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(10px);
+      transition: opacity 0.3s ease, transform 0.3s ease;
+    }
+
+    .wa-options.open {
+      opacity: 1;
+      pointer-events: all;
+      transform: translateY(0);
+    }
+
+    .wa-option {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      text-decoration: none;
+      background: white;
+      padding: 0.6rem 1rem 0.6rem 1.2rem;
+      border-radius: 50px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      white-space: nowrap;
+    }
+
+    .wa-option:hover {
+      transform: translateX(-4px);
+      box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+    }
+
+    .wa-label {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 500;
+      color: #333;
+    }
+
+    .wa-icon-sm {
+      width: 34px;
+      height: 34px;
+      background: #25D366;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      flex-shrink: 0;
+    }
+
     @media (max-width: 992px) {
-      .content-wrapper { grid-template-columns: 1fr; }
-      .booking-panel { position: static; }
-      .gallery { grid-template-columns: 1fr; }
+      .content-wrapper {
+        grid-template-columns: 1fr;
+      }
+
+      .booking-panel {
+        position: static;
+      }
+
+      .gallery {
+        grid-template-columns: 1fr;
+      }
+
       .gallery-main {
         grid-column: span 1;
         grid-row: span 1;
         height: 300px;
       }
-      .property-title { font-size: 2.2rem; }
+
+      .property-title {
+        font-size: 2.2rem;
+      }
     }
 
     @media (max-width: 768px) {
@@ -635,51 +785,91 @@
         height: 80px;
       }
 
-      .mobile-menu-btn {
-        display: block;
-        position: absolute;
-        right: 1rem;
-        top: 1.5rem;
-      }
-
-      #main-nav {
-        position: fixed;
-        top: 0;
-        right: -100%;
-        width: 80vw;
-        max-width: 300px;
-        height: 100vh;
-        background: var(--blanco);
-        flex-direction: column;
-        gap: 2rem;
-        padding: 7rem 1.5rem 2rem;
-        transition: right var(--transition);
-        box-shadow: -5px 0 25px rgba(0,0,0,0.2);
-        z-index: 999;
-      }
-
-      #main-nav.active {
-        right: 0;
-      }
-
-      #main-nav a {
-        font-size: 1.2rem;
-        padding: 1rem 0;
-        border-bottom: 1px solid var(--gris-claro);
-        text-align: center;
-        width: 100%;
+      nav {
+        gap: 1rem;
       }
 
       .features,
       .form-row {
         grid-template-columns: 1fr;
       }
+
+      .mobile-menu-btn {
+        display: block !important;
+        position: absolute;
+        right: 1rem;
+        top: 1.5rem;
+      }
+
+      #main-nav {
+        position: fixed !important;
+        top: 0 !important;
+        right: -100% !important;
+        width: 80vw !important;
+        max-width: 300px !important;
+        height: 100vh !important;
+        background: var(--blanco) !important;
+        flex-direction: column !important;
+        gap: 2rem !important;
+        padding: 7rem 1.5rem 2rem !important;
+        transition: right 0.3s ease !important;
+        box-shadow: -5px 0 25px rgba(0,0,0,0.2) !important;
+        z-index: 999 !important;
+      }
+
+      #main-nav.active {
+        right: 0 !important;
+      }
+
+      #main-nav a {
+        font-size: 1.2rem !important;
+        padding: 1rem 0 !important;
+        border-bottom: 1px solid var(--gris-claro) !important;
+        text-align: center !important;
+      }
+
+      .wa-container {
+        bottom: 1.2rem;
+        right: 1.2rem;
+      }
+
+      .wa-btn {
+        width: 50px;
+        height: 50px;
+      }
+
+      .wa-btn svg {
+        width: 22px;
+        height: 22px;
+      }
+
+      .wa-option {
+        padding: 0.55rem 1rem;
+      }
+
+      .wa-label {
+        font-size: 0.85rem;
+      }
+
+      .wa-icon-sm {
+        width: 30px;
+        height: 30px;
+        font-size: 0.9rem;
+      }
     }
 
     @media (max-width: 480px) {
-      .property-title { font-size: 1.8rem; }
-      .gallery-main { height: 250px; }
-      .gallery-item { height: 180px; }
+      .property-title {
+        font-size: 1.8rem;
+      }
+
+      .gallery-main {
+        height: 250px;
+      }
+
+      .gallery-item {
+        height: 180px;
+      }
     }
   </style>
 </head>
@@ -691,7 +881,7 @@
           <img src="images/Logo1.png" alt="Casitas de Mar" class="logo-img">
         </a>
 
-        <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Abrir menú">☰</button>
+        <button class="mobile-menu-btn" id="mobileMenuBtn" type="button" aria-label="Abrir menú">☰</button>
 
         <nav id="main-nav">
           <a href="index.html">Inicio</a>
@@ -742,20 +932,20 @@
           <div class="details-section">
             <h3>Descripción</h3>
             <p>Casa con terraza y vistas panorámicas en Peñíscola, una de las joyas de la Costa Azahar. Perfecto para familias que buscan comodidad, playa y el encanto del casco histórico.</p>
-            <p style="margin-top: 1rem;">La casa dispone de tres dormitorios amplios, salón-comedor con salida a terraza, cocina completa equipada y dos baños. Situado en zona tranquila a poca distancia de las playas y del centro histórico con su castillo templario.</p>
+            <p class="text-spaced">La casa dispone de tres dormitorios amplios, salón-comedor con salida a terraza, cocina completa equipada y dos baños. Situado en zona tranquila a poca distancia de las playas y del centro histórico con su castillo templario.</p>
           </div>
 
           <div class="price-highlight">
             <h4>Precio por noche</h4>
             <div class="price-amount">A consultar</div>
-            <p style="margin-top: 0.5rem; font-size: 0.9rem;">*Consultar otras temporadas y descuentos por larga estancia.</p>
+            <p class="price-note">*Consultar otras temporadas y descuentos por larga estancia.</p>
           </div>
 
           <div class="details-section">
             <h3>Características</h3>
             <div class="features">
               <div class="feature-item">
-                <svg class="feature-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                <svg class="feature-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
                 1-6 personas
               </div>
               <div class="feature-item">
@@ -833,67 +1023,70 @@
             <input type="hidden" name="access_key" value="ba4d4800-cc82-4659-86e0-f10021d29924">
             <input type="hidden" name="subject" value="Nueva solicitud de reserva - Casa Blava">
             <input type="hidden" name="from_name" value="Web Casitas de Mar - Casa Blava">
-            <input type="checkbox" name="botcheck" class="hidden">
+            <input type="checkbox" name="botcheck" style="display:none;">
 
-            <div class="form-success" id="formSuccess">
-              <div style="font-size: 3.5rem; margin-bottom: 1rem;">✅</div>
-              <h4 style="font-size: 1.3rem; font-weight: 600; color: var(--verde-oscuro); margin-bottom: 0.5rem;">¡Mensaje enviado correctamente!</h4>
-              <p style="color: var(--gris-oscuro); font-size: 1rem;">Gracias por contactarnos. Te responderemos en breve.</p>
-            </div>
-
-            <div class="message-box error" id="mensajeError">
+            <div id="mensajeError" class="message-box error">
               ⚠️ Hubo un problema al enviar la solicitud. Por favor, inténtalo de nuevo.
             </div>
 
-            <div class="form-row">
-              <div class="form-group">
-                <label class="form-label" for="fechaEntrada">Entrada</label>
-                <input type="date" class="form-input" id="fechaEntrada" name="entrada" required>
+            <div id="formSuccess" class="success-state">
+              <div class="success-icon">✅</div>
+              <h4 class="success-title">¡Mensaje enviado correctamente!</h4>
+              <p class="success-text">Gracias por contactarnos. Te responderemos en breve.</p>
+            </div>
+
+            <div class="hidden-after-success" data-form-block>
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label" for="fechaEntrada">Entrada</label>
+                  <input type="date" class="form-input" id="fechaEntrada" name="entrada" required>
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="fechaSalida">Salida</label>
+                  <input type="date" class="form-input" id="fechaSalida" name="salida" required>
+                </div>
               </div>
-              <div class="form-group">
-                <label class="form-label" for="fechaSalida">Salida</label>
-                <input type="date" class="form-input" id="fechaSalida" name="salida" required>
+
+              <span id="errorFechas" class="form-error">⚠️ Debes seleccionar unas fechas válidas de entrada y salida</span>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label" for="adultos">Adultos</label>
+                  <input type="number" class="form-input" id="adultos" name="adultos" min="1" max="6" value="6" required>
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="ninos">Niños</label>
+                  <input type="number" class="form-input" id="ninos" name="ninos" min="0" max="5" value="0">
+                </div>
               </div>
-            </div>
-            <span id="errorFechas" class="error-text">⚠️ Debes seleccionar las fechas de entrada y salida</span>
 
-            <div class="form-row">
+              <span id="errorPersonas" class="form-error">⚠️ El total de personas no puede superar 8</span>
+
               <div class="form-group">
-                <label class="form-label" for="adultos">Adultos</label>
-                <input type="number" class="form-input" id="adultos" name="adultos" min="1" max="6" value="6" required>
+                <label class="form-label" for="name">Nombre completo</label>
+                <input type="text" class="form-input" id="name" name="name" required>
+                <span id="errorNombre" class="form-error">⚠️ El nombre solo puede contener letras</span>
               </div>
+
               <div class="form-group">
-                <label class="form-label" for="ninos">Niños</label>
-                <input type="number" class="form-input" id="ninos" name="ninos" min="0" max="5" value="0">
+                <label class="form-label" for="email">Email</label>
+                <input type="email" class="form-input" id="email" name="email" required>
+                <span id="errorEmail" class="form-error">⚠️ Introduce un email válido</span>
               </div>
-            </div>
-            <span id="errorPersonas" class="error-text">⚠️ El total de personas no puede superar 8</span>
 
-            <div class="form-group">
-              <label class="form-label" for="name">Nombre completo</label>
-              <input type="text" class="form-input" id="name" name="name" required>
-              <span id="errorNombre" class="error-text">⚠️ El nombre es obligatorio</span>
-            </div>
+              <div class="form-group">
+                <label class="form-label" for="telefono">Teléfono</label>
+                <input type="tel" class="form-input" id="telefono" name="telefono" required>
+                <span id="errorTelefono" class="form-error">⚠️ Introduce un teléfono válido</span>
+              </div>
 
-            <div class="form-group">
-              <label class="form-label" for="email">Email</label>
-              <input type="email" class="form-input" id="email" name="email" required>
-              <span id="errorEmail" class="error-text">⚠️ Introduce un email válido</span>
-            </div>
+              <div class="form-group">
+                <label class="form-label" for="message">Comentarios (opcional)</label>
+                <textarea class="form-input" id="message" name="message" rows="3" placeholder="Hora aproximada de llegada, peticiones especiales..."></textarea>
+              </div>
 
-            <div class="form-group">
-              <label class="form-label" for="telefono">Teléfono</label>
-              <input type="tel" class="form-input" id="telefono" name="telefono" required>
-              <span id="errorTelefono" class="error-text">⚠️ Introduce un teléfono válido</span>
+              <button type="submit" class="submit-btn" id="submitBtnReserva">Solicitar reserva</button>
             </div>
-
-            <div class="form-group">
-              <label class="form-label" for="message">Comentarios (opcional)</label>
-              <textarea class="form-input" id="message" name="message" rows="3" placeholder="Hora aproximada de llegada, peticiones especiales..."></textarea>
-            </div>
-
-            <button type="submit" class="submit-btn" id="submitBtnReserva">Solicitar reserva</button>
-            <div class="message-box success" id="mensajeExito">✓ Tu solicitud se ha enviado correctamente. Te responderemos en breve.</div>
           </form>
         </div>
       </div>
@@ -903,42 +1096,71 @@
   <footer>
     <div class="footer-content">
       <p class="footer-text">© 2026 Casitas de Mar | Alquiler vacacional</p>
-      <p>Email: info@casitasdemar.com | Telf./ Whatsapp <a href="https://wa.me/34613119183" target="_blank" rel="noopener noreferrer" class="footer-link">+34 613 119 183</a></p>
+      <p>
+        Email: info@casitasdemar.com | Telf./ Whatsapp
+        <a href="https://wa.me/34613119183" target="_blank" rel="noopener noreferrer" class="footer-link">+34 613 119 183</a>
+      </p>
     </div>
   </footer>
 
   <div class="lightbox-overlay" id="lightbox">
     <button class="lightbox-close" id="lightboxClose" type="button">✕</button>
     <button class="lightbox-arrow lightbox-prev" id="lightboxPrev" type="button">‹</button>
-    <img class="lightbox-img" id="lightboxImg" src="" alt="">
+    <img class="lightbox-img" id="lightboxImg" src="" alt="Imagen ampliada">
     <button class="lightbox-arrow lightbox-next" id="lightboxNext" type="button">›</button>
     <div class="lightbox-counter" id="lightboxCounter"></div>
   </div>
 
+  <div class="wa-container">
+    <div class="wa-options" id="waOptions">
+      <a href="https://wa.me/34613119183?text=Hola,%20estoy%20interesado/a%20en%20obtener%20más%20información,%20gracias."
+         target="_blank" rel="noopener noreferrer" class="wa-option">
+        <span class="wa-label">Peñíscola</span>
+        <div class="wa-icon-sm">📱</div>
+      </a>
+
+      <a href="https://wa.me/34690288196?text=Hola,%20estoy%20interesado/a%20en%20obtener%20más%20información,%20gracias."
+         target="_blank" rel="noopener noreferrer" class="wa-option">
+        <span class="wa-label">Menorca</span>
+        <div class="wa-icon-sm">📱</div>
+      </a>
+
+      <a href="https://wa.me/34652306031?text=Hola,%20estoy%20interesado/a%20en%20obtener%20más%20información,%20gracias."
+         target="_blank" rel="noopener noreferrer" class="wa-option">
+        <span class="wa-label">Tarifa</span>
+        <div class="wa-icon-sm">📱</div>
+      </a>
+    </div>
+
+    <button class="wa-btn" id="waBtn" type="button" aria-label="Contactar por WhatsApp">
+      <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="white" aria-hidden="true">
+        <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+      </svg>
+    </button>
+  </div>
+
   <script>
-    const CONFIG = {
-      worker: 'https://tuscasasvacaciones.eduardgomez-4.workers.dev',
-      maxMonthsAhead: 9,
-      maxBookingPeople: 8,
-      monthNames: ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'],
-      weekDays: ['L','M','X','J','V','S','D']
-    };
+    const WORKER = 'https://tuscasasvacaciones.eduardgomez-4.workers.dev';
+
+    const MONTHS = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+    const WEEK_DAYS = ['L','M','X','J','V','S','D'];
 
     const state = {
       fechasReservadas: new Set(),
       fechaEntrada: null,
       fechaSalida: null,
-      currentDate: new Date(),
-      lightboxIndex: 0,
-      galleryImages: []
+      mesActual: new Date().getMonth(),
+      anyoActual: new Date().getFullYear(),
+      currentGallery: [],
+      currentIndex: 0
     };
 
     const dom = {
       nav: document.getElementById('main-nav'),
       mobileMenuBtn: document.getElementById('mobileMenuBtn'),
 
-      mesActual: document.getElementById('mesActual'),
       calendarioGrid: document.getElementById('calendarioGrid'),
+      mesActual: document.getElementById('mesActual'),
       prevMonthBtn: document.getElementById('prevMonthBtn'),
       nextMonthBtn: document.getElementById('nextMonthBtn'),
       syncDot: document.getElementById('syncDot'),
@@ -946,15 +1168,15 @@
 
       form: document.getElementById('formularioReserva'),
       submitBtn: document.getElementById('submitBtnReserva'),
-      formSuccess: document.getElementById('formSuccess'),
-      mensajeExito: document.getElementById('mensajeExito'),
       mensajeError: document.getElementById('mensajeError'),
+      formSuccess: document.getElementById('formSuccess'),
+      formBlocks: document.querySelectorAll('[data-form-block]'),
 
       fechaEntrada: document.getElementById('fechaEntrada'),
       fechaSalida: document.getElementById('fechaSalida'),
       adultos: document.getElementById('adultos'),
       ninos: document.getElementById('ninos'),
-      name: document.getElementById('name'),
+      nombre: document.getElementById('name'),
       email: document.getElementById('email'),
       telefono: document.getElementById('telefono'),
 
@@ -964,22 +1186,18 @@
       errorEmail: document.getElementById('errorEmail'),
       errorTelefono: document.getElementById('errorTelefono'),
 
-      gallery: document.getElementById('gallery'),
+      galleryItems: document.querySelectorAll('#gallery .gallery-main, #gallery .gallery-item'),
       lightbox: document.getElementById('lightbox'),
       lightboxImg: document.getElementById('lightboxImg'),
       lightboxCounter: document.getElementById('lightboxCounter'),
       lightboxClose: document.getElementById('lightboxClose'),
       lightboxPrev: document.getElementById('lightboxPrev'),
-      lightboxNext: document.getElementById('lightboxNext')
-    };
+      lightboxNext: document.getElementById('lightboxNext'),
 
-    function toKey(date) {
-      return [
-        date.getFullYear(),
-        String(date.getMonth() + 1).padStart(2, '0'),
-        String(date.getDate()).padStart(2, '0')
-      ].join('-');
-    }
+      waBtn: document.getElementById('waBtn'),
+      waOptions: document.getElementById('waOptions'),
+      waContainer: document.querySelector('.wa-container')
+    };
 
     function parseFecha(str) {
       return new Date(
@@ -989,11 +1207,16 @@
       );
     }
 
-    function sameDate(a, b) {
-      return a && b &&
+    function toKey(date) {
+      return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+    }
+
+    function compararFechas(a, b) {
+      return (
         a.getFullYear() === b.getFullYear() &&
         a.getMonth() === b.getMonth() &&
-        a.getDate() === b.getDate();
+        a.getDate() === b.getDate()
+      );
     }
 
     function normalizeDate(date) {
@@ -1002,16 +1225,11 @@
       return d;
     }
 
-    function addDays(date, days) {
-      const d = new Date(date);
-      d.setDate(d.getDate() + days);
-      return d;
-    }
+    function setFieldState(input, stateName) {
+      input.classList.remove('is-error', 'is-valid');
 
-    function setFieldState(input, isValid) {
-      input.classList.remove('is-valid', 'is-error');
-      if (input.value.trim() === '') return;
-      input.classList.add(isValid ? 'is-valid' : 'is-error');
+      if (stateName === 'error') input.classList.add('is-error');
+      if (stateName === 'valid') input.classList.add('is-valid');
     }
 
     function toggleError(el, show, text = '') {
@@ -1031,19 +1249,18 @@
         const dtStart = bloque.match(/DTSTART[^:\n]*:(\d{8})/);
         const dtEnd = bloque.match(/DTEND[^:\n]*:(\d{8})/);
 
-        if (!dtStart || !dtEnd) continue;
+        if (dtStart && dtEnd) {
+          let cur = parseFecha(dtStart[1]);
+          const fin = parseFecha(dtEnd[1]);
 
-        let cur = parseFecha(dtStart[1]);
-        const fin = parseFecha(dtEnd[1]);
-
-        if (cur.getTime() === fin.getTime()) {
-          if (cur >= hoy) fechas.add(toKey(cur));
-          continue;
-        }
-
-        while (cur < fin) {
-          if (cur >= hoy) fechas.add(toKey(cur));
-          cur = addDays(cur, 1);
+          if (cur.getTime() === fin.getTime()) {
+            if (cur >= hoy) fechas.add(toKey(cur));
+          } else {
+            while (cur < fin) {
+              if (cur >= hoy) fechas.add(toKey(cur));
+              cur = new Date(cur.getTime() + 86400000);
+            }
+          }
         }
       }
 
@@ -1053,8 +1270,8 @@
     async function cargarIcal() {
       try {
         const [resAirbnb, resBooking] = await Promise.all([
-          fetch(`${CONFIG.worker}/ical/casa-blava-airbnb`),
-          fetch(`${CONFIG.worker}/ical/casa-blava-booking`)
+          fetch(`${WORKER}/ical/casa-blava-airbnb`),
+          fetch(`${WORKER}/ical/casa-blava-booking`)
         ]);
 
         const [icsAirbnb, icsBooking] = await Promise.all([
@@ -1070,50 +1287,46 @@
         dom.syncDot.className = 'sync-dot ok';
         dom.syncText.textContent = 'Sincronizado';
       } catch (error) {
-        console.error('iCal error:', error);
         dom.syncDot.className = 'sync-dot error';
         dom.syncText.textContent = 'Sin conexión — mostrando sin reservas';
+        console.error('iCal error:', error);
       }
 
       renderCalendario();
     }
 
     function renderCalendario() {
-      const grid = dom.calendarioGrid;
-      const visibleDate = new Date(state.currentDate.getFullYear(), state.currentDate.getMonth(), 1);
-      const month = visibleDate.getMonth();
-      const year = visibleDate.getFullYear();
+      dom.calendarioGrid.innerHTML = '';
+      dom.mesActual.textContent = `${MONTHS[state.mesActual]} ${state.anyoActual}`;
 
-      grid.innerHTML = '';
-      dom.mesActual.textContent = `${CONFIG.monthNames[month]} ${year}`;
-
-      CONFIG.weekDays.forEach(day => {
+      WEEK_DAYS.forEach(day => {
         const el = document.createElement('div');
         el.className = 'calendar-day-name';
         el.textContent = day;
-        grid.appendChild(el);
+        dom.calendarioGrid.appendChild(el);
       });
 
-      const primerDia = new Date(year, month, 1).getDay();
-      const ultimoDia = new Date(year, month + 1, 0).getDate();
+      const primerDia = new Date(state.anyoActual, state.mesActual, 1).getDay();
+      const ultimoDia = new Date(state.anyoActual, state.mesActual + 1, 0).getDate();
       const offset = primerDia === 0 ? 6 : primerDia - 1;
       const hoy = normalizeDate(new Date());
 
       for (let i = 0; i < offset; i++) {
         const empty = document.createElement('div');
         empty.className = 'calendar-day empty';
-        grid.appendChild(empty);
+        dom.calendarioGrid.appendChild(empty);
       }
 
       for (let dia = 1; dia <= ultimoDia; dia++) {
-        const fecha = normalizeDate(new Date(year, month, dia));
+        const fecha = new Date(state.anyoActual, state.mesActual, dia);
         const key = toKey(fecha);
         const el = document.createElement('div');
-        const esPasado = fecha < hoy;
-        const esReservado = state.fechasReservadas.has(key);
 
         el.className = 'calendar-day';
         el.textContent = dia;
+
+        const esPasado = fecha < hoy;
+        const esReservado = state.fechasReservadas.has(key);
 
         if (esPasado) {
           el.classList.add('disabled');
@@ -1124,15 +1337,24 @@
           el.addEventListener('click', () => seleccionarFecha(fecha));
         }
 
-        if (sameDate(fecha, state.fechaEntrada) || sameDate(fecha, state.fechaSalida)) {
+        if (state.fechaEntrada && compararFechas(fecha, state.fechaEntrada)) {
           el.classList.add('selected');
         }
 
-        if (state.fechaEntrada && state.fechaSalida && fecha > state.fechaEntrada && fecha < state.fechaSalida) {
+        if (state.fechaSalida && compararFechas(fecha, state.fechaSalida)) {
+          el.classList.add('selected');
+        }
+
+        if (
+          state.fechaEntrada &&
+          state.fechaSalida &&
+          fecha > state.fechaEntrada &&
+          fecha < state.fechaSalida
+        ) {
           el.classList.add('range');
         }
 
-        grid.appendChild(el);
+        dom.calendarioGrid.appendChild(el);
       }
     }
 
@@ -1144,7 +1366,7 @@
         state.fechaEntrada = fecha;
         state.fechaSalida = null;
       } else if (fecha > state.fechaEntrada) {
-        let cur = addDays(state.fechaEntrada, 1);
+        let cur = new Date(state.fechaEntrada.getTime() + 86400000);
         let hayConflicto = false;
 
         while (cur < fecha) {
@@ -1152,7 +1374,7 @@
             hayConflicto = true;
             break;
           }
-          cur = addDays(cur, 1);
+          cur = new Date(cur.getTime() + 86400000);
         }
 
         if (hayConflicto) {
@@ -1177,65 +1399,66 @@
     function cambiarMes(delta) {
       const hoy = new Date();
       const minMes = new Date(hoy.getFullYear(), hoy.getMonth(), 1);
-      const maxMes = new Date(hoy.getFullYear(), hoy.getMonth() + CONFIG.maxMonthsAhead, 1);
-      const siguiente = new Date(state.currentDate.getFullYear(), state.currentDate.getMonth() + delta, 1);
+      const maxMes = new Date(hoy.getFullYear(), hoy.getMonth() + 9, 1);
+      const siguiente = new Date(state.anyoActual, state.mesActual + delta, 1);
 
       if (siguiente < minMes || siguiente > maxMes) return;
 
-      state.currentDate = siguiente;
+      state.mesActual += delta;
+
+      if (state.mesActual < 0) {
+        state.mesActual = 11;
+        state.anyoActual--;
+      }
+
+      if (state.mesActual > 11) {
+        state.mesActual = 0;
+        state.anyoActual++;
+      }
+
       renderCalendario();
     }
 
-    function validarFechas() {
-      const entrada = dom.fechaEntrada.value;
-      const salida = dom.fechaSalida.value;
-      const valido = Boolean(entrada && salida && salida > entrada);
-
-      setFieldState(dom.fechaEntrada, Boolean(entrada));
-      setFieldState(dom.fechaSalida, Boolean(salida && salida > entrada));
-      toggleError(dom.errorFechas, !valido);
-
-      return valido;
-    }
-
-    function validarPersonas() {
-      const adultos = parseInt(dom.adultos.value, 10) || 0;
-      const ninos = parseInt(dom.ninos.value, 10) || 0;
-      const total = adultos + ninos;
-      const adultosValidos = adultos >= 1 && adultos <= 6;
-      const ninosValidos = ninos >= 0 && ninos <= 5;
-      const totalValido = total <= CONFIG.maxBookingPeople;
-
-      setFieldState(dom.adultos, adultosValidos && totalValido);
-      setFieldState(dom.ninos, ninosValidos && totalValido);
-      toggleError(dom.errorPersonas, !(adultosValidos && ninosValidos && totalValido));
-
-      return adultosValidos && ninosValidos && totalValido;
-    }
-
     function validarNombre() {
-      const valor = dom.name.value.trim();
+      const valor = dom.nombre.value.trim();
       const valido = /^[a-zA-ZáéíóúàèìòùäëïöüÁÉÍÓÚÀÈÌÒÙÄËÏÖÜñÑçÇ\s\-']+$/.test(valor);
 
-      let error = '';
-      if (!valor) error = '⚠️ El nombre es obligatorio';
-      else if (!valido) error = '⚠️ El nombre solo puede contener letras';
+      if (!valor) {
+        setFieldState(dom.nombre, 'error');
+        toggleError(dom.errorNombre, true, '⚠️ El nombre es obligatorio');
+        return false;
+      }
 
-      setFieldState(dom.name, !!valor && valido);
-      toggleError(dom.errorNombre, Boolean(error), error);
+      if (!valido) {
+        setFieldState(dom.nombre, 'error');
+        toggleError(dom.errorNombre, true, '⚠️ El nombre solo puede contener letras');
+        return false;
+      }
 
-      return !!valor && valido;
+      setFieldState(dom.nombre, 'valid');
+      toggleError(dom.errorNombre, false);
+      return true;
     }
 
     function validarEmail() {
       const valor = dom.email.value.trim();
-      const valido = /^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$/.test(valor);
-      const ok = !!valor && valido;
+      const emailValido = /^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$/.test(valor);
 
-      setFieldState(dom.email, ok);
-      toggleError(dom.errorEmail, !ok, valor ? '⚠️ Introduce un email válido' : '⚠️ Este campo es obligatorio');
+      if (!valor) {
+        setFieldState(dom.email, 'error');
+        toggleError(dom.errorEmail, true, '⚠️ El email es obligatorio');
+        return false;
+      }
 
-      return ok;
+      if (!emailValido) {
+        setFieldState(dom.email, 'error');
+        toggleError(dom.errorEmail, true, '⚠️ Introduce un email válido');
+        return false;
+      }
+
+      setFieldState(dom.email, 'valid');
+      toggleError(dom.errorEmail, false);
+      return true;
     }
 
     function validarTelefono() {
@@ -1245,33 +1468,113 @@
         /^\+34[6-9]\d{8}$/.test(tel) ||
         /^\+[1-9]\d{6,14}$/.test(tel);
 
-      const ok = !!tel && valido;
-      setFieldState(dom.telefono, ok);
-      toggleError(dom.errorTelefono, !ok, tel ? '⚠️ Introduce un teléfono válido' : '⚠️ Este campo es obligatorio');
+      if (!tel) {
+        setFieldState(dom.telefono, 'error');
+        toggleError(dom.errorTelefono, true, '⚠️ El teléfono es obligatorio');
+        return false;
+      }
 
-      return ok;
+      if (!valido) {
+        setFieldState(dom.telefono, 'error');
+        toggleError(dom.errorTelefono, true, '⚠️ Introduce un teléfono válido');
+        return false;
+      }
+
+      setFieldState(dom.telefono, 'valid');
+      toggleError(dom.errorTelefono, false);
+      return true;
     }
 
-    function validarFormulario() {
-      const results = [
-        validarFechas(),
-        validarPersonas(),
-        validarNombre(),
-        validarEmail(),
-        validarTelefono()
-      ];
+    function validarPersonas() {
+      const adultos = parseInt(dom.adultos.value, 10) || 0;
+      const ninos = parseInt(dom.ninos.value, 10) || 0;
+      const total = adultos + ninos;
+      const minAdultos = parseInt(dom.adultos.min, 10) || 1;
+      const maxAdultos = parseInt(dom.adultos.max, 10) || 6;
+      const minNinos = parseInt(dom.ninos.min, 10) || 0;
+      const maxNinos = parseInt(dom.ninos.max, 10) || 5;
 
-      return results.every(Boolean);
+      let valido = true;
+
+      if (adultos < minAdultos || adultos > maxAdultos) {
+        setFieldState(dom.adultos, 'error');
+        valido = false;
+      } else {
+        setFieldState(dom.adultos, 'valid');
+      }
+
+      if (ninos < minNinos || ninos > maxNinos) {
+        setFieldState(dom.ninos, 'error');
+        valido = false;
+      } else {
+        setFieldState(dom.ninos, ninos > 0 ? 'valid' : null);
+      }
+
+      if (total > 8) {
+        setFieldState(dom.adultos, 'error');
+        setFieldState(dom.ninos, 'error');
+        toggleError(dom.errorPersonas, true);
+        return false;
+      }
+
+      toggleError(dom.errorPersonas, !valido ? false : false);
+      return valido;
     }
 
-    async function enviarFormulario(event) {
-      event.preventDefault();
+    function validarFechas() {
+      const entradaValor = dom.fechaEntrada.value;
+      const salidaValor = dom.fechaSalida.value;
+      const hoy = normalizeDate(new Date());
+      const maxFecha = new Date();
+      maxFecha.setFullYear(maxFecha.getFullYear() + 1);
+
+      let valido = true;
+
+      if (!entradaValor) {
+        setFieldState(dom.fechaEntrada, 'error');
+        valido = false;
+      } else {
+        const entrada = normalizeDate(new Date(entradaValor));
+        if (entrada < hoy || entrada > maxFecha) {
+          setFieldState(dom.fechaEntrada, 'error');
+          valido = false;
+        } else {
+          setFieldState(dom.fechaEntrada, 'valid');
+        }
+      }
+
+      if (!salidaValor) {
+        setFieldState(dom.fechaSalida, 'error');
+        valido = false;
+      } else {
+        const salida = normalizeDate(new Date(salidaValor));
+        const entrada = entradaValor ? normalizeDate(new Date(entradaValor)) : null;
+
+        if (salida < hoy || salida > maxFecha || !entrada || salida <= entrada) {
+          setFieldState(dom.fechaSalida, 'error');
+          valido = false;
+        } else {
+          setFieldState(dom.fechaSalida, 'valid');
+        }
+      }
+
+      toggleError(dom.errorFechas, !valido);
+      return valido;
+    }
+
+    async function handleSubmit(e) {
+      e.preventDefault();
 
       dom.mensajeError.classList.remove('visible');
-      dom.mensajeExito.classList.remove('visible');
 
-      if (!validarFormulario()) {
-        const firstError = document.querySelector('.is-error, .error-text.visible');
+      const fechasOk = validarFechas();
+      const personasOk = validarPersonas();
+      const nombreOk = validarNombre();
+      const emailOk = validarEmail();
+      const telefonoOk = validarTelefono();
+
+      if (!fechasOk || !personasOk || !nombreOk || !emailOk || !telefonoOk) {
+        const firstError = document.querySelector('.form-input.is-error');
         firstError?.scrollIntoView({ behavior: 'smooth', block: 'center' });
         return;
       }
@@ -1287,124 +1590,147 @@
 
         const data = await response.json();
 
-        if (!data.success) throw new Error('Fallo en envío');
+        if (!data.success) throw new Error('Fallo al enviar');
 
-        Array.from(dom.form.children).forEach(el => {
-          if (
-            el !== dom.formSuccess &&
-            el.tagName !== 'INPUT'
-          ) {
-            el.classList.add('hidden');
-          }
-        });
-
+        dom.formBlocks.forEach(el => el.classList.add('is-hidden'));
         dom.formSuccess.classList.add('visible');
       } catch (error) {
-        console.error(error);
         dom.mensajeError.classList.add('visible');
+        console.error(error);
+      } finally {
         dom.submitBtn.disabled = false;
         dom.submitBtn.textContent = 'Solicitar reserva';
       }
     }
 
-    function configurarInputsFecha() {
-      const hoy = new Date();
-      const hoyStr = toKey(hoy);
-
+    function initDateLimits() {
+      const hoyStr = new Date().toISOString().split('T')[0];
       const maxFecha = new Date();
       maxFecha.setFullYear(maxFecha.getFullYear() + 1);
-      const maxStr = toKey(maxFecha);
+      const maxStr = maxFecha.toISOString().split('T')[0];
 
       dom.fechaEntrada.min = hoyStr;
       dom.fechaEntrada.max = maxStr;
       dom.fechaSalida.min = hoyStr;
       dom.fechaSalida.max = maxStr;
+    }
 
-      dom.fechaEntrada.addEventListener('change', () => {
-        if (!dom.fechaEntrada.value) return;
+    function syncDateInputsWithCalendar() {
+      dom.fechaEntrada.addEventListener('change', function () {
+        if (!this.value) return;
 
-        const minSalida = new Date(dom.fechaEntrada.value);
+        const entrada = new Date(this.value);
+        state.fechaEntrada = entrada;
+
+        const minSalida = new Date(entrada);
         minSalida.setDate(minSalida.getDate() + 1);
-        dom.fechaSalida.min = toKey(minSalida);
+        dom.fechaSalida.min = minSalida.toISOString().split('T')[0];
 
-        if (dom.fechaSalida.value && dom.fechaSalida.value <= dom.fechaEntrada.value) {
+        if (dom.fechaSalida.value && dom.fechaSalida.value <= this.value) {
           dom.fechaSalida.value = '';
+          state.fechaSalida = null;
         }
 
-        state.fechaEntrada = normalizeDate(dom.fechaEntrada.value);
-        state.fechaSalida = dom.fechaSalida.value ? normalizeDate(dom.fechaSalida.value) : null;
-
-        validarFechas();
         renderCalendario();
+        validarFechas();
       });
 
-      dom.fechaSalida.addEventListener('change', () => {
-        state.fechaSalida = dom.fechaSalida.value ? normalizeDate(dom.fechaSalida.value) : null;
-        validarFechas();
+      dom.fechaSalida.addEventListener('change', function () {
+        state.fechaSalida = this.value ? new Date(this.value) : null;
         renderCalendario();
+        validarFechas();
       });
     }
 
     function initMobileMenu() {
-      dom.mobileMenuBtn.addEventListener('click', () => {
+      dom.mobileMenuBtn.addEventListener('click', function () {
         dom.nav.classList.toggle('active');
       });
 
       dom.nav.querySelectorAll('a').forEach(link => {
-        link.addEventListener('click', () => {
+        link.addEventListener('click', function () {
           dom.nav.classList.remove('active');
         });
       });
+
+      document.addEventListener('click', function (e) {
+        if (!dom.nav.contains(e.target) && !dom.mobileMenuBtn.contains(e.target)) {
+          dom.nav.classList.remove('active');
+        }
+      });
+    }
+
+    function openLightbox(index) {
+      state.currentIndex = index;
+      dom.lightboxImg.src = state.currentGallery[state.currentIndex];
+      dom.lightbox.classList.add('active');
+      updateLightboxCounter();
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeLightbox() {
+      dom.lightbox.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+
+    function changeImage(direction) {
+      state.currentIndex = (state.currentIndex + direction + state.currentGallery.length) % state.currentGallery.length;
+      dom.lightboxImg.src = state.currentGallery[state.currentIndex];
+      updateLightboxCounter();
+    }
+
+    function updateLightboxCounter() {
+      dom.lightboxCounter.textContent = `${state.currentIndex + 1} / ${state.currentGallery.length}`;
     }
 
     function initLightbox() {
-      state.galleryImages = Array.from(dom.gallery.querySelectorAll('[data-image]')).map(el => el.dataset.image);
+      state.currentGallery = Array.from(dom.galleryItems).map(item => item.dataset.image);
 
-      dom.gallery.addEventListener('click', event => {
-        const item = event.target.closest('[data-image]');
-        if (!item) return;
-
-        state.lightboxIndex = state.galleryImages.indexOf(item.dataset.image);
-        openLightbox();
+      dom.galleryItems.forEach((item, index) => {
+        item.addEventListener('click', function () {
+          openLightbox(index);
+        });
       });
 
       dom.lightboxClose.addEventListener('click', closeLightbox);
       dom.lightboxPrev.addEventListener('click', () => changeImage(-1));
       dom.lightboxNext.addEventListener('click', () => changeImage(1));
 
-      dom.lightbox.addEventListener('click', event => {
-        if (event.target === dom.lightbox) closeLightbox();
+      dom.lightbox.addEventListener('click', function (e) {
+        if (e.target === dom.lightbox) closeLightbox();
       });
 
-      document.addEventListener('keydown', event => {
+      document.addEventListener('keydown', function (e) {
         if (!dom.lightbox.classList.contains('active')) return;
-
-        if (event.key === 'Escape') closeLightbox();
-        if (event.key === 'ArrowLeft') changeImage(-1);
-        if (event.key === 'ArrowRight') changeImage(1);
+        if (e.key === 'Escape') closeLightbox();
+        if (e.key === 'ArrowRight') changeImage(1);
+        if (e.key === 'ArrowLeft') changeImage(-1);
       });
     }
 
-    function openLightbox() {
-      const src = state.galleryImages[state.lightboxIndex];
-      dom.lightboxImg.src = src;
-      dom.lightboxCounter.textContent = `${state.lightboxIndex + 1} / ${state.galleryImages.length}`;
-      dom.lightbox.classList.add('active');
+    function initWhatsAppButton() {
+      dom.waBtn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        dom.waOptions.classList.toggle('open');
+        dom.waBtn.classList.toggle('open');
+      });
+
+      document.addEventListener('click', function (e) {
+        if (!dom.waContainer.contains(e.target)) {
+          dom.waOptions.classList.remove('open');
+          dom.waBtn.classList.remove('open');
+        }
+      });
     }
 
-    function closeLightbox() {
-      dom.lightbox.classList.remove('active');
-      dom.lightboxImg.src = '';
+    function initCalendarControls() {
+      dom.prevMonthBtn.addEventListener('click', () => cambiarMes(-1));
+      dom.nextMonthBtn.addEventListener('click', () => cambiarMes(1));
     }
 
-    function changeImage(direction) {
-      state.lightboxIndex = (state.lightboxIndex + direction + state.galleryImages.length) % state.galleryImages.length;
-      openLightbox();
-    }
-
-    function initValidations() {
-      dom.name.addEventListener('input', validarNombre);
-      dom.name.addEventListener('blur', validarNombre);
+    function initFormValidation() {
+      dom.nombre.addEventListener('input', validarNombre);
+      dom.nombre.addEventListener('blur', validarNombre);
 
       dom.email.addEventListener('input', validarEmail);
       dom.email.addEventListener('blur', validarEmail);
@@ -1414,26 +1740,20 @@
 
       dom.adultos.addEventListener('input', validarPersonas);
       dom.ninos.addEventListener('input', validarPersonas);
-    }
 
-    function initCalendar() {
-      dom.prevMonthBtn.addEventListener('click', () => cambiarMes(-1));
-      dom.nextMonthBtn.addEventListener('click', () => cambiarMes(1));
-      renderCalendario();
-      cargarIcal();
-    }
-
-    function initForm() {
-      dom.form.addEventListener('submit', enviarFormulario);
-      configurarInputsFecha();
+      dom.form.addEventListener('submit', handleSubmit);
     }
 
     function init() {
+      initDateLimits();
+      initCalendarControls();
       initMobileMenu();
       initLightbox();
-      initValidations();
-      initCalendar();
-      initForm();
+      initWhatsAppButton();
+      initFormValidation();
+      syncDateInputsWithCalendar();
+      renderCalendario();
+      cargarIcal();
     }
 
     document.addEventListener('DOMContentLoaded', init);

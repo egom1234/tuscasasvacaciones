@@ -360,14 +360,14 @@
             <div class="form-row">
               <div class="form-group">
                 <label class="form-label">Entrada</label>
-                <input type="date" class="form-input" id="fechaEntrada" name="entrada" required>
+                <input type="date" class="form-input" id="fechaEntrada" name="entrada" required readonly onkeydown="return false" style="cursor:default;pointer-events:none;">
               </div>
               <div class="form-group">
                 <label class="form-label">Salida</label>
-                <input type="date" class="form-input" id="fechaSalida" name="salida" required>
+                <input type="date" class="form-input" id="fechaSalida" name="salida" required readonly onkeydown="return false" style="cursor:default;pointer-events:none;">
               </div>
             </div>
-            <span class="field-error" id="errorFechas">⚠️ Debes seleccionar las fechas de entrada y salida</span>
+            <span class="field-error" id="errorFechas">⚠️ Debes seleccionar las fechas de entrada y salida válidas</span>
 
             <!-- Personas -->
             <div class="form-row">
