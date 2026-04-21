@@ -17,11 +17,11 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
 })(window,document,'script','dataLayer','GTM-NJCDTFDS');</script>
 <!-- End Google Tag Manager -->
+<meta charset="UTF-8">
   <!-- Favicon moderno -->
 <link rel="icon" type="image/png" sizes="32x32" href="images/logo.png">
 <link rel="icon" type="image/png" sizes="16x16" href="images/logo.png">
 <link rel="apple-touch-icon" sizes="180x180" href="images/logo.png">
-  <meta charset="UTF-8">
   <title> Casitas de Mar - Alquiler vacacional</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -102,7 +102,6 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
       height: 100vh;
        background: linear-gradient(rgba(255,255,255,0.4), rgba(255,255,255,0.2)),
         url('images/fotoportada1.jpeg') center/cover;
-      background-size: cover;
       display: flex;
       align-items: center;
       text-align: center;
@@ -502,22 +501,22 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             </div>
             <div>
               <div style="font-size: 0.9rem; color: var(--gris);">Llámanos o WhatsApp</div>
-              <div target="_blank" 
-                 style="color: var(--verde-primario); font-size: 0.9rem; font-weight: 600; text-decoration: none;">Peñíscola:</div>
-              <a href="https://wa.me/34613119183?text=Hola,%20estoy%20interesado/a%20en%20obtener%20mas%20información,%20gracias." 
+                <span
+                 style="color: var(--verde-primario); font-size: 0.9rem; font-weight: 600; text-decoration: none;">Peñíscola:</span>
+                 <a href="https://wa.me/34613119183?text=Hola,%20estoy%20interesado/a%20en%20obtener%20mas%20información,%20gracias." 
                  target="_blank" 
                  style="color: var(--verde-primario); font-size: 0.9rem; font-weight: 600; text-decoration: none;">
                 +34 613 119 183
               </a><br>
-              <div target="_blank" 
-                 style="color: var(--verde-primario); font-size: 0.9rem; font-weight: 600; text-decoration: none;">Menorca:</div>
+               <span
+                 style="color: var(--verde-primario); font-size: 0.9rem; font-weight: 600; text-decoration: none;">Menorca:</span>
               <a href="https://wa.me/34690288196?text=Hola,%20estoy%20interesado/a%20en%20obtener%20mas%20información,%20gracias." 
                  target="_blank" 
                  style="color: var(--verde-primario); font-size: 0.9rem; font-weight: 600; text-decoration: none;">
                 +34 690 288 196
               </a><br>
-              <div target="_blank" 
-                 style="color: var(--verde-primario); font-size: 0.9rem; font-weight: 600; text-decoration: none;">Tarifa:</div>
+              <span 
+                 style="color: var(--verde-primario); font-size: 0.9rem; font-weight: 600; text-decoration: none;">Tarifa:</span>
               <a href="https://wa.me/34652306031?text=Hola,%20estoy%20interesado/a%20en%20obtener%20mas%20información,%20gracias." 
                  target="_blank" 
                  style="color: var(--verde-primario); font-size: 0.9rem; font-weight: 600; text-decoration: none;">
@@ -581,7 +580,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
          oninput="validarNombre(this)"
          onblur="validarNombre(this)"
          style="width: 100%; padding: 1rem; border: 1px solid #ddd; border-radius: 12px; font-size: 1rem; transition: border 0.3s;">
-  <span id="errorNombre" style="display:none; color:#e74c3c; font-size:0.82rem; margin-top:0.3rem; display:none;">
+  <span id="errorNombre" style="display:none; color:#e74c3c; font-size:0.82rem; margin-top:0.3rem;">
     ⚠️ El nombre solo puede contener letras
   </span>
 </div>
@@ -728,17 +727,6 @@ function validarNombre(input) {
     return !tieneCaracteresInvalidos && valido;
   }
 
-  // Bloquear envío si el teléfono no es válido
-  document.querySelectorAll('form').forEach(form => {
-    form.addEventListener('submit', function(e) {
-      const telInput = this.querySelector('input[name="telefono"]');
-      if (telInput && !validarTelefono(telInput)) {
-        e.stopImmediatePropagation();
-        e.preventDefault();
-        telInput.focus();
-      }
-    }, true);
-  });
   function validarCampo(input) {
   const valor  = input.value.trim();
   const msgId  = input.dataset.errorId;
@@ -778,7 +766,14 @@ function validarNombre(input) {
   <footer>
     <div class="footer-content">
       <p class="footer-text">© 2026 Casitas de Mar | Alquiler vacacional</p>
-      <p>Email: info@casitasdemar.com | Telf./ Whatsapp <a href="https://wa.me/34613119183" target="_blank" rel="noopener noreferrer" class="hover:text-primary transition-colors"style="color: white !important;">+34 613 119 183</a></p>
+      <p>Email: info@casitasdemar.com | Telf./ Whatsapp 
+        <a 
+        href="https://wa.me/34613119183" 
+        target="_blank" 
+        rel="noopener noreferrer" 
+        style="color: white !important;">+34 613 119 183
+      </a>
+    </p>
     </div>
   </footer>
   <script>
