@@ -353,14 +353,19 @@
             <div class="form-row">
               <div class="form-group">
                 <label class="form-label">Adultos</label>
-                <input type="number" class="form-input" name="adultos" min="1" max="6" value="6" required>
+                <input type="number" class="form-input" name="adultos" min="1" max="6" value="6" required
+                oninput="validarPersonas()">
 
               </div>
               <div class="form-group">
                 <label class="form-label">Niños</label>
-                <input type="number" class="form-input" name="ninos" min="0" max="5" value="0">
+                <input type="number" class="form-input" name="ninos" min="0" max="5" value="0"
+                oninput="validarPersonas()">
               </div>
             </div>
+            <span id="errorPersonas" style="display:none; color:#e74c3c; font-size:0.82rem; margin-top:0.3rem;">
+            ⚠️ El total de personas no puede superar 8
+            </span>
             <div class="form-group">
   <label class="form-label">Nombre completo</label>
   <input type="text" class="form-input" name="name" required
@@ -767,7 +772,28 @@ if (inputNinos) {
       return true;
     }
   }
+function validarPersonas() {
+  const inputAdultos = document.querySelector('input[name="adultos"]');
+  const inputNinos   = document.querySelector('input[name="ninos"]');
+  const msg          = document.getElementById('errorPersonas');
 
+  const adultos = parseInt(inputAdultos.value) || 0;
+  const ninos   = parseInt(inputNinos.value)   || 0;
+  const total   = adultos + ninos;
+  const MAX     = 8;
+
+  if (total > MAX) {
+    inputAdultos.style.borderColor = '#e74c3c';
+    inputNinos.style.borderColor   = '#e74c3c';
+    if (msg) msg.style.display = 'block';
+    return false;
+  } else {
+    inputAdultos.style.borderColor = '#27ae60';
+    inputNinos.style.borderColor   = adultos > 0 ? '#27ae60' : '#ddd';
+    if (msg) msg.style.display = 'none';
+    return true;
+  }
+}
   function validarFechas() {
   const inputEntrada = document.getElementById('fechaEntrada');
   const inputSalida  = document.getElementById('fechaSalida');
@@ -823,6 +849,7 @@ if (inputNinos) {
       if (telInput    && !validarTelefono(telInput))  hayErrores = true;
       if (nombreInput && !validarCampo(nombreInput))  hayErrores = true;
       if (emailInput  && !validarCampo(emailInput))   hayErrores = true;
+      if (!validarPersonas()) hayErrores = true;
       if (hayErrores) { e.stopImmediatePropagation(); e.preventDefault(); this.querySelector('input[style*="e74c3c"]')?.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
     }, true);
     const nombreInput = form.querySelector('input[name="name"]');
