@@ -13,269 +13,831 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Casa Blava Peñíscola - Alquiler turístico Costa Azahar</title>
+  <meta name="description" content="Casa Blava en Peñíscola: alojamiento vacacional con terraza, vistas panorámicas y calendario de disponibilidad sincronizado.">
 
-  <!-- Favicon -->
   <link rel="icon" type="image/png" sizes="32x32" href="images/logo.png">
   <link rel="icon" type="image/png" sizes="16x16" href="images/logo.png">
   <link rel="apple-touch-icon" sizes="180x180" href="images/logo.png">
 
-  <!-- Google Fonts con preconnect para carga más rápida -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
   <style>
-    /* ── Variables ───────────────────────────────────────────── */
     :root {
       --verde-primario: #537e75;
-      --verde-oscuro:   #22584e;
-      --verde-claro:    #84ada5;
-      --blanco:         #ffffff;
-      --gris-claro:     #f8f9fa;
-      --gris:           #6c757d;
-      --gris-oscuro:    #495057;
+      --verde-oscuro: #22584e;
+      --verde-claro: #84ada5;
+      --blanco: #ffffff;
+      --gris-claro: #f8f9fa;
+      --gris: #6c757d;
+      --gris-oscuro: #495057;
+      --gris-borde: #dcdfe3;
+      --rojo: #e74c3c;
+      --verde-ok: #27ae60;
+      --fondo-error: #fff0f0;
+      --fondo-exito: #d4edda;
+      --sombra: 0 10px 40px rgba(0, 0, 0, 0.08);
+      --radio-sm: 8px;
+      --radio-md: 10px;
+      --radio-lg: 15px;
+      --radio-xl: 20px;
+      --transicion: 0.25s ease;
+      --container: 1200px;
     }
 
-    /* ── Reset & base ────────────────────────────────────────── */
-    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: 'Inter', sans-serif; line-height: 1.6; color: var(--gris-oscuro); background: var(--gris-claro); }
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
-    /* ── Header ──────────────────────────────────────────────── */
+    html {
+      scroll-behavior: smooth;
+      -webkit-text-size-adjust: 100%;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      line-height: 1.6;
+      color: var(--gris-oscuro);
+      background: var(--gris-claro);
+    }
+
+    img,
+    svg {
+      display: block;
+      max-width: 100%;
+    }
+
+    button,
+    input,
+    textarea,
+    select {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    a {
+      color: inherit;
+    }
+
+    .container {
+      max-width: var(--container);
+      margin: 0 auto;
+      padding: 0 1.5rem;
+    }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
     header {
-      position: fixed; top: 0; width: 100%;
-      background: var(--blanco); box-shadow: 0 2px 10px rgba(0,0,0,.08);
-      z-index: 1000; padding: .5rem 0;
+      position: fixed;
+      inset: 0 0 auto 0;
+      width: 100%;
+      background: var(--blanco);
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+      z-index: 1000;
+      padding: 0.5rem 0;
     }
-    .container { max-width: 1200px; margin: 0 auto; padding: 0 1.5rem; }
-    .header-content { display: flex; justify-content: space-between; align-items: center; }
 
-    .logo-link { display: flex; align-items: center; gap: .75rem; text-decoration: none; }
-    .logo-img  { width: 200px; height: 90px; object-fit: contain; }
+    .header-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      min-height: 72px;
+      position: relative;
+    }
 
-    nav { display: flex; gap: 2rem; align-items: center; }
+    .logo-link {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      text-decoration: none;
+    }
+
+    .logo-img {
+      width: 200px;
+      height: 90px;
+      object-fit: contain;
+    }
+
+    nav {
+      display: flex;
+      gap: 2rem;
+      align-items: center;
+    }
+
     nav a {
-      color: var(--gris); text-decoration: none;
-      font-weight: 400; font-size: .95rem; transition: color .3s;
+      color: var(--gris);
+      text-decoration: none;
+      font-weight: 400;
+      font-size: 0.95rem;
+      transition: color var(--transicion);
     }
-    nav a:hover { color: var(--verde-primario); }
+
+    nav a:hover,
+    nav a:focus-visible {
+      color: var(--verde-primario);
+    }
 
     .mobile-menu-btn {
-      display: none; background: none; border: none;
-      font-size: 1.8rem; color: var(--verde-primario);
-      cursor: pointer; z-index: 1001;
+      display: none;
+      background: none;
+      border: none;
+      font-size: 1.8rem;
+      color: var(--verde-primario);
+      z-index: 1001;
+      min-width: 44px;
+      min-height: 44px;
     }
 
-    /* ── Main ────────────────────────────────────────────────── */
-    main { padding-top: 80px; min-height: calc(100vh - 200px); }
-
-    /* ── Hero & galería ──────────────────────────────────────── */
-    .property-hero { background: var(--blanco); padding: 4rem 0 2rem; }
-    .property-title    { font-size: 3rem; font-weight: 300; color: var(--verde-oscuro); margin-bottom: .5rem; letter-spacing: -1px; }
-    .property-location { font-size: 1.2rem; color: var(--verde-primario); font-weight: 500; margin-bottom: 2rem; }
-
-    .gallery { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin: 2rem 0; }
-    .gallery-main {
-      grid-column: span 2; grid-row: span 2;
-      height: 655px; background-size: cover; background-position: center;
-      border-radius: 15px; cursor: pointer; transition: opacity .2s;
+    main {
+      padding-top: 92px;
+      min-height: calc(100vh - 200px);
     }
+
+    .property-hero {
+      background: var(--blanco);
+      padding: 4rem 0 2rem;
+    }
+
+    .property-title {
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 300;
+      color: var(--verde-oscuro);
+      margin-bottom: 0.5rem;
+      letter-spacing: -1px;
+    }
+
+    .property-location {
+      font-size: 1.15rem;
+      color: var(--verde-primario);
+      font-weight: 500;
+      margin-bottom: 2rem;
+    }
+
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+      margin: 2rem 0;
+    }
+
+    .gallery-main,
     .gallery-item {
-      height: 320px; background-size: cover; background-position: center;
-      border-radius: 15px; cursor: pointer; transition: opacity .2s;
+      position: relative;
+      background-size: cover;
+      background-position: center;
+      border-radius: var(--radio-lg);
+      cursor: pointer;
+      transition: opacity var(--transicion), transform var(--transicion);
+      overflow: hidden;
     }
-    .gallery-main:hover, .gallery-item:hover { opacity: .85; }
 
-    /* ── Layout principal ────────────────────────────────────── */
-    .content-wrapper { display: grid; grid-template-columns: 1.5fr 1fr; gap: 3rem; padding: 3rem 0; }
-
-    /* ── Detalles ────────────────────────────────────────────── */
-    .property-details { background: var(--blanco); padding: 2rem; border-radius: 20px; }
-    .details-section  { margin-bottom: 2rem; }
-    .details-section h3 { font-size: 1.5rem; font-weight: 500; color: var(--verde-oscuro); margin-bottom: 1rem; }
-
-    .features { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; margin-top: 1rem; }
-    .feature-item {
-      display: flex; align-items: center; gap: .5rem;
-      padding: .8rem; background: var(--gris-claro); border-radius: 10px;
+    .gallery-main:hover,
+    .gallery-item:hover {
+      opacity: 0.9;
+      transform: translateY(-2px);
     }
-    .feature-icon { width: 24px; height: 24px; color: var(--verde-primario); flex-shrink: 0; }
 
-    .price-highlight { background: var(--verde-claro); padding: 1.5rem; border-radius: 15px; margin: 2rem 0; }
-    .price-highlight h4 { font-size: 1.2rem; color: var(--verde-oscuro); margin-bottom: .5rem; }
-    .price-amount       { font-size: 2rem; font-weight: 600; color: var(--verde-oscuro); }
+    .gallery-main {
+      grid-column: span 2;
+      grid-row: span 2;
+      height: 655px;
+    }
 
-    /* ── Panel de reserva ────────────────────────────────────── */
+    .gallery-item {
+      height: 320px;
+    }
+
+    .content-wrapper {
+      display: grid;
+      grid-template-columns: 1.5fr 1fr;
+      gap: 3rem;
+      padding: 3rem 0;
+    }
+
+    .property-details,
     .booking-panel {
-      background: var(--blanco); padding: 2rem; border-radius: 20px;
-      position: sticky; top: 100px; height: fit-content;
-      box-shadow: 0 10px 40px rgba(0,0,0,.08);
+      background: var(--blanco);
+      border-radius: var(--radio-xl);
     }
-    .booking-title { font-size: 1.8rem; font-weight: 500; color: var(--verde-oscuro); margin-bottom: 1.5rem; }
 
-    /* ── Calendario ──────────────────────────────────────────── */
-    .calendar { margin-bottom: 2rem; }
-    .calendar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
+    .property-details {
+      padding: 2rem;
+    }
+
+    .details-section {
+      margin-bottom: 2rem;
+    }
+
+    .details-section h2,
+    .details-section h3 {
+      font-size: 1.5rem;
+      font-weight: 500;
+      color: var(--verde-oscuro);
+      margin-bottom: 1rem;
+    }
+
+    .details-section p + p {
+      margin-top: 1rem;
+    }
+
+    .price-highlight {
+      background: var(--verde-claro);
+      padding: 1.5rem;
+      border-radius: var(--radio-lg);
+      margin: 2rem 0;
+    }
+
+    .price-highlight h4 {
+      font-size: 1.2rem;
+      color: var(--verde-oscuro);
+      margin-bottom: 0.5rem;
+    }
+
+    .price-amount {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--verde-oscuro);
+    }
+
+    .price-note {
+      margin-top: 0.5rem;
+      font-size: 0.9rem;
+    }
+
+    .features {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .feature-item {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.8rem;
+      background: var(--gris-claro);
+      border-radius: var(--radio-md);
+    }
+
+    .feature-icon {
+      width: 24px;
+      height: 24px;
+      color: var(--verde-primario);
+      flex: 0 0 24px;
+    }
+
+    .extra-list {
+      padding-left: 1.25rem;
+      line-height: 2;
+    }
+
+    .booking-panel {
+      padding: 2rem;
+      position: sticky;
+      top: 100px;
+      height: fit-content;
+      box-shadow: var(--sombra);
+    }
+
+    .booking-title {
+      font-size: 1.8rem;
+      font-weight: 500;
+      color: var(--verde-oscuro);
+      margin-bottom: 1.5rem;
+    }
+
+    .calendar {
+      margin-bottom: 2rem;
+    }
+
+    .calendar-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+      gap: 1rem;
+    }
+
     .calendar-nav {
-      background: none; border: 1px solid var(--verde-primario);
-      color: var(--verde-primario); width: 35px; height: 35px;
-      border-radius: 50%; cursor: pointer; font-size: 1.2rem; transition: all .3s;
+      background: none;
+      border: 1px solid var(--verde-primario);
+      color: var(--verde-primario);
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      font-size: 1.2rem;
+      transition: all var(--transicion);
     }
-    .calendar-nav:hover { background: var(--verde-primario); color: var(--blanco); }
-    .calendar-month { font-weight: 600; color: var(--verde-oscuro); }
 
-    .calendar-grid     { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; }
-    .calendar-day-name { text-align: center; font-size: .8rem; font-weight: 600; color: var(--gris); padding: .5rem 0; }
+    .calendar-nav:hover,
+    .calendar-nav:focus-visible {
+      background: var(--verde-primario);
+      color: var(--blanco);
+    }
+
+    .calendar-month {
+      font-weight: 600;
+      color: var(--verde-oscuro);
+      text-align: center;
+      flex: 1;
+    }
+
+    .sync-status {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.78rem;
+      color: var(--gris);
+      margin-bottom: 0.75rem;
+    }
+
+    .sync-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #ccc;
+      flex: 0 0 8px;
+    }
+
+    .sync-dot.ok { background: #4caf50; }
+    .sync-dot.error { background: #e57373; }
+    .sync-dot.loading {
+      background: #ffb74d;
+      animation: blink 1s infinite;
+    }
+
+    @keyframes blink {
+      0%,100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
+
+    .calendar-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 5px;
+    }
+
+    .calendar-day-name {
+      text-align: center;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--gris);
+      padding: 0.5rem 0;
+    }
+
     .calendar-day {
-      aspect-ratio: 1; display: flex; align-items: center; justify-content: center;
-      border-radius: 8px; cursor: pointer; transition: all .3s; font-size: .9rem;
+      aspect-ratio: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: var(--radio-sm);
+      font-size: 0.9rem;
+      border: none;
+      background: transparent;
+      transition: all var(--transicion);
+      min-height: 42px;
     }
-    .calendar-day:hover:not(.disabled):not(.empty):not(.booked) { background: var(--verde-claro); }
-    .calendar-day.empty    { cursor: default; }
-    .calendar-day.disabled { opacity: .3; cursor: not-allowed; }
-    .calendar-day.selected { background: var(--verde-primario); color: var(--blanco); font-weight: 600; }
-    .calendar-day.range    { background: var(--verde-claro); }
-    .calendar-day.booked   {
-      background: #f0e6e6; color: #b07070; cursor: not-allowed;
-      text-decoration: line-through; text-decoration-color: #c09090; opacity: .7;
+
+    .calendar-day:hover:not(.disabled):not(.empty):not(.booked) {
+      background: var(--verde-claro);
     }
-    .calendar-day.booked:hover { background: #f0e6e6; }
 
-    .calendar-legend { display: flex; gap: 1rem; flex-wrap: wrap; margin-top: .75rem .5rem; }
-    .legend-item     { display: flex; align-items: center; gap: .4rem; font-size: .75rem; color: var(--gris); }
-    .legend-dot      { width: 10px; height: 10px; border-radius: 3px; }
-    .legend-dot.available { background: #e8f5e9; border: 1px solid var(--verde-primario); }
-    .legend-dot.booked    { background: #f0e6e6; border: 1px solid #c09090; }
-    .legend-dot.selected  { background: var(--verde-primario); }
-    .calendar-note { font-size: .85rem; color: var(--gris); margin-top: 1rem; text-align: center; }
+    .calendar-day.disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+    }
 
-    .sync-status { display: flex; align-items: center; gap: .5rem; font-size: .75rem; color: var(--gris); margin-bottom: .75rem; }
-    .sync-dot    { width: 7px; height: 7px; border-radius: 50%; background: #ccc; }
-    .sync-dot.ok      { background: #4caf50; }
-    .sync-dot.error   { background: #e57373; }
-    .sync-dot.loading { background: #ffb74d; animation: blink 1s infinite; }
-    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.3} }
+    .calendar-day.selected {
+      background: var(--verde-primario);
+      color: var(--blanco);
+      font-weight: 600;
+    }
 
-    /* ── Formulario ──────────────────────────────────────────── */
-    .booking-form { display: flex; flex-direction: column; gap: 1rem; }
-    .form-group   { display: flex; flex-direction: column; }
-    .form-label   { font-size: .9rem; font-weight: 500; color: var(--gris-oscuro); margin-bottom: .5rem; }
-    .form-input   { padding: .8rem; border: 1px solid #ddd; border-radius: 10px; font-size: 1rem; transition: border .3s; }
-    .form-input:focus { outline: none; border-color: var(--verde-primario); }
-    .form-row     { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+    .calendar-day.range {
+      background: var(--verde-claro);
+    }
+
+    .calendar-day.empty {
+      cursor: default;
+    }
+
+    .calendar-day.booked {
+      background: #f0e6e6;
+      color: #b07070;
+      cursor: not-allowed;
+      text-decoration: line-through;
+      text-decoration-color: #c09090;
+      opacity: 0.8;
+    }
+
+    .calendar-day.booked:hover {
+      background: #f0e6e6;
+    }
+
+    .calendar-legend {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-top: 0.75rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.75rem;
+      color: var(--gris);
+    }
+
+    .legend-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 3px;
+    }
+
+    .legend-dot.available {
+      background: #e8f5e9;
+      border: 1px solid var(--verde-primario);
+    }
+
+    .legend-dot.booked {
+      background: #f0e6e6;
+      border: 1px solid #c09090;
+    }
+
+    .legend-dot.selected {
+      background: var(--verde-primario);
+    }
+
+    .calendar-note {
+      font-size: 0.85rem;
+      color: var(--gris);
+      margin-top: 1rem;
+      text-align: center;
+    }
+
+    .booking-form {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .form-label {
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--gris-oscuro);
+      margin-bottom: 0.5rem;
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 0.8rem;
+      border: 1px solid var(--gris-borde);
+      border-radius: var(--radio-md);
+      font-size: 1rem;
+      background: var(--blanco);
+      transition: border-color var(--transicion), box-shadow var(--transicion);
+      min-height: 48px;
+    }
+
+    .form-input:focus {
+      outline: none;
+      border-color: var(--verde-primario);
+      box-shadow: 0 0 0 3px rgba(83, 126, 117, 0.12);
+    }
+
+    .form-input.is-valid {
+      border-color: var(--verde-ok);
+    }
+
+    .form-input.is-invalid {
+      border-color: var(--rojo);
+    }
+
+    textarea.form-input {
+      resize: vertical;
+      min-height: 110px;
+    }
+
+    .field-error {
+      display: none;
+      color: var(--rojo);
+      font-size: 0.82rem;
+      margin-top: 0.35rem;
+    }
+
+    .field-error.visible {
+      display: block;
+    }
+
+    .message-box {
+      display: none;
+      padding: 1rem;
+      border-radius: var(--radio-md);
+      margin-bottom: 1rem;
+      font-size: 0.95rem;
+    }
+
+    .message-box.error {
+      background: var(--fondo-error);
+      color: #c0392b;
+    }
+
+    .message-box.success {
+      background: var(--fondo-exito);
+      border: 1px solid #c3e6cb;
+      color: #155724;
+    }
 
     .submit-btn {
-      background: var(--verde-primario); color: var(--blanco);
-      padding: 1rem; border: none; border-radius: 5px;
-      font-size: 1.1rem; font-weight: 600; cursor: pointer;
-      transition: all .3s; margin-top: 1rem;
-    }
-    .submit-btn:hover    { background: var(--verde-oscuro); transform: translateY(-2px); box-shadow: 0 10px 20px rgba(0,121,107,.3); }
-    .submit-btn:disabled { opacity: .7; transform: none; cursor: not-allowed; }
-
-    /* Mensajes de error inline */
-    .field-error { display: none; color: #e74c3c; font-size: .82rem; margin-top: .3rem; }
-
-    /* Success state */
-    #form-success {
-      display: none; text-align: center; padding: 2rem 1rem;
+      background: var(--verde-primario);
+      color: var(--blanco);
+      padding: 1rem;
+      border: none;
+      border-radius: 6px;
+      font-size: 1.05rem;
+      font-weight: 600;
+      transition: all var(--transicion);
+      margin-top: 0.5rem;
+      min-height: 50px;
     }
 
-    /* Error envío */
-    #mensajeError {
-      display: none; padding: 1rem; background: #fff0f0;
-      border-radius: 10px; margin-bottom: 1rem;
+    .submit-btn:hover,
+    .submit-btn:focus-visible {
+      background: var(--verde-oscuro);
+      transform: translateY(-2px);
+      box-shadow: 0 10px 20px rgba(0, 121, 107, 0.25);
     }
 
-    /* ── Footer ──────────────────────────────────────────────── */
-    footer { background: var(--verde-oscuro); color: var(--blanco); padding: 3rem 0 1.5rem; text-align: center; margin-top: 4rem; }
-    .footer-text { opacity: .9; margin-bottom: 1rem; }
+    .submit-btn:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+      transform: none;
+    }
 
-    /* ── Lightbox ────────────────────────────────────────────── */
+    .form-success-panel {
+      display: none;
+      text-align: center;
+      padding: 2rem 1rem;
+    }
+
+    .form-success-panel.visible {
+      display: block;
+    }
+
+    .form-success-icon {
+      font-size: 3.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .form-success-title {
+      font-size: 1.3rem;
+      font-weight: 600;
+      color: var(--verde-oscuro);
+      margin-bottom: 0.5rem;
+    }
+
+    footer {
+      background: var(--verde-oscuro);
+      color: var(--blanco);
+      padding: 3rem 0 1.5rem;
+      text-align: center;
+      margin-top: 4rem;
+    }
+
+    .footer-text {
+      opacity: 0.9;
+      margin-bottom: 1rem;
+    }
+
+    .footer-contact a {
+      color: var(--blanco);
+      text-decoration: underline;
+    }
+
     .lightbox-overlay {
-      display: none; position: fixed; inset: 0;
-      background: rgba(0,0,0,.92); z-index: 9999;
-      align-items: center; justify-content: center;
+      display: none;
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.92);
+      z-index: 9999;
+      align-items: center;
+      justify-content: center;
     }
-    .lightbox-overlay.active { display: flex; }
-    .lightbox-img    { max-width: 90vw; max-height: 85vh; object-fit: contain; border-radius: 8px; box-shadow: 0 0 40px rgba(0,0,0,.5); }
-    .lightbox-close  { position: absolute; top: 1.5rem; right: 2rem; color: #fff; font-size: 2.5rem; cursor: pointer; background: none; border: none; line-height: 1; opacity: .8; transition: opacity .2s; }
-    .lightbox-close:hover { opacity: 1; }
-    .lightbox-arrow  { position: absolute; top: 50%; transform: translateY(-50%); color: #fff; font-size: 3rem; cursor: pointer; background: rgba(255,255,255,.1); border: none; padding: .5rem 1rem; border-radius: 8px; transition: background .2s; user-select: none; }
-    .lightbox-arrow:hover  { background: rgba(255,255,255,.25); }
-    .lightbox-prev   { left: 1rem; }
-    .lightbox-next   { right: 1rem; }
-    .lightbox-counter { position: absolute; bottom: 1.5rem; left: 50%; transform: translateX(-50%); color: #fff; font-size: .95rem; opacity: .7; }
 
-    /* ── WhatsApp flotante ───────────────────────────────────── */
-    .wa-container { position: fixed; bottom: 2rem; right: 2rem; display: flex; flex-direction: column; align-items: flex-end; gap: .75rem; z-index: 9999; }
-    .wa-btn {
-      width: 60px; height: 60px; border-radius: 50%; background: #25D366;
-      border: none; cursor: pointer; display: flex; align-items: center; justify-content: center;
-      box-shadow: 0 4px 20px rgba(37,211,102,.4); transition: transform .3s, box-shadow .3s;
+    .lightbox-overlay.active {
+      display: flex;
     }
-    .wa-btn:hover  { box-shadow: 0 6px 25px rgba(37,211,102,.5); }
-    .wa-btn.open   { transform: rotate(45deg); }
-    .wa-options    { display: flex; flex-direction: column; gap: .5rem; align-items: flex-end; opacity: 0; pointer-events: none; transform: translateY(10px); transition: opacity .3s, transform .3s; }
-    .wa-options.open { opacity: 1; pointer-events: all; transform: translateY(0); }
-    .wa-option {
-      display: flex; align-items: center; gap: .75rem; text-decoration: none;
-      background: #fff; padding: .6rem 1rem .6rem 1.2rem; border-radius: 50px;
-      box-shadow: 0 2px 12px rgba(0,0,0,.15); transition: transform .2s, box-shadow .2s; white-space: nowrap;
-    }
-    .wa-option:hover  { transform: translateX(-4px); box-shadow: 0 4px 16px rgba(0,0,0,.2); }
-    .wa-label    { font-family: 'Inter', sans-serif; font-size: .95rem; font-weight: 500; color: #333; }
-    .wa-icon-sm  { width: 34px; height: 34px; background: #25D366; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1rem; flex-shrink: 0; }
 
-    /* ── Responsive ──────────────────────────────────────────── */
+    .lightbox-img {
+      max-width: 90vw;
+      max-height: 85vh;
+      object-fit: contain;
+      border-radius: var(--radio-sm);
+      box-shadow: 0 0 40px rgba(0,0,0,0.5);
+    }
+
+    .lightbox-close {
+      position: absolute;
+      top: 1.5rem;
+      right: 2rem;
+      color: white;
+      font-size: 2.5rem;
+      background: none;
+      border: none;
+      line-height: 1;
+      opacity: 0.85;
+      transition: opacity var(--transicion);
+      min-width: 44px;
+      min-height: 44px;
+    }
+
+    .lightbox-close:hover,
+    .lightbox-arrow:hover {
+      opacity: 1;
+    }
+
+    .lightbox-arrow {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      color: white;
+      font-size: 3rem;
+      background: rgba(255,255,255,0.1);
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: var(--radio-sm);
+      transition: background var(--transicion);
+      user-select: none;
+      min-width: 44px;
+      min-height: 44px;
+    }
+
+    .lightbox-arrow:hover {
+      background: rgba(255,255,255,0.25);
+    }
+
+    .lightbox-prev { left: 1rem; }
+    .lightbox-next { right: 1rem; }
+
+    .lightbox-counter {
+      position: absolute;
+      bottom: 1.5rem;
+      left: 50%;
+      transform: translateX(-50%);
+      color: white;
+      font-size: 0.95rem;
+      opacity: 0.75;
+    }
+
     @media (max-width: 992px) {
-      .content-wrapper { grid-template-columns: 1fr; }
-      .booking-panel   { position: static; }
-      .gallery         { grid-template-columns: 1fr; }
-      .gallery-main    { grid-column: span 1; grid-row: span 1; height: 300px; }
-      .property-title  { font-size: 2.2rem; }
-    }
-    @media (max-width: 768px) {
-      .logo-img   { width: 150px; height: 80px; }
-      .features   { grid-template-columns: 1fr; }
-      .form-row   { grid-template-columns: 1fr; }
-      nav         { gap: 1rem; }
-
-      .mobile-menu-btn { display: block !important; position: absolute; right: 1rem; top: 1.5rem; }
-      #main-nav {
-        position: fixed !important; top: 0 !important; right: -100% !important;
-        width: 80vw !important; max-width: 300px !important; height: 100vh !important;
-        background: var(--blanco) !important; flex-direction: column !important;
-        gap: 2rem !important; padding: 7rem 1.5rem 2rem !important;
-        transition: right .3s ease !important; box-shadow: -5px 0 25px rgba(0,0,0,.2) !important;
-        z-index: 999 !important;
+      .content-wrapper {
+        grid-template-columns: 1fr;
       }
-      #main-nav.active { right: 0 !important; }
-      #main-nav a { font-size: 1.2rem !important; padding: 1rem 0 !important; border-bottom: 1px solid var(--gris-claro) !important; text-align: center !important; }
 
-      .wa-container { bottom: 1.2rem; right: 1.2rem; }
-      .wa-btn       { width: 50px; height: 50px; }
-      .wa-btn svg   { width: 22px; height: 22px; }
-      .wa-option    { padding: .55rem 1rem; }
-      .wa-label     { font-size: .85rem; }
-      .wa-icon-sm   { width: 30px; height: 30px; font-size: .9rem; }
+      .booking-panel {
+        position: static;
+      }
+
+      .gallery {
+        grid-template-columns: 1fr;
+      }
+
+      .gallery-main {
+        grid-column: span 1;
+        grid-row: span 1;
+        height: 320px;
+      }
+
+      .property-title {
+        font-size: 2.2rem;
+      }
     }
+
+    @media (max-width: 768px) {
+      .logo-img {
+        width: 150px;
+        height: 80px;
+      }
+
+      .mobile-menu-btn {
+        display: block;
+        position: absolute;
+        right: 0;
+        top: 50%;
+        transform: translateY(-50%);
+      }
+
+      #main-nav {
+        position: fixed;
+        top: 0;
+        right: -100%;
+        width: 80vw;
+        max-width: 300px;
+        height: 100vh;
+        background: var(--blanco);
+        flex-direction: column;
+        gap: 2rem;
+        padding: 7rem 1.5rem 2rem;
+        transition: right 0.3s ease;
+        box-shadow: -5px 0 25px rgba(0,0,0,0.2);
+        z-index: 999;
+      }
+
+      #main-nav.active {
+        right: 0;
+      }
+
+      #main-nav a {
+        font-size: 1.2rem;
+        padding: 1rem 0;
+        border-bottom: 1px solid var(--gris-claro);
+        text-align: center;
+        width: 100%;
+      }
+
+      .features,
+      .form-row {
+        grid-template-columns: 1fr;
+      }
+
+      .lightbox-arrow {
+        font-size: 2.25rem;
+      }
+    }
+
     @media (max-width: 480px) {
-      .property-title { font-size: 1.8rem; }
-      .gallery-main   { height: 250px; }
-      .gallery-item   { height: 180px; }
+      .property-title {
+        font-size: 1.8rem;
+      }
+
+      .gallery-main {
+        height: 250px;
+      }
+
+      .gallery-item {
+        height: 180px;
+      }
+
+      .container {
+        padding: 0 1rem;
+      }
     }
   </style>
 </head>
 <body>
-
   <header>
     <div class="container">
       <div class="header-content">
-        <a href="index.html" class="logo-link">
-          <img src="images/Logo1.png" alt="Casitas de Mar" class="logo-img" width="200" height="90">
+        <a href="index.html" class="logo-link" aria-label="Ir al inicio">
+          <img src="images/Logo1.png" alt="Casitas de Mar" class="logo-img">
         </a>
-        <button class="mobile-menu-btn" onclick="toggleMobileMenu()" aria-label="Abrir menú">☰</button>
-        <nav id="main-nav">
+
+        <button
+          class="mobile-menu-btn"
+          id="mobileMenuBtn"
+          type="button"
+          aria-label="Abrir menú"
+          aria-expanded="false"
+          aria-controls="main-nav"
+        >
+          ☰
+        </button>
+
+        <nav id="main-nav" aria-label="Navegación principal">
           <a href="index.html">Inicio</a>
           <a href="loft_binibeca.html">Binibeca</a>
           <a href="Casa_Gonda.html">Casa Gonda</a>
@@ -291,637 +853,787 @@
       <div class="container">
         <h1 class="property-title">Casa Blava Peñíscola</h1>
         <p class="property-location">📍 Peñíscola, Costa Azahar</p>
-        <div class="gallery" id="gallery">
-          <div class="gallery-main" style="background-image:url('images/peniscola/portal.JPG')" role="img" aria-label="Portal"></div>
-          <div class="gallery-item"  style="background-image:url('images/peniscola/fachada.JPG')"  role="img" aria-label="Fachada"></div>
-          <div class="gallery-item"  style="background-image:url('images/peniscola/salon.JPG')"    role="img" aria-label="Salón"></div>
-          <div class="gallery-item"  style="background-image:url('images/peniscola/salon2.JPG')"   role="img" aria-label="Salón 2"></div>
-          <div class="gallery-item"  style="background-image:url('images/peniscola/salon3.JPG')"   role="img" aria-label="Salón 3"></div>
-          <div class="gallery-item"  style="background-image:url('images/peniscola/hab1.JPG')"     role="img" aria-label="Habitación 1"></div>
-          <div class="gallery-item"  style="background-image:url('images/peniscola/hab2.JPG')"     role="img" aria-label="Habitación 2"></div>
-          <div class="gallery-item"  style="background-image:url('images/peniscola/hab3.JPG')"     role="img" aria-label="Habitación 3"></div>
-          <div class="gallery-item"  style="background-image:url('images/peniscola/bano.JPG')"     role="img" aria-label="Baño 1"></div>
-          <div class="gallery-item"  style="background-image:url('images/peniscola/bano2.JPG')"    role="img" aria-label="Baño 2"></div>
-          <div class="gallery-item"  style="background-image:url('images/peniscola/bano3.JPG')"    role="img" aria-label="Baño 3"></div>
-          <div class="gallery-item"  style="background-image:url('images/peniscola/kitchen.JPG')"  role="img" aria-label="Cocina"></div>
-          <div class="gallery-item"  style="background-image:url('images/peniscola/kitchen2.jpeg')" role="img" aria-label="Cocina 2"></div>
-          <div class="gallery-item"  style="background-image:url('images/peniscola/terraza.JPG')"  role="img" aria-label="Terraza"></div>
-          <div class="gallery-item"  style="background-image:url('images/peniscola/terraza2.JPG')" role="img" aria-label="Terraza 2"></div>
-          <div class="gallery-item"  style="background-image:url('images/peniscola/terraza3.JPG')" role="img" aria-label="Terraza 3"></div>
-          <div class="gallery-item"  style="background-image:url('images/peniscola/terraza4.JPG')" role="img" aria-label="Terraza 4"></div>
-          <div class="gallery-item"  style="background-image:url('images/peniscola/terraza5.JPG')" role="img" aria-label="Terraza 5"></div>
-          <div class="gallery-item"  style="background-image:url('images/peniscola/faro.JPG')"     role="img" aria-label="Faro"></div>
-          <div class="gallery-item"  style="background-image:url('images/peniscola/canon.JPG')"    role="img" aria-label="Cañón"></div>
-          <div class="gallery-item"  style="background-image:url('images/peniscola/paisaje1.JPG')" role="img" aria-label="Paisaje"></div>
+
+        <div class="gallery" id="propertyGallery">
+          <div class="gallery-main" data-gallery-image="images/peniscola/portal.JPG" style="background-image: url('images/peniscola/portal.JPG')" aria-label="Imagen principal de Casa Blava"></div>
+          <div class="gallery-item" data-gallery-image="images/peniscola/fachada.JPG" style="background-image: url('images/peniscola/fachada.JPG')" aria-label="Fachada"></div>
+          <div class="gallery-item" data-gallery-image="images/peniscola/salon.JPG" style="background-image: url('images/peniscola/salon.JPG')" aria-label="Salón"></div>
+          <div class="gallery-item" data-gallery-image="images/peniscola/salon2.JPG" style="background-image: url('images/peniscola/salon2.JPG')" aria-label="Salón"></div>
+          <div class="gallery-item" data-gallery-image="images/peniscola/salon3.JPG" style="background-image: url('images/peniscola/salon3.JPG')" aria-label="Salón"></div>
+          <div class="gallery-item" data-gallery-image="images/peniscola/hab1.JPG" style="background-image: url('images/peniscola/hab1.JPG')" aria-label="Dormitorio"></div>
+          <div class="gallery-item" data-gallery-image="images/peniscola/hab2.JPG" style="background-image: url('images/peniscola/hab2.JPG')" aria-label="Dormitorio"></div>
+          <div class="gallery-item" data-gallery-image="images/peniscola/hab3.JPG" style="background-image: url('images/peniscola/hab3.JPG')" aria-label="Dormitorio"></div>
+          <div class="gallery-item" data-gallery-image="images/peniscola/bano.JPG" style="background-image: url('images/peniscola/bano.JPG')" aria-label="Baño"></div>
+          <div class="gallery-item" data-gallery-image="images/peniscola/bano2.JPG" style="background-image: url('images/peniscola/bano2.JPG')" aria-label="Baño"></div>
+          <div class="gallery-item" data-gallery-image="images/peniscola/bano3.JPG" style="background-image: url('images/peniscola/bano3.JPG')" aria-label="Baño"></div>
+          <div class="gallery-item" data-gallery-image="images/peniscola/kitchen.JPG" style="background-image: url('images/peniscola/kitchen.JPG')" aria-label="Cocina"></div>
+          <div class="gallery-item" data-gallery-image="images/peniscola/kitchen2.jpeg" style="background-image: url('images/peniscola/kitchen2.jpeg')" aria-label="Cocina"></div>
+          <div class="gallery-item" data-gallery-image="images/peniscola/terraza.JPG" style="background-image: url('images/peniscola/terraza.JPG')" aria-label="Terraza"></div>
+          <div class="gallery-item" data-gallery-image="images/peniscola/terraza2.JPG" style="background-image: url('images/peniscola/terraza2.JPG')" aria-label="Terraza"></div>
+          <div class="gallery-item" data-gallery-image="images/peniscola/terraza3.JPG" style="background-image: url('images/peniscola/terraza3.JPG')" aria-label="Terraza"></div>
+          <div class="gallery-item" data-gallery-image="images/peniscola/terraza4.JPG" style="background-image: url('images/peniscola/terraza4.JPG')" aria-label="Terraza"></div>
+          <div class="gallery-item" data-gallery-image="images/peniscola/terraza5.JPG" style="background-image: url('images/peniscola/terraza5.JPG')" aria-label="Terraza"></div>
+          <div class="gallery-item" data-gallery-image="images/peniscola/faro.JPG" style="background-image: url('images/peniscola/faro.JPG')" aria-label="Faro"></div>
+          <div class="gallery-item" data-gallery-image="images/peniscola/canon.JPG" style="background-image: url('images/peniscola/canon.JPG')" aria-label="Cañón"></div>
+          <div class="gallery-item" data-gallery-image="images/peniscola/paisaje1.JPG" style="background-image: url('images/peniscola/paisaje1.JPG')" aria-label="Paisaje"></div>
         </div>
       </div>
     </section>
 
-    <div class="container">
-      <div class="content-wrapper">
+    <section>
+      <div class="container">
+        <div class="content-wrapper">
+          <article class="property-details">
+            <section class="details-section">
+              <h2>Descripción</h2>
+              <p>Casa con terraza y vistas panorámicas en Peñíscola, una de las joyas de la Costa Azahar. Perfecta para familias que buscan comodidad, playa y el encanto del casco histórico.</p>
+              <p>La casa dispone de tres dormitorios amplios, salón-comedor con salida a terraza, cocina completa equipada y dos baños. Está situada en una zona tranquila a poca distancia de las playas y del centro histórico con su castillo templario.</p>
+            </section>
 
-        <!-- ── Detalles ─────────────────────────────────────── -->
-        <div class="property-details">
-          <div class="details-section">
-            <h3>Descripción</h3>
-            <p>Casa con terraza y vistas panorámicas en Peñíscola, una de las joyas de la Costa Azahar. Perfecto para familias que buscan comodidad, playa y el encanto del casco histórico.</p>
-            <p style="margin-top:1rem">La casa dispone de tres dormitorios amplios, salón-comedor con salida a terraza, cocina completa equipada y dos baños. Situado en zona tranquila a poca distancia de las playas y del centro histórico con su castillo templario.</p>
-          </div>
+            <section class="price-highlight" aria-label="Precio">
+              <h4>Precio por noche</h4>
+              <div class="price-amount">A consultar</div>
+              <p class="price-note">*Consultar otras temporadas y descuentos por larga estancia.</p>
+            </section>
 
-          <div class="price-highlight">
-            <h4>Precio por noche</h4>
-            <div class="price-amount">A consultar</div>
-            <p style="margin-top:.5rem;font-size:.9rem">*Consultar otras temporadas y descuentos por larga estancia.</p>
-          </div>
+            <section class="details-section">
+              <h3>Características</h3>
+              <div class="features">
+                <div class="feature-item">
+                  <svg class="feature-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                  <span>1-6 personas</span>
+                </div>
 
-          <div class="details-section">
-            <h3>Características</h3>
-            <div class="features">
-              <div class="feature-item">
-                <svg class="feature-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
-                1-6 personas
+                <div class="feature-item">
+                  <svg class="feature-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+                  <span>3 dormitorios</span>
+                </div>
+
+                <div class="feature-item">
+                  <svg class="feature-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"></path></svg>
+                  <span>2 baños completos</span>
+                </div>
+
+                <div class="feature-item">
+                  <svg class="feature-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
+                  <span>WiFi gratis</span>
+                </div>
+
+                <div class="feature-item">
+                  <svg class="feature-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z"></path></svg>
+                  <span>Aire acondicionado</span>
+                </div>
+
+                <div class="feature-item">
+                  <svg class="feature-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 10l-2 1m0 0l-2-1m2 1v2.5M20 7l-2 1m2-1l-2-1m2 1v2.5M14 4l-2-1-2 1M4 7l2-1M4 7l2 1M4 7v2.5M12 21l-2-1m2 1l2-1m-2 1v-2.5M6 18l-2-1v-2.5M18 18l2-1v-2.5"></path></svg>
+                  <span>Cocina equipada</span>
+                </div>
+
+                <div class="feature-item">
+                  <svg class="feature-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
+                  <span>Terraza con vistas</span>
+                </div>
+
+                <div class="feature-item">
+                  <svg class="feature-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path></svg>
+                  <span>Parking público cerca</span>
+                </div>
               </div>
-              <div class="feature-item">
-                <svg class="feature-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
-                3 dormitorios
+            </section>
+
+            <section class="details-section">
+              <h3>Información adicional</h3>
+              <ul class="extra-list">
+                <li>Check-in: a partir de las 16:00h</li>
+                <li>Check-out: hasta las 11:00h</li>
+                <li>Estancia mínima: 4 noches en temporada alta</li>
+                <li>No se admiten mascotas</li>
+                <li>No se permite fumar en el interior</li>
+                <li>No se permite aparcar dentro del casco antiguo</li>
+                <li>A 5 min de la playa</li>
+              </ul>
+            </section>
+          </article>
+
+          <aside class="booking-panel">
+            <h2 class="booking-title">Reservar</h2>
+
+            <div class="calendar" aria-label="Calendario de disponibilidad">
+              <div class="calendar-header">
+                <button class="calendar-nav" type="button" data-month-nav="-1" aria-label="Mes anterior">‹</button>
+                <span class="calendar-month" id="mesActual">Cargando...</span>
+                <button class="calendar-nav" type="button" data-month-nav="1" aria-label="Mes siguiente">›</button>
               </div>
-              <div class="feature-item">
-                <svg class="feature-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"/></svg>
-                2 baños completos
+
+              <div class="sync-status">
+                <div class="sync-dot loading" id="syncDot"></div>
+                <span id="syncText">Cargando disponibilidad...</span>
               </div>
-              <div class="feature-item">
-                <svg class="feature-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
-                WiFi gratis
+
+              <div class="calendar-grid" id="calendarioGrid"></div>
+
+              <div class="calendar-legend">
+                <div class="legend-item"><div class="legend-dot available"></div> Disponible</div>
+                <div class="legend-item"><div class="legend-dot booked"></div> Reservado</div>
+                <div class="legend-item"><div class="legend-dot selected"></div> Seleccionado</div>
               </div>
-              <div class="feature-item">
-                <svg class="feature-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z"/></svg>
-                Aire acondicionado
-              </div>
-              <div class="feature-item">
-                <svg class="feature-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 10l-2 1m0 0l-2-1m2 1v2.5M20 7l-2 1m2-1l-2-1m2 1v2.5M14 4l-2-1-2 1M4 7l2-1M4 7l2 1M4 7v2.5M12 21l-2-1m2 1l2-1m-2 1v-2.5M6 18l-2-1v-2.5M18 18l2-1v-2.5"/></svg>
-                Cocina equipada
-              </div>
-              <div class="feature-item">
-                <svg class="feature-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
-                Terraza con vistas
-              </div>
-              <div class="feature-item">
-                <svg class="feature-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/></svg>
-                Parking público cerca
-              </div>
+
+              <p class="calendar-note">Selecciona fecha de entrada y salida</p>
             </div>
-          </div>
 
-          <div class="details-section">
-            <h3>Información adicional</h3>
-            <ul style="padding-left:1.5rem;line-height:2">
-              <li>Check-in: a partir de las 16:00h</li>
-              <li>Check-out: hasta las 11:00h</li>
-              <li>Estancia mínima: 4 noches en temporada alta</li>
-              <li>No se admiten mascotas</li>
-              <li>No se permite fumar en el interior</li>
-              <li>No se permite aparcar dentro del casco antiguo</li>
-              <li>A 5 min de la playa</li>
-            </ul>
-          </div>
+            <form
+              class="booking-form"
+              id="formularioReserva"
+              action="https://api.web3forms.com/submit"
+              method="POST"
+              novalidate
+            >
+              <input type="hidden" name="access_key" value="ba4d4800-cc82-4659-86e0-f10021d29924">
+              <input type="hidden" name="subject" value="Nueva solicitud de reserva - Casa Blava">
+              <input type="hidden" name="from_name" value="Web Casitas de Mar - Casa Blava">
+              <input type="checkbox" name="botcheck" class="sr-only" tabindex="-1" autocomplete="off">
+
+              <div class="message-box error" id="mensajeError">
+                ⚠️ Hubo un problema al enviar la solicitud. Por favor, inténtalo de nuevo.
+              </div>
+
+              <div class="form-success-panel" id="formSuccessPanel">
+                <div class="form-success-icon">✅</div>
+                <h3 class="form-success-title">¡Mensaje enviado correctamente!</h3>
+                <p>Gracias por contactarnos. Te responderemos en breve.</p>
+              </div>
+
+              <div class="form-fields" id="formFields">
+                <div class="form-row">
+                  <div class="form-group">
+                    <label class="form-label" for="fechaEntrada">Entrada</label>
+                    <input type="date" class="form-input" id="fechaEntrada" name="entrada" required>
+                  </div>
+
+                  <div class="form-group">
+                    <label class="form-label" for="fechaSalida">Salida</label>
+                    <input type="date" class="form-input" id="fechaSalida" name="salida" required>
+                  </div>
+                </div>
+
+                <span class="field-error" id="errorFechas">⚠️ Debes seleccionar fechas válidas de entrada y salida</span>
+
+                <div class="form-row">
+                  <div class="form-group">
+                    <label class="form-label" for="adultos">Adultos</label>
+                    <input type="number" class="form-input" id="adultos" name="adultos" min="1" max="6" value="6" required>
+                  </div>
+
+                  <div class="form-group">
+                    <label class="form-label" for="ninos">Niños</label>
+                    <input type="number" class="form-input" id="ninos" name="ninos" min="0" max="5" value="0">
+                  </div>
+                </div>
+
+                <span class="field-error" id="errorPersonas">⚠️ El total de personas no puede superar 8</span>
+
+                <div class="form-group">
+                  <label class="form-label" for="name">Nombre completo</label>
+                  <input type="text" class="form-input" id="name" name="name" required autocomplete="name">
+                  <span class="field-error" id="errorNombre">⚠️ El nombre solo puede contener letras</span>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label" for="email">Email</label>
+                  <input type="email" class="form-input" id="email" name="email" required autocomplete="email">
+                  <span class="field-error" id="errorEmail">⚠️ Introduce un email válido</span>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label" for="telefono">Teléfono</label>
+                  <input type="tel" class="form-input" id="telefono" name="telefono" required autocomplete="tel">
+                  <span class="field-error" id="errorTelefono">⚠️ Introduce un teléfono válido</span>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label" for="message">Comentarios (opcional)</label>
+                  <textarea class="form-input" id="message" name="message" rows="3" placeholder="Hora aproximada de llegada, peticiones especiales..."></textarea>
+                </div>
+
+                <button type="submit" class="submit-btn" id="submitBtnReserva">Solicitar reserva</button>
+
+                <div class="message-box success" id="mensajeExito">
+                  ✓ Tu solicitud se ha enviado correctamente. Te responderemos en breve.
+                </div>
+              </div>
+            </form>
+          </aside>
         </div>
-
-        <!-- ── Panel reserva ─────────────────────────────────── -->
-        <div class="booking-panel">
-          <h2 class="booking-title">Reservar</h2>
-
-          <div class="calendar">
-            <div class="calendar-header">
-              <button class="calendar-nav" onclick="cambiarMes(-1)" aria-label="Mes anterior">‹</button>
-              <span class="calendar-month" id="mesActual"></span>
-              <button class="calendar-nav" onclick="cambiarMes(1)" aria-label="Mes siguiente">›</button>
-            </div>
-            <div class="sync-status">
-              <div class="sync-dot loading" id="syncDot"></div>
-              <span id="syncText">Cargando disponibilidad...</span>
-            </div>
-            <div class="calendar-grid" id="calendarioGrid"></div>
-            <div class="calendar-legend">
-              <div class="legend-item"><div class="legend-dot available"></div> Disponible</div>
-              <div class="legend-item"><div class="legend-dot booked"></div> Reservado</div>
-              <div class="legend-item"><div class="legend-dot selected"></div> Seleccionado</div>
-            </div>
-            <p class="calendar-note">Selecciona fecha de entrada y salida</p>
-          </div>
-
-          <form class="booking-form" id="formularioReserva"
-                action="https://api.web3forms.com/submit" method="POST" novalidate>
-            <input type="hidden" name="access_key"  value="ba4d4800-cc82-4659-86e0-f10021d29924">
-            <input type="hidden" name="subject"     value="Nueva solicitud de reserva - Casa Blava">
-            <input type="hidden" name="from_name"   value="Web Casitas de Mar - Casa Blava">
-            <input type="checkbox" name="botcheck"  style="display:none">
-
-            <!-- Estado éxito (oculto hasta envío correcto) -->
-            <div id="form-success">
-              <div style="font-size:3.5rem;margin-bottom:1rem">✅</div>
-              <h4 style="font-size:1.3rem;font-weight:600;color:var(--verde-oscuro);margin-bottom:.5rem">¡Mensaje enviado correctamente!</h4>
-              <p style="color:var(--gris-oscuro);font-size:1rem">Gracias por contactarnos. Te responderemos en breve.</p>
-            </div>
-
-            <!-- Error de envío -->
-            <div id="mensajeError">
-              <p style="color:#c0392b;font-size:.95rem;margin:0">⚠️ Hubo un problema al enviar la solicitud. Por favor, inténtalo de nuevo.</p>
-            </div>
-
-            <!-- Campos del formulario -->
-            <div id="formFields">
-              <div class="form-row">
-                <div class="form-group">
-                  <label class="form-label" for="fechaEntrada">Entrada</label>
-                  <input type="date" class="form-input" id="fechaEntrada" name="entrada" required>
-                </div>
-                <div class="form-group">
-                  <label class="form-label" for="fechaSalida">Salida</label>
-                  <input type="date" class="form-input" id="fechaSalida" name="salida" required>
-                </div>
-              </div>
-              <span id="errorFechas" class="field-error">⚠️ Debes seleccionar las fechas de entrada y salida</span>
-
-              <div class="form-row" style="margin-top:1rem">
-                <div class="form-group">
-                  <label class="form-label" for="inputAdultos">Adultos</label>
-                  <input type="number" class="form-input" id="inputAdultos" name="adultos" min="1" max="6" value="1" required>
-                </div>
-                <div class="form-group">
-                  <label class="form-label" for="inputNinos">Niños</label>
-                  <input type="number" class="form-input" id="inputNinos" name="ninos" min="0" max="5" value="0">
-                </div>
-              </div>
-
-              <div class="form-group" style="margin-top:1rem">
-                <label class="form-label" for="inputNombre">Nombre completo</label>
-                <input type="text" class="form-input" id="inputNombre" name="name" required autocomplete="name">
-                <span class="field-error" id="errorNombre">⚠️ El nombre solo puede contener letras</span>
-              </div>
-
-              <div class="form-group">
-                <label class="form-label" for="inputEmail">Email</label>
-                <input type="email" class="form-input" id="inputEmail" name="email" required autocomplete="email">
-                <span class="field-error" id="errorEmail">⚠️ Introduce un email válido</span>
-              </div>
-
-              <div class="form-group">
-                <label class="form-label" for="inputTelefono">Teléfono</label>
-                <input type="tel" class="form-input" id="inputTelefono" name="telefono" required autocomplete="tel">
-                <span class="field-error" id="errorTelefono">⚠️ Introduce un teléfono válido</span>
-              </div>
-
-              <div class="form-group">
-                <label class="form-label" for="inputComentarios">Comentarios (opcional)</label>
-                <textarea class="form-input" id="inputComentarios" name="message" rows="3"
-                  placeholder="Hora aproximada de llegada, peticiones especiales..."></textarea>
-              </div>
-
-              <button type="submit" class="submit-btn" id="submitBtnReserva">Solicitar reserva</button>
-            </div><!-- /formFields -->
-          </form>
-        </div>
-
-      </div><!-- /content-wrapper -->
-    </div><!-- /container -->
+      </div>
+    </section>
   </main>
 
   <footer>
-    <div class="footer-content">
+    <div class="container footer-content">
       <p class="footer-text">© 2026 Casitas de Mar | Alquiler vacacional</p>
-      <p>Email: info@casitasdemar.com | Telf./ Whatsapp
-        <a href="https://wa.me/34613119183" target="_blank" rel="noopener noreferrer" style="color:#fff">+34 613 119 183</a>
+      <p class="footer-contact">
+        Email: info@casitasdemar.com | Telf./ Whatsapp
+        <a href="https://wa.me/34613119183" target="_blank" rel="noopener noreferrer">+34 613 119 183</a>
       </p>
     </div>
   </footer>
 
-  <!-- Lightbox -->
-  <div class="lightbox-overlay" id="lightbox" role="dialog" aria-modal="true" aria-label="Galería de imágenes">
-    <button class="lightbox-close" onclick="closeLightbox()" aria-label="Cerrar">✕</button>
-    <button class="lightbox-arrow lightbox-prev" onclick="changeImage(-1)" aria-label="Imagen anterior">‹</button>
-    <img class="lightbox-img" id="lightbox-img" src="" alt="Imagen de la propiedad">
-    <button class="lightbox-arrow lightbox-next" onclick="changeImage(1)" aria-label="Siguiente imagen">›</button>
-    <div class="lightbox-counter" id="lightbox-counter" aria-live="polite"></div>
+  <div class="lightbox-overlay" id="lightbox" aria-hidden="true">
+    <button class="lightbox-close" id="lightboxClose" type="button" aria-label="Cerrar imagen">✕</button>
+    <button class="lightbox-arrow lightbox-prev" id="lightboxPrev" type="button" aria-label="Imagen anterior">‹</button>
+    <img class="lightbox-img" id="lightboxImg" src="" alt="Imagen ampliada de la propiedad">
+    <button class="lightbox-arrow lightbox-next" id="lightboxNext" type="button" aria-label="Imagen siguiente">›</button>
+    <div class="lightbox-counter" id="lightboxCounter"></div>
   </div>
 
-  <!-- WhatsApp flotante -->
-  <div class="wa-container">
-    <div class="wa-options" id="waOptions">
-      <a href="https://wa.me/34613119183?text=Hola,%20estoy%20interesado/a%20en%20obtener%20m%C3%A1s%20informaci%C3%B3n,%20gracias."
-         target="_blank" rel="noopener noreferrer" class="wa-option">
-        <span class="wa-label">Peñíscola</span>
-        <div class="wa-icon-sm">📱</div>
-      </a>
-      <a href="https://wa.me/34690288196?text=Hola,%20estoy%20interesado/a%20en%20obtener%20m%C3%A1s%20informaci%C3%B3n,%20gracias."
-         target="_blank" rel="noopener noreferrer" class="wa-option">
-        <span class="wa-label">Menorca</span>
-        <div class="wa-icon-sm">📱</div>
-      </a>
-      <a href="https://wa.me/34652306031?text=Hola,%20estoy%20interesado/a%20en%20obtener%20m%C3%A1s%20informaci%C3%B3n,%20gracias."
-         target="_blank" rel="noopener noreferrer" class="wa-option">
-        <span class="wa-label">Tarifa</span>
-        <div class="wa-icon-sm">📱</div>
-      </a>
-    </div>
-    <button class="wa-btn" id="waBtn" onclick="toggleWA()" aria-label="Contactar por WhatsApp">
-      <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="white" aria-hidden="true">
-        <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
-      </svg>
-    </button>
-  </div>
-
-  <!-- ═══════════════════════════════════════════════════════════
-       JavaScript — todo en un único bloque al final del <body>
-  ════════════════════════════════════════════════════════════ -->
   <script>
-  'use strict';
+    (() => {
+      const state = {
+        reservas: new Set(),
+        fechaEntrada: null,
+        fechaSalida: null,
+        mesActual: new Date().getMonth(),
+        anyoActual: new Date().getFullYear(),
+        lightboxIndex: 0,
+        lightboxImages: []
+      };
 
-  /* ── Utilidades de fecha ──────────────────────────────────── */
-  const toKey = d =>
-    `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+      const meses = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+      const diasSemana = ['L','M','X','J','V','S','D'];
+      const ICAL_URLS = [
+        'https://tuscasasvacaciones.eduardgomez-4.workers.dev/ical/casa-blava-airbnb',
+        'https://tuscasasvacaciones.eduardgomez-4.workers.dev/ical/casa-blava-booking'
+      ];
 
-  const parseFecha = str =>
-    new Date(+str.slice(0,4), +str.slice(4,6)-1, +str.slice(6,8));
+      const els = {
+        nav: document.getElementById('main-nav'),
+        mobileMenuBtn: document.getElementById('mobileMenuBtn'),
+        calendarioGrid: document.getElementById('calendarioGrid'),
+        mesActual: document.getElementById('mesActual'),
+        syncDot: document.getElementById('syncDot'),
+        syncText: document.getElementById('syncText'),
+        inputEntrada: document.getElementById('fechaEntrada'),
+        inputSalida: document.getElementById('fechaSalida'),
+        inputAdultos: document.getElementById('adultos'),
+        inputNinos: document.getElementById('ninos'),
+        inputNombre: document.getElementById('name'),
+        inputEmail: document.getElementById('email'),
+        inputTelefono: document.getElementById('telefono'),
+        form: document.getElementById('formularioReserva'),
+        formFields: document.getElementById('formFields'),
+        submitBtn: document.getElementById('submitBtnReserva'),
+        mensajeError: document.getElementById('mensajeError'),
+        mensajeExito: document.getElementById('mensajeExito'),
+        formSuccessPanel: document.getElementById('formSuccessPanel'),
+        errorFechas: document.getElementById('errorFechas'),
+        errorPersonas: document.getElementById('errorPersonas'),
+        errorNombre: document.getElementById('errorNombre'),
+        errorEmail: document.getElementById('errorEmail'),
+        errorTelefono: document.getElementById('errorTelefono'),
+        galleryItems: Array.from(document.querySelectorAll('[data-gallery-image]')),
+        lightbox: document.getElementById('lightbox'),
+        lightboxImg: document.getElementById('lightboxImg'),
+        lightboxCounter: document.getElementById('lightboxCounter'),
+        lightboxClose: document.getElementById('lightboxClose'),
+        lightboxPrev: document.getElementById('lightboxPrev'),
+        lightboxNext: document.getElementById('lightboxNext'),
+        monthNavButtons: Array.from(document.querySelectorAll('[data-month-nav]'))
+      };
 
-  const addDays = (d, n) => new Date(d.getTime() + n * 86_400_000);
+      function toKey(date) {
+        return [
+          date.getFullYear(),
+          String(date.getMonth() + 1).padStart(2, '0'),
+          String(date.getDate()).padStart(2, '0')
+        ].join('-');
+      }
 
-  /* ── iCal ─────────────────────────────────────────────────── */
-  const WORKER = 'https://tuscasasvacaciones.eduardgomez-4.workers.dev';
-  let fechasReservadas = new Set();
+      function parseFechaYYYYMMDD(str) {
+        return new Date(
+          parseInt(str.slice(0, 4), 10),
+          parseInt(str.slice(4, 6), 10) - 1,
+          parseInt(str.slice(6, 8), 10)
+        );
+      }
 
-  function parsearIcal(texto) {
-    const fechas   = new Set();
-    const hoy      = new Date(); hoy.setHours(0,0,0,0);
-    const eventos  = texto.replace(/\r\n?/g, '\n').split('BEGIN:VEVENT');
+      function sameDate(a, b) {
+        return !!a && !!b &&
+          a.getFullYear() === b.getFullYear() &&
+          a.getMonth() === b.getMonth() &&
+          a.getDate() === b.getDate();
+      }
 
-    for (let i = 1; i < eventos.length; i++) {
-      const b  = eventos[i];
-      const s  = b.match(/DTSTART[^:\n]*:(\d{8})/);
-      const e  = b.match(/DTEND[^:\n]*:(\d{8})/);
-      if (!s || !e) continue;
-      let cur  = parseFecha(s[1]);
-      const fin = parseFecha(e[1]);
-      if (cur.getTime() === fin.getTime()) {
-        if (cur >= hoy) fechas.add(toKey(cur));
-      } else {
-        while (cur < fin) {
-          if (cur >= hoy) fechas.add(toKey(cur));
-          cur = addDays(cur, 1);
+      function normalizeDateInputValue(value) {
+        if (!value) return null;
+        const date = new Date(value);
+        if (Number.isNaN(date.getTime())) return null;
+        return date;
+      }
+
+      function setFieldState(input, valid) {
+        input.classList.remove('is-valid', 'is-invalid');
+        if (valid === true) input.classList.add('is-valid');
+        if (valid === false) input.classList.add('is-invalid');
+      }
+
+      function toggleError(el, show, text = '') {
+        if (!el) return;
+        if (text) el.textContent = text;
+        el.classList.toggle('visible', !!show);
+      }
+
+      function parsearIcal(texto) {
+        const fechas = new Set();
+        const textoNormalizado = (texto || '').replace(/\r\n/g, '\n').replace(/\r/g, '\n');
+        const eventos = textoNormalizado.split('BEGIN:VEVENT');
+        const hoy = new Date();
+        hoy.setHours(0, 0, 0, 0);
+
+        for (let i = 1; i < eventos.length; i++) {
+          const bloque = eventos[i];
+          const dtStart = bloque.match(/DTSTART[^:\n]*:(\d{8})/);
+          const dtEnd = bloque.match(/DTEND[^:\n]*:(\d{8})/);
+
+          if (!dtStart || !dtEnd) continue;
+
+          let cur = parseFechaYYYYMMDD(dtStart[1]);
+          const fin = parseFechaYYYYMMDD(dtEnd[1]);
+
+          if (cur.getTime() === fin.getTime()) {
+            if (cur >= hoy) fechas.add(toKey(cur));
+          } else {
+            while (cur < fin) {
+              if (cur >= hoy) fechas.add(toKey(cur));
+              cur = new Date(cur.getTime() + 86400000);
+            }
+          }
+        }
+
+        return fechas;
+      }
+
+      async function cargarIcal() {
+        try {
+          const respuestas = await Promise.all(ICAL_URLS.map(url => fetch(url)));
+          const textos = await Promise.all(
+            respuestas.map(r => r.ok ? r.text() : Promise.resolve(''))
+          );
+
+          const fusion = new Set();
+          textos.forEach(texto => {
+            parsearIcal(texto).forEach(fecha => fusion.add(fecha));
+          });
+
+          state.reservas = fusion;
+          els.syncDot.className = 'sync-dot ok';
+          els.syncText.textContent = 'Sincronizado';
+        } catch (error) {
+          console.error('iCal error:', error);
+          els.syncDot.className = 'sync-dot error';
+          els.syncText.textContent = 'Sin conexión — mostrando sin reservas';
+        }
+
+        renderCalendario();
+      }
+
+      function renderCalendario() {
+        els.calendarioGrid.innerHTML = '';
+        els.mesActual.textContent = `${meses[state.mesActual]} ${state.anyoActual}`;
+
+        diasSemana.forEach(dia => {
+          const item = document.createElement('div');
+          item.className = 'calendar-day-name';
+          item.textContent = dia;
+          els.calendarioGrid.appendChild(item);
+        });
+
+        const primerDia = new Date(state.anyoActual, state.mesActual, 1).getDay();
+        const ultimoDia = new Date(state.anyoActual, state.mesActual + 1, 0).getDate();
+        const offset = primerDia === 0 ? 6 : primerDia - 1;
+
+        const hoy = new Date();
+        hoy.setHours(0, 0, 0, 0);
+
+        for (let i = 0; i < offset; i++) {
+          const empty = document.createElement('div');
+          empty.className = 'calendar-day empty';
+          els.calendarioGrid.appendChild(empty);
+        }
+
+        for (let dia = 1; dia <= ultimoDia; dia++) {
+          const fecha = new Date(state.anyoActual, state.mesActual, dia);
+          const key = toKey(fecha);
+
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = 'calendar-day';
+          btn.textContent = dia;
+
+          const esPasado = fecha < hoy;
+          const esReservado = state.reservas.has(key);
+
+          if (esPasado) {
+            btn.classList.add('disabled');
+            btn.disabled = true;
+          } else if (esReservado) {
+            btn.classList.add('booked');
+            btn.disabled = true;
+            btn.title = 'Reservado';
+          } else {
+            btn.addEventListener('click', () => seleccionarFecha(fecha));
+          }
+
+          if (sameDate(fecha, state.fechaEntrada) || sameDate(fecha, state.fechaSalida)) {
+            btn.classList.add('selected');
+          }
+
+          if (state.fechaEntrada && state.fechaSalida && fecha > state.fechaEntrada && fecha < state.fechaSalida) {
+            btn.classList.add('range');
+          }
+
+          els.calendarioGrid.appendChild(btn);
         }
       }
-    }
-    return fechas;
-  }
 
-  async function cargarIcal() {
-    const dot  = document.getElementById('syncDot');
-    const txt  = document.getElementById('syncText');
-    try {
-      const [rA, rB] = await Promise.all([
-        fetch(`${WORKER}/ical/casa-blava-airbnb`),
-        fetch(`${WORKER}/ical/casa-blava-booking`),
-      ]);
-      const [iA, iB] = await Promise.all([
-        rA.ok ? rA.text() : '',
-        rB.ok ? rB.text() : '',
-      ]);
-      fechasReservadas = new Set([...parsearIcal(iA), ...parsearIcal(iB)]);
-      dot.className    = 'sync-dot ok';
-      txt.textContent  = 'Sincronizado · ';
-    } catch(err) {
-      dot.className    = 'sync-dot error';
-      txt.textContent  = 'Sin conexión — mostrando sin reservas';
-      console.error('iCal error:', err);
-    }
-    renderCalendario();
-  }
-
-  /* ── Calendario ───────────────────────────────────────────── */
-  const MESES     = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
-  const DIAS_SEM  = ['L','M','X','J','V','S','D'];
-  const hoyBase   = new Date(); hoyBase.setHours(0,0,0,0);
-
-  let mesActual  = hoyBase.getMonth();
-  let anyoActual = hoyBase.getFullYear();
-  let fechaEntrada = null;
-  let fechaSalida  = null;
-
-  function renderCalendario() {
-    const grid = document.getElementById('calendarioGrid');
-    document.getElementById('mesActual').textContent = `${MESES[mesActual]} ${anyoActual}`;
-    grid.innerHTML = '';
-
-    // Cabecera días
-    DIAS_SEM.forEach(d => {
-      const el = document.createElement('div');
-      el.className   = 'calendar-day-name';
-      el.textContent = d;
-      grid.appendChild(el);
-    });
-
-    const primerDia = new Date(anyoActual, mesActual, 1).getDay();
-    const ultimoDia = new Date(anyoActual, mesActual + 1, 0).getDate();
-    const offset    = primerDia === 0 ? 6 : primerDia - 1;
-    const hoy       = new Date(); hoy.setHours(0,0,0,0);
-
-    // Celdas vacías
-    for (let i = 0; i < offset; i++) {
-      const el = document.createElement('div');
-      el.className = 'calendar-day empty';
-      grid.appendChild(el);
-    }
-
-    // Días del mes
-    for (let dia = 1; dia <= ultimoDia; dia++) {
-      const fecha = new Date(anyoActual, mesActual, dia);
-      const key   = toKey(fecha);
-      const el    = document.createElement('div');
-      el.className   = 'calendar-day';
-      el.textContent = dia;
-
-      if (fecha < hoy) {
-        el.classList.add('disabled');
-      } else if (fechasReservadas.has(key)) {
-        el.classList.add('booked');
-        el.title = 'Reservado';
-      } else {
-        el.addEventListener('click', () => seleccionarFecha(fecha));
+      function hayReservaEnRango(inicio, fin) {
+        let cur = new Date(inicio.getTime() + 86400000);
+        while (cur < fin) {
+          if (state.reservas.has(toKey(cur))) return true;
+          cur = new Date(cur.getTime() + 86400000);
+        }
+        return false;
       }
 
-      if (fechaEntrada && compararFechas(fecha, fechaEntrada)) el.classList.add('selected');
-      if (fechaSalida  && compararFechas(fecha, fechaSalida))  el.classList.add('selected');
-      if (fechaEntrada && fechaSalida && fecha > fechaEntrada && fecha < fechaSalida) el.classList.add('range');
-
-      grid.appendChild(el);
-    }
-  }
-
-  function compararFechas(a, b) {
-    return a.getFullYear() === b.getFullYear() &&
-           a.getMonth()    === b.getMonth()    &&
-           a.getDate()     === b.getDate();
-  }
-
-  function seleccionarFecha(fecha) {
-    if (fechasReservadas.has(toKey(fecha))) return;
-
-    if (!fechaEntrada || (fechaEntrada && fechaSalida)) {
-      fechaEntrada = fecha; fechaSalida = null;
-    } else if (fecha > fechaEntrada) {
-      // Comprobar conflictos en el rango
-      let cur = addDays(fechaEntrada, 1);
-      let conflicto = false;
-      while (cur < fecha) {
-        if (fechasReservadas.has(toKey(cur))) { conflicto = true; break; }
-        cur = addDays(cur, 1);
+      function syncDateInputs() {
+        els.inputEntrada.value = state.fechaEntrada ? toKey(state.fechaEntrada) : '';
+        els.inputSalida.value = state.fechaSalida ? toKey(state.fechaSalida) : '';
       }
-      if (conflicto) {
-        alert('No puedes seleccionar un rango que incluya días ya reservados.');
-        fechaEntrada = fecha; fechaSalida = null;
-      } else {
-        fechaSalida = fecha;
+
+      function seleccionarFecha(fecha) {
+        const key = toKey(fecha);
+        if (state.reservas.has(key)) return;
+
+        if (!state.fechaEntrada || (state.fechaEntrada && state.fechaSalida)) {
+          state.fechaEntrada = fecha;
+          state.fechaSalida = null;
+        } else if (fecha > state.fechaEntrada) {
+          if (hayReservaEnRango(state.fechaEntrada, fecha)) {
+            alert('No puedes seleccionar un rango que incluya días ya reservados.');
+            state.fechaEntrada = fecha;
+            state.fechaSalida = null;
+          } else {
+            state.fechaSalida = fecha;
+          }
+        } else {
+          state.fechaEntrada = fecha;
+          state.fechaSalida = null;
+        }
+
+        syncDateInputs();
+        validarFechas();
+        renderCalendario();
       }
-    } else {
-      fechaEntrada = fecha; fechaSalida = null;
-    }
 
-    const inpE = document.getElementById('fechaEntrada');
-    const inpS = document.getElementById('fechaSalida');
-    if (fechaEntrada) inpE.value = fechaEntrada.toISOString().split('T')[0];
-    if (fechaSalida)  inpS.value = fechaSalida.toISOString().split('T')[0];
-    if (fechaSalida && inpS.value <= inpE.value) inpS.value = '';
-    validarFechas();
-    renderCalendario();
-  }
+      function cambiarMes(delta) {
+        const hoy = new Date();
+        const minMes = new Date(hoy.getFullYear(), hoy.getMonth(), 1);
+        const maxMes = new Date(hoy.getFullYear(), hoy.getMonth() + 9, 1);
+        const siguiente = new Date(state.anyoActual, state.mesActual + delta, 1);
 
-  function cambiarMes(delta) {
-    const hoy    = new Date();
-    const minMes = new Date(hoy.getFullYear(), hoy.getMonth(), 1);
-    const maxMes = new Date(hoy.getFullYear(), hoy.getMonth() + 9, 1);
-    const sig    = new Date(anyoActual, mesActual + delta, 1);
-    if (sig < minMes || sig > maxMes) return;
+        if (siguiente < minMes || siguiente > maxMes) return;
 
-    mesActual += delta;
-    if (mesActual < 0)  { mesActual = 11; anyoActual--; }
-    if (mesActual > 11) { mesActual = 0;  anyoActual++; }
-    renderCalendario();
-  }
+        state.mesActual += delta;
 
-  // Límites en inputs de fecha
-  (function initFechaInputs() {
-    const hoyStr = hoyBase.toISOString().split('T')[0];
-    const maxD   = new Date(); maxD.setFullYear(maxD.getFullYear() + 1);
-    const maxStr = maxD.toISOString().split('T')[0];
-    const inpE   = document.getElementById('fechaEntrada');
-    const inpS   = document.getElementById('fechaSalida');
+        if (state.mesActual < 0) {
+          state.mesActual = 11;
+          state.anyoActual--;
+        }
 
-    inpE.min = inpS.min = hoyStr;
-    inpE.max = inpS.max = maxStr;
+        if (state.mesActual > 11) {
+          state.mesActual = 0;
+          state.anyoActual++;
+        }
 
-    inpE.addEventListener('change', () => {
-      if (!inpE.value) return;
-      const minS = addDays(new Date(inpE.value), 1);
-      inpS.min = minS.toISOString().split('T')[0];
-      if (inpS.value && inpS.value <= inpE.value) inpS.value = '';
-    });
-  })();
+        renderCalendario();
+      }
 
-  // Arranque
-  renderCalendario();
-  cargarIcal();
+      function validarFechas() {
+        const hoy = new Date();
+        hoy.setHours(0, 0, 0, 0);
 
-  /* ── Validaciones ─────────────────────────────────────────── */
-  const RE_NOMBRE = /^[a-zA-ZáéíóúàèìòùäëïöüÁÉÍÓÚÀÈÌÒÙÄËÏÖÜñÑçÇ\s\-']+$/;
-  const RE_EMAIL  = /^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$/;
-  const RE_TEL    = /^(\+34)?[6-9]\d{8}$|^\+[1-9]\d{6,14}$/;
+        const maxFecha = new Date();
+        maxFecha.setFullYear(maxFecha.getFullYear() + 2);
 
-  function setFieldState(input, valid, errorEl, msg) {
-    input.style.borderColor = valid ? '#27ae60' : '#e74c3c';
-    if (errorEl) {
-      errorEl.textContent    = msg || '';
-      errorEl.style.display  = valid ? 'none' : 'block';
-    }
-    return valid;
-  }
+        const entrada = normalizeDateInputValue(els.inputEntrada.value);
+        const salida = normalizeDateInputValue(els.inputSalida.value);
 
-  function validarNombre(input) {
-    const v = input.value.trim();
-    const err = document.getElementById('errorNombre');
-    if (!v)            return setFieldState(input, false, err, '⚠️ El nombre es obligatorio');
-    if (!RE_NOMBRE.test(v)) return setFieldState(input, false, err, '⚠️ El nombre solo puede contener letras');
-    return setFieldState(input, true, err);
-  }
+        const entradaOk = !!entrada && entrada >= hoy && entrada <= maxFecha;
+        const salidaOk = !!salida && !!entrada && salida > entrada && salida <= maxFecha;
 
-  function validarEmail(input) {
-    const v = input.value.trim();
-    const err = document.getElementById('errorEmail');
-    if (!v)                 return setFieldState(input, false, err, '⚠️ El email es obligatorio');
-    if (!RE_EMAIL.test(v))  return setFieldState(input, false, err, '⚠️ Introduce un email válido');
-    return setFieldState(input, true, err);
-  }
+        setFieldState(els.inputEntrada, entradaOk);
+        setFieldState(els.inputSalida, salidaOk);
 
-  function validarTelefono(input) {
-    const v = input.value.trim().replace(/\s/g, '');
-    const err = document.getElementById('errorTelefono');
-    if (!v)               return setFieldState(input, false, err, '⚠️ El teléfono es obligatorio');
-    if (!RE_TEL.test(v))  return setFieldState(input, false, err, '⚠️ Introduce un teléfono válido');
-    return setFieldState(input, true, err);
-  }
+        toggleError(els.errorFechas, !(entradaOk && salidaOk));
 
-  function validarFechas() {
-    const inpE = document.getElementById('fechaEntrada');
-    const inpS = document.getElementById('fechaSalida');
-    const err  = document.getElementById('errorFechas');
-    const hoy  = new Date(); hoy.setHours(0,0,0,0);
-    const maxD = new Date(); maxD.setFullYear(maxD.getFullYear() + 2);
+        return entradaOk && salidaOk;
+      }
 
-    let ok = true;
-    if (!inpE.value) { inpE.style.borderColor = '#e74c3c'; ok = false; }
-    else {
-      const e = new Date(inpE.value);
-      inpE.style.borderColor = (e < hoy || e > maxD) ? '#e74c3c' : '#27ae60';
-      if (e < hoy || e > maxD) ok = false;
-    }
-    if (!inpS.value) { inpS.style.borderColor = '#e74c3c'; ok = false; }
-    else {
-      const s = new Date(inpS.value), e = new Date(inpE.value);
-      inpS.style.borderColor = (s < hoy || s > maxD || s <= e) ? '#e74c3c' : '#27ae60';
-      if (s < hoy || s > maxD || s <= e) ok = false;
-    }
-    err.style.display = ok ? 'none' : 'block';
-    return ok;
-  }
+      function validarPersonas() {
+        const adultos = parseInt(els.inputAdultos.value, 10);
+        const ninos = parseInt(els.inputNinos.value, 10) || 0;
 
-  function validarNumero(input) {
-    const val = parseInt(input.value);
-    const min = parseInt(input.min) || 0;
-    const max = parseInt(input.max);
-    const ok  = !isNaN(val) && val >= min && (!max || val <= max);
-    input.style.borderColor = ok ? '#27ae60' : '#e74c3c';
-    if (!ok) input.value = Math.min(Math.max(val || min, min), max || val);
-    return ok;
-  }
+        const adultosOk = !Number.isNaN(adultos) && adultos >= 1 && adultos <= 6;
+        const ninosOk = !Number.isNaN(ninos) && ninos >= 0 && ninos <= 5;
+        const totalOk = adultosOk && ninosOk && (adultos + ninos <= 8);
 
-  /* ── Envío del formulario ─────────────────────────────────── */
-  document.getElementById('formularioReserva').addEventListener('submit', async function(e) {
-    e.preventDefault();
+        setFieldState(els.inputAdultos, adultosOk);
+        setFieldState(els.inputNinos, ninosOk);
 
-    const nombreInput = document.getElementById('inputNombre');
-    const emailInput  = document.getElementById('inputEmail');
-    const telInput    = document.getElementById('inputTelefono');
-    const adultos     = document.getElementById('inputAdultos');
-    const ninos       = document.getElementById('inputNinos');
+        toggleError(els.errorPersonas, !totalOk, '⚠️ El total de personas no puede superar 8');
 
-    const ok = [
-      validarFechas(),
-      validarNombre(nombreInput),
-      validarEmail(emailInput),
-      validarTelefono(telInput),
-      validarNumero(adultos),
-      validarNumero(ninos),
-    ].every(Boolean);  // Ejecuta todas (sin short-circuit) para mostrar todos los errores
+        return totalOk;
+      }
 
-    if (!ok) {
-      this.querySelector('[style*="e74c3c"]')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      return;
-    }
+      function validarNombre() {
+        const valor = els.inputNombre.value.trim();
+        const valido = valor !== '' && /^[a-zA-ZáéíóúàèìòùäëïöüÁÉÍÓÚÀÈÌÒÙÄËÏÖÜñÑçÇ\s\-']+$/.test(valor);
 
-    const btn    = document.getElementById('submitBtnReserva');
-    const errMsg = document.getElementById('mensajeError');
-    btn.disabled     = true;
-    btn.textContent  = 'Enviando...';
-    errMsg.style.display = 'none';
+        setFieldState(els.inputNombre, valido);
+        toggleError(
+          els.errorNombre,
+          !valido,
+          valor === '' ? '⚠️ El nombre es obligatorio' : '⚠️ El nombre solo puede contener letras'
+        );
 
-    try {
-      const res  = await fetch('https://api.web3forms.com/submit', { method: 'POST', body: new FormData(this) });
-      const data = await res.json();
-      if (data.success) {
-        document.getElementById('formFields').style.display  = 'none';
-        document.getElementById('form-success').style.display = 'block';
-      } else throw new Error('Fallo');
-    } catch {
-      errMsg.style.display = 'block';
-      btn.disabled    = false;
-      btn.textContent = 'Solicitar reserva';
-    }
-  });
+        return valido;
+      }
 
-  // Validación en blur
-  document.getElementById('inputNombre').addEventListener('blur',   function(){ validarNombre(this);   });
-  document.getElementById('inputEmail').addEventListener('blur',    function(){ validarEmail(this);    });
-  document.getElementById('inputTelefono').addEventListener('blur', function(){ validarTelefono(this); });
+      function validarEmail() {
+        const valor = els.inputEmail.value.trim();
+        const valido = valor !== '' && /^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$/.test(valor);
 
-  /* ── Menú móvil ───────────────────────────────────────────── */
-  function toggleMobileMenu() {
-    document.getElementById('main-nav').classList.toggle('active');
-  }
-  document.querySelectorAll('#main-nav a').forEach(a =>
-    a.addEventListener('click', () => document.getElementById('main-nav').classList.remove('active'))
-  );
-  document.addEventListener('click', e => {
-    const nav = document.getElementById('main-nav');
-    const btn = document.querySelector('.mobile-menu-btn');
-    if (nav && btn && !nav.contains(e.target) && !btn.contains(e.target))
-      nav.classList.remove('active');
-  });
+        setFieldState(els.inputEmail, valido);
+        toggleError(
+          els.errorEmail,
+          !valido,
+          valor === '' ? '⚠️ El email es obligatorio' : '⚠️ Introduce un email válido'
+        );
 
-  /* ── WhatsApp ─────────────────────────────────────────────── */
-  function toggleWA() {
-    document.getElementById('waOptions').classList.toggle('open');
-    document.getElementById('waBtn').classList.toggle('open');
-  }
-  document.addEventListener('click', e => {
-    const c = document.querySelector('.wa-container');
-    if (c && !c.contains(e.target)) {
-      document.getElementById('waOptions').classList.remove('open');
-      document.getElementById('waBtn').classList.remove('open');
-    }
-  });
+        return valido;
+      }
 
-  /* ── Lightbox ─────────────────────────────────────────────── */
-  let currentIndex   = 0;
-  let currentGallery = [];
+      function validarTelefono() {
+        const valor = els.inputTelefono.value.trim().replace(/\s/g, '');
+        const valido = /^([6-9]\d{8}|\+34[6-9]\d{8}|\+[1-9]\d{6,14})$/.test(valor);
 
-  document.addEventListener('DOMContentLoaded', () => {
-    document.querySelectorAll('.gallery').forEach(gallery => {
-      const items = [...gallery.querySelectorAll('.gallery-main, .gallery-item')];
-      currentGallery = items.map(i => i.style.backgroundImage.replace(/url\(["']?|["']?\)/g, ''));
-      items.forEach((item, idx) => {
-        item.addEventListener('click', () => {
-          currentIndex = idx;
-          openLightbox(currentGallery[idx]);
+        setFieldState(els.inputTelefono, valido);
+        toggleError(
+          els.errorTelefono,
+          !valido,
+          valor === '' ? '⚠️ El teléfono es obligatorio' : '⚠️ Introduce un teléfono válido'
+        );
+
+        return valido;
+      }
+
+      function validarFormulario() {
+        const okFechas = validarFechas();
+        const okPersonas = validarPersonas();
+        const okNombre = validarNombre();
+        const okEmail = validarEmail();
+        const okTelefono = validarTelefono();
+
+        return okFechas && okPersonas && okNombre && okEmail && okTelefono;
+      }
+
+      async function enviarFormulario(event) {
+        event.preventDefault();
+
+        els.mensajeError.style.display = 'none';
+        els.mensajeExito.style.display = 'none';
+
+        if (!validarFormulario()) {
+          const firstInvalid = document.querySelector('.form-input.is-invalid');
+          firstInvalid?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          firstInvalid?.focus();
+          return;
+        }
+
+        els.submitBtn.disabled = true;
+        els.submitBtn.textContent = 'Enviando...';
+
+        try {
+          const response = await fetch('https://api.web3forms.com/submit', {
+            method: 'POST',
+            body: new FormData(els.form)
+          });
+
+          const data = await response.json();
+
+          if (!data.success) {
+            throw new Error('Fallo al enviar');
+          }
+
+          els.formFields.style.display = 'none';
+          els.formSuccessPanel.classList.add('visible');
+        } catch (error) {
+          console.error(error);
+          els.mensajeError.style.display = 'block';
+          els.submitBtn.disabled = false;
+          els.submitBtn.textContent = 'Solicitar reserva';
+        }
+      }
+
+      function setDateLimits() {
+        const hoy = new Date();
+        const hoyStr = toKey(hoy);
+
+        const maxFecha = new Date();
+        maxFecha.setFullYear(maxFecha.getFullYear() + 1);
+        const maxStr = toKey(maxFecha);
+
+        els.inputEntrada.min = hoyStr;
+        els.inputEntrada.max = maxStr;
+        els.inputSalida.min = hoyStr;
+        els.inputSalida.max = maxStr;
+      }
+
+      function handleEntradaChange() {
+        const entrada = normalizeDateInputValue(els.inputEntrada.value);
+        if (!entrada) return;
+
+        const minSalida = new Date(entrada);
+        minSalida.setDate(minSalida.getDate() + 1);
+        els.inputSalida.min = toKey(minSalida);
+
+        if (els.inputSalida.value && els.inputSalida.value <= els.inputEntrada.value) {
+          els.inputSalida.value = '';
+        }
+
+        state.fechaEntrada = entrada;
+        state.fechaSalida = normalizeDateInputValue(els.inputSalida.value);
+        renderCalendario();
+        validarFechas();
+      }
+
+      function handleSalidaChange() {
+        state.fechaEntrada = normalizeDateInputValue(els.inputEntrada.value);
+        state.fechaSalida = normalizeDateInputValue(els.inputSalida.value);
+        renderCalendario();
+        validarFechas();
+      }
+
+      function toggleMobileMenu() {
+        const isOpen = els.nav.classList.toggle('active');
+        els.mobileMenuBtn.setAttribute('aria-expanded', String(isOpen));
+      }
+
+      function closeMobileMenu() {
+        els.nav.classList.remove('active');
+        els.mobileMenuBtn.setAttribute('aria-expanded', 'false');
+      }
+
+      function initLightbox() {
+        state.lightboxImages = els.galleryItems.map(item => item.dataset.galleryImage);
+
+        els.galleryItems.forEach((item, index) => {
+          item.setAttribute('role', 'button');
+          item.setAttribute('tabindex', '0');
+
+          const open = () => {
+            state.lightboxIndex = index;
+            openLightbox();
+          };
+
+          item.addEventListener('click', open);
+          item.addEventListener('keydown', e => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              open();
+            }
+          });
         });
-      });
-    });
-  });
 
-  function openLightbox(src) {
-    document.getElementById('lightbox-img').src = src;
-    document.getElementById('lightbox').classList.add('active');
-    document.body.style.overflow = 'hidden';
-    updateCounter();
-  }
-  function closeLightbox() {
-    document.getElementById('lightbox').classList.remove('active');
-    document.body.style.overflow = '';
-  }
-  function changeImage(dir) {
-    currentIndex = (currentIndex + dir + currentGallery.length) % currentGallery.length;
-    document.getElementById('lightbox-img').src = currentGallery[currentIndex];
-    updateCounter();
-  }
-  function updateCounter() {
-    document.getElementById('lightbox-counter').textContent = `${currentIndex + 1} / ${currentGallery.length}`;
-  }
+        els.lightboxClose.addEventListener('click', closeLightbox);
+        els.lightboxPrev.addEventListener('click', () => changeImage(-1));
+        els.lightboxNext.addEventListener('click', () => changeImage(1));
 
-  document.addEventListener('keydown', e => {
-    if (e.key === 'Escape')     closeLightbox();
-    if (e.key === 'ArrowRight') changeImage(1);
-    if (e.key === 'ArrowLeft')  changeImage(-1);
-  });
-  document.getElementById('lightbox').addEventListener('click', e => {
-    if (e.target === document.getElementById('lightbox')) closeLightbox();
-  });
+        els.lightbox.addEventListener('click', e => {
+          if (e.target === els.lightbox) closeLightbox();
+        });
+
+        document.addEventListener('keydown', e => {
+          if (!els.lightbox.classList.contains('active')) return;
+
+          if (e.key === 'Escape') closeLightbox();
+          if (e.key === 'ArrowLeft') changeImage(-1);
+          if (e.key === 'ArrowRight') changeImage(1);
+        });
+      }
+
+      function openLightbox() {
+        const src = state.lightboxImages[state.lightboxIndex];
+        els.lightboxImg.src = src;
+        els.lightboxCounter.textContent = `${state.lightboxIndex + 1} / ${state.lightboxImages.length}`;
+        els.lightbox.classList.add('active');
+        els.lightbox.setAttribute('aria-hidden', 'false');
+      }
+
+      function closeLightbox() {
+        els.lightbox.classList.remove('active');
+        els.lightbox.setAttribute('aria-hidden', 'true');
+      }
+
+      function changeImage(delta) {
+        state.lightboxIndex = (state.lightboxIndex + delta + state.lightboxImages.length) % state.lightboxImages.length;
+        openLightbox();
+      }
+
+      function initEvents() {
+        els.mobileMenuBtn.addEventListener('click', toggleMobileMenu);
+
+        els.nav.querySelectorAll('a').forEach(link => {
+          link.addEventListener('click', closeMobileMenu);
+        });
+
+        document.addEventListener('click', e => {
+          if (
+            window.innerWidth <= 768 &&
+            els.nav.classList.contains('active') &&
+            !els.nav.contains(e.target) &&
+            !els.mobileMenuBtn.contains(e.target)
+          ) {
+            closeMobileMenu();
+          }
+        });
+
+        els.monthNavButtons.forEach(button => {
+          button.addEventListener('click', () => cambiarMes(parseInt(button.dataset.monthNav, 10)));
+        });
+
+        els.inputEntrada.addEventListener('change', handleEntradaChange);
+        els.inputSalida.addEventListener('change', handleSalidaChange);
+
+        els.inputAdultos.addEventListener('input', validarPersonas);
+        els.inputNinos.addEventListener('input', validarPersonas);
+
+        els.inputNombre.addEventListener('blur', validarNombre);
+        els.inputEmail.addEventListener('blur', validarEmail);
+        els.inputTelefono.addEventListener('blur', validarTelefono);
+
+        els.form.addEventListener('submit', enviarFormulario);
+      }
+
+      function init() {
+        setDateLimits();
+        renderCalendario();
+        cargarIcal();
+        initEvents();
+        initLightbox();
+      }
+
+      init();
+    })();
   </script>
 </body>
 </html>
