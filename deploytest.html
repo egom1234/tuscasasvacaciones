@@ -1,710 +1,830 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-2F51L7T7FV"></script>
-<script>
-window.dataLayer=window.dataLayer||[];
-function gtag(){dataLayer.push(arguments);}
-gtag('js',new Date());
-gtag('config','G-2F51L7T7FV');
-</script>
-<link rel="icon" type="image/png" sizes="32x32" href="images/logo.png">
-<link rel="icon" type="image/png" sizes="16x16" href="images/logo.png">
-<link rel="apple-touch-icon" sizes="180x180" href="images/logo.png">
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Loft Tarifa - Alquiler turístico en Cádiz</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
-<style>
-:root{--verde-primario:#537e75;--verde-oscuro:#22584e;--verde-claro:#84ada5;--blanco:#fff;--gris-claro:#f8f9fa;--gris:#6c757d;--gris-oscuro:#495057;--rojo:#e74c3c;--verde-ok:#27ae60}
-*{margin:0;padding:0;box-sizing:border-box}
-body{font-family:'Inter',sans-serif;line-height:1.6;color:var(--gris-oscuro);background:var(--gris-claro)}
-.container{max-width:1200px;margin:0 auto;padding:0 1.5rem}
-header{position:fixed;top:0;width:100%;background:var(--blanco);box-shadow:0 2px 10px rgba(0,0,0,.08);z-index:1000;padding:1rem 0}
-.header-content{display:flex;justify-content:space-between;align-items:center;position:relative}
-.logo-link{display:flex;align-items:center;gap:.75rem;text-decoration:none}
-.logo-img{width:200px;height:90px;object-fit:contain}
-nav{display:flex;gap:2rem;align-items:center}
-nav a{color:var(--gris);text-decoration:none;font-weight:400;font-size:.95rem;transition:color .3s}
-nav a:hover{color:var(--verde-primario)}
-.mobile-menu-btn{display:none;background:none;border:none;font-size:1.8rem;color:var(--verde-primario);cursor:pointer;z-index:1001}
-main{padding-top:80px;min-height:calc(100vh - 200px)}
-.property-hero{background:var(--blanco);padding:4rem 0 2rem}
-.property-title{font-size:3rem;font-weight:300;color:var(--verde-oscuro);margin-bottom:.5rem;letter-spacing:-1px}
-.property-location{font-size:1.2rem;color:var(--verde-primario);font-weight:500;margin-bottom:2rem}
-.gallery{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin:2rem 0}
-.gallery-main,.gallery-item{background-size:cover;background-position:center;border-radius:15px;cursor:pointer;transition:opacity .2s}
-.gallery-main:hover,.gallery-item:hover{opacity:.85}
-.gallery-main{grid-column:span 2;grid-row:span 2;height:655px}
-.gallery-item{height:320px}
-.content-wrapper{display:grid;grid-template-columns:1.5fr 1fr;gap:3rem;padding:3rem 0}
-.property-details{background:var(--blanco);padding:2rem;border-radius:20px}
-.details-section{margin-bottom:2rem}
-.details-section h3{font-size:1.5rem;font-weight:500;color:var(--verde-oscuro);margin-bottom:1rem}
-.features{display:grid;grid-template-columns:repeat(2,1fr);gap:1rem;margin-top:1rem}
-.feature-item{display:flex;align-items:center;gap:.5rem;padding:.8rem;background:var(--gris-claro);border-radius:10px}
-.feature-icon{width:24px;height:24px;color:var(--verde-primario);flex-shrink:0}
-.price-highlight{background:var(--verde-claro);padding:1.5rem;border-radius:15px;margin:2rem 0}
-.price-highlight h4{font-size:1.2rem;color:var(--verde-oscuro);margin-bottom:.5rem}
-.price-amount{font-size:2rem;font-weight:600;color:var(--verde-oscuro)}
-.booking-panel{background:var(--blanco);padding:2rem;border-radius:20px;position:sticky;top:100px;height:fit-content;box-shadow:0 10px 40px rgba(0,0,0,.08)}
-.booking-title{font-size:1.8rem;font-weight:500;color:var(--verde-oscuro);margin-bottom:1.5rem}
-.calendar{margin-bottom:2rem}
-.calendar-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem}
-.calendar-nav{background:none;border:1px solid var(--verde-primario);color:var(--verde-primario);width:35px;height:35px;border-radius:50%;cursor:pointer;font-size:1.2rem;transition:all .3s}
-.calendar-nav:hover{background:var(--verde-primario);color:var(--blanco)}
-.calendar-month{font-weight:600;color:var(--verde-oscuro)}
-.calendar-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:5px}
-.calendar-day-name{text-align:center;font-size:.8rem;font-weight:600;color:var(--gris);padding:.5rem 0}
-.calendar-day{aspect-ratio:1;display:flex;align-items:center;justify-content:center;border-radius:8px;cursor:pointer;transition:all .3s;font-size:.9rem}
-.calendar-day:hover:not(.disabled):not(.empty):not(.booked){background:var(--verde-claro)}
-.calendar-day.disabled{opacity:.3;cursor:not-allowed}
-.calendar-day.selected{background:var(--verde-primario);color:var(--blanco);font-weight:600}
-.calendar-day.range{background:var(--verde-claro)}
-.calendar-day.empty{cursor:default}
-.calendar-day.booked{background:#f0e6e6;color:#b07070;cursor:not-allowed;text-decoration:line-through;text-decoration-color:#c09090;opacity:.7}
-.calendar-day.booked:hover{background:#f0e6e6}
-.calendar-note{font-size:.85rem;color:var(--gris);margin-top:1rem;text-align:center}
-.calendar-legend{display:flex;gap:1rem;flex-wrap:wrap;margin:.75rem 0 .5rem}
-.legend-item{display:flex;align-items:center;gap:.4rem;font-size:.75rem;color:var(--gris)}
-.legend-dot{width:10px;height:10px;border-radius:3px}
-.legend-dot.available{background:#e8f5e9;border:1px solid var(--verde-primario)}
-.legend-dot.booked{background:#f0e6e6;border:1px solid #c09090}
-.legend-dot.selected{background:var(--verde-primario)}
-.sync-status{display:flex;align-items:center;gap:.5rem;font-size:.75rem;color:var(--gris);margin-bottom:.75rem}
-.sync-dot{width:7px;height:7px;border-radius:50%;background:#ccc}
-.sync-dot.ok{background:#4caf50}
-.sync-dot.error{background:#e57373}
-.sync-dot.loading{background:#ffb74d;animation:blink 1s infinite}
-@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
-.booking-form{display:flex;flex-direction:column;gap:1rem}
-.form-group{display:flex;flex-direction:column}
-.form-label{font-size:.9rem;font-weight:500;color:var(--gris-oscuro);margin-bottom:.5rem}
-.form-input{padding:.8rem;border:1px solid #ddd;border-radius:10px;font-size:1rem;transition:border .3s;font-family:inherit}
-.form-input:focus{outline:none;border-color:var(--verde-primario)}
-.form-row{display:grid;grid-template-columns:repeat(2,1fr);gap:1rem}
-.submit-btn{background:var(--verde-primario);color:var(--blanco);padding:1rem;border:none;border-radius:5px;font-size:1.1rem;font-weight:600;cursor:pointer;transition:all .3s;margin-top:1rem}
-.submit-btn:hover{background:var(--verde-oscuro);transform:translateY(-2px);box-shadow:0 10px 20px rgba(0,121,107,.3)}
-.success-message{display:none;background:#d4edda;border:1px solid #c3e6cb;color:#155724;padding:1rem;border-radius:10px;margin-top:1rem;font-size:.95rem}
-footer{background:var(--verde-oscuro);color:var(--blanco);padding:3rem 0 1.5rem;text-align:center;margin-top:4rem}
-.footer-content{max-width:1200px;margin:0 auto;padding:0 1.5rem}
-.footer-text{opacity:.9;margin-bottom:1rem}
-.lightbox-overlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.92);z-index:9999;align-items:center;justify-content:center}
-.lightbox-overlay.active{display:flex}
-.lightbox-img{max-width:90vw;max-height:85vh;object-fit:contain;border-radius:8px;box-shadow:0 0 40px rgba(0,0,0,.5)}
-.lightbox-close{position:absolute;top:1.5rem;right:2rem;color:#fff;font-size:2.5rem;cursor:pointer;background:none;border:none;line-height:1;opacity:.8;transition:opacity .2s}
-.lightbox-close:hover{opacity:1}
-.lightbox-arrow{position:absolute;top:50%;transform:translateY(-50%);color:#fff;font-size:3rem;cursor:pointer;background:rgba(255,255,255,.1);border:none;padding:.5rem 1rem;border-radius:8px;transition:background .2s;user-select:none}
-.lightbox-arrow:hover{background:rgba(255,255,255,.25)}
-.lightbox-prev{left:1rem}
-.lightbox-next{right:1rem}
-.lightbox-counter{position:absolute;bottom:1.5rem;left:50%;transform:translateX(-50%);color:#fff;font-size:.95rem;opacity:.7}
-.wa-container{position:fixed;bottom:2rem;right:2rem;display:flex;flex-direction:column;align-items:flex-end;gap:.75rem;z-index:9999}
-.wa-btn{width:60px;height:60px;border-radius:50%;background:#25D366;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(37,211,102,.4);transition:transform .3s ease,box-shadow .3s ease}
-.wa-btn:hover{box-shadow:0 6px 25px rgba(37,211,102,.5)}
-.wa-btn.open{transform:rotate(45deg)}
-.wa-options{display:flex;flex-direction:column;gap:.5rem;align-items:flex-end;opacity:0;pointer-events:none;transform:translateY(10px);transition:opacity .3s ease,transform .3s ease}
-.wa-options.open{opacity:1;pointer-events:all;transform:translateY(0)}
-.wa-option{display:flex;align-items:center;gap:.75rem;text-decoration:none;background:#fff;padding:.6rem 1rem .6rem 1.2rem;border-radius:50px;box-shadow:0 2px 12px rgba(0,0,0,.15);transition:transform .2s ease,box-shadow .2s ease;white-space:nowrap}
-.wa-option:hover{transform:translateX(-4px);box-shadow:0 4px 16px rgba(0,0,0,.2)}
-.wa-label{font-family:'Inter',sans-serif;font-size:.95rem;font-weight:500;color:#333}
-.wa-icon-sm{width:34px;height:34px;background:#25D366;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0}
-@media (max-width:992px){
-.content-wrapper{grid-template-columns:1fr}
-.booking-panel{position:static}
-.gallery{grid-template-columns:1fr}
-.gallery-main{grid-column:span 1;grid-row:span 1;height:300px}
-.property-title{font-size:2.2rem}
-}
-@media (max-width:768px){
-.logo-img{width:150px;height:80px}
-nav{gap:1rem}
-.features,.form-row{grid-template-columns:1fr}
-.mobile-menu-btn{display:block;position:absolute;right:1rem;top:1.5rem}
-#main-nav{position:fixed;top:0;right:-100%;width:80vw;max-width:300px;height:100vh;background:var(--blanco);flex-direction:column;gap:2rem;padding:7rem 1.5rem 2rem;transition:right .3s ease;box-shadow:-5px 0 25px rgba(0,0,0,.2);z-index:999}
-#main-nav.active{right:0}
-#main-nav a{font-size:1.2rem;padding:1rem 0;border-bottom:1px solid var(--gris-claro);text-align:center;color:var(--gris-oscuro);text-decoration:none}
-.wa-container{bottom:1.2rem;right:1.2rem}
-.wa-btn{width:50px;height:50px}
-.wa-btn svg{width:22px;height:22px}
-.wa-option{padding:.55rem 1rem}
-.wa-label{font-size:.85rem}
-.wa-icon-sm{width:30px;height:30px;font-size:.9rem}
-}
-@media (max-width:480px){
-.property-title{font-size:1.8rem}
-.gallery-main{height:250px}
-.gallery-item{height:180px}
-}
-</style>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-2F51L7T7FV"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-2F51L7T7FV');
+  </script>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Loft Tarifa - Alquiler turístico en Cádiz</title>
+
+  <link rel="icon" type="image/png" sizes="32x32" href="images/logo.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="images/logo.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="images/logo.png">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    /* ── Variables ─────────────────────────────────────────── */
+    :root {
+      --verde-primario: #537e75;
+      --verde-oscuro:   #22584e;
+      --verde-claro:    #84ada5;
+      --blanco:         #ffffff;
+      --gris-claro:     #f8f9fa;
+      --gris:           #6c757d;
+      --gris-oscuro:    #495057;
+      --rojo:           #e74c3c;
+      --verde-ok:       #27ae60;
+    }
+
+    /* ── Reset & Base ───────────────────────────────────────── */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; line-height: 1.6; color: var(--gris-oscuro); background: var(--gris-claro); }
+
+    /* ── Header ─────────────────────────────────────────────── */
+    header { position: fixed; top: 0; width: 100%; background: var(--blanco); box-shadow: 0 2px 10px rgba(0,0,0,0.08); z-index: 1000; padding: 0.5rem 0; }
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 1.5rem; }
+    .header-content { display: flex; justify-content: space-between; align-items: center; }
+    .logo-link { display: flex; align-items: center; gap: 0.75rem; text-decoration: none; }
+    .logo-img { width: 200px; height: 90px; object-fit: contain; }
+    nav { display: flex; gap: 2rem; align-items: center; }
+    nav a { color: var(--gris); text-decoration: none; font-weight: 400; font-size: 0.95rem; transition: color 0.3s; }
+    nav a:hover { color: var(--verde-primario); }
+    .mobile-menu-btn { display: none; background: none; border: none; font-size: 1.8rem; color: var(--verde-primario); cursor: pointer; z-index: 1001; }
+
+    /* ── Main ───────────────────────────────────────────────── */
+    main { padding-top: 80px; min-height: calc(100vh - 200px); }
+
+    /* ── Hero & Galería ─────────────────────────────────────── */
+    .property-hero { background: var(--blanco); padding: 4rem 0 2rem; }
+    .property-title { font-size: 3rem; font-weight: 300; color: var(--verde-oscuro); margin-bottom: 0.5rem; letter-spacing: -1px; }
+    .property-location { font-size: 1.2rem; color: var(--verde-primario); font-weight: 500; margin-bottom: 2rem; }
+    .gallery { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin: 2rem 0; }
+    .gallery-main { grid-column: span 2; grid-row: span 2; height: 655px; background-size: cover; background-position: center; border-radius: 15px; cursor: pointer; transition: opacity 0.2s; }
+    .gallery-item  { height: 320px; background-size: cover; background-position: center; border-radius: 15px; cursor: pointer; transition: opacity 0.2s; }
+    .gallery-main:hover, .gallery-item:hover { opacity: 0.85; }
+
+    /* ── Layout contenido ───────────────────────────────────── */
+    .content-wrapper { display: grid; grid-template-columns: 1.5fr 1fr; gap: 3rem; padding: 3rem 0; }
+
+    /* ── Detalles ───────────────────────────────────────────── */
+    .property-details { background: var(--blanco); padding: 2rem; border-radius: 20px; }
+    .details-section { margin-bottom: 2rem; }
+    .details-section h3 { font-size: 1.5rem; font-weight: 500; color: var(--verde-oscuro); margin-bottom: 1rem; }
+    .features { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; margin-top: 1rem; }
+    .feature-item { display: flex; align-items: center; gap: 0.5rem; padding: 0.8rem; background: var(--gris-claro); border-radius: 10px; }
+    .feature-icon { width: 24px; height: 24px; color: var(--verde-primario); flex-shrink: 0; }
+    .price-highlight { background: var(--verde-claro); padding: 1.5rem; border-radius: 15px; margin: 2rem 0; }
+    .price-highlight h4 { font-size: 1.2rem; color: var(--verde-oscuro); margin-bottom: 0.5rem; }
+    .price-amount { font-size: 2rem; font-weight: 600; color: var(--verde-oscuro); }
+
+    /* ── Panel de reserva ───────────────────────────────────── */
+    .booking-panel { background: var(--blanco); padding: 2rem; border-radius: 20px; position: sticky; top: 100px; height: fit-content; box-shadow: 0 10px 40px rgba(0,0,0,0.08); }
+    .booking-title { font-size: 1.8rem; font-weight: 500; color: var(--verde-oscuro); margin-bottom: 1.5rem; }
+
+    /* ── Calendario ─────────────────────────────────────────── */
+    .calendar { margin-bottom: 2rem; }
+    .calendar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
+    .calendar-nav { background: none; border: 1px solid var(--verde-primario); color: var(--verde-primario); width: 35px; height: 35px; border-radius: 50%; cursor: pointer; font-size: 1.2rem; transition: all 0.3s; }
+    .calendar-nav:hover { background: var(--verde-primario); color: var(--blanco); }
+    .calendar-month { font-weight: 600; color: var(--verde-oscuro); }
+    .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; }
+    .calendar-day-name { text-align: center; font-size: 0.8rem; font-weight: 600; color: var(--gris); padding: 0.5rem 0; }
+    .calendar-day { aspect-ratio: 1; display: flex; align-items: center; justify-content: center; border-radius: 8px; cursor: pointer; transition: all 0.3s; font-size: 0.9rem; }
+    .calendar-day:hover:not(.disabled):not(.empty):not(.booked) { background: var(--verde-claro); }
+    .calendar-day.disabled { opacity: 0.3; cursor: not-allowed; }
+    .calendar-day.empty    { cursor: default; }
+    .calendar-day.selected { background: var(--verde-primario); color: var(--blanco); font-weight: 600; }
+    .calendar-day.range    { background: var(--verde-claro); }
+    .calendar-day.booked   { background: #f0e6e6; color: #b07070; cursor: not-allowed; text-decoration: line-through; text-decoration-color: #c09090; opacity: 0.7; }
+    .calendar-day.booked:hover { background: #f0e6e6; }
+    .calendar-note { font-size: 0.85rem; color: var(--gris); margin-top: 1rem; text-align: center; }
+
+    /* Leyenda */
+    .calendar-legend { display: flex; gap: 1rem; flex-wrap: wrap; margin-top: 0.75rem; margin-bottom: 0.5rem; }
+    .legend-item { display: flex; align-items: center; gap: 0.4rem; font-size: 0.75rem; color: var(--gris); }
+    .legend-dot { width: 10px; height: 10px; border-radius: 3px; }
+    .legend-dot.available { background: #e8f5e9; border: 1px solid var(--verde-primario); }
+    .legend-dot.booked    { background: #f0e6e6; border: 1px solid #c09090; }
+    .legend-dot.selected  { background: var(--verde-primario); }
+
+    /* Sincronización */
+    .sync-status { display: flex; align-items: center; gap: 0.5rem; font-size: 0.75rem; color: var(--gris); margin-bottom: 0.75rem; }
+    .sync-dot { width: 7px; height: 7px; border-radius: 50%; background: #ccc; }
+    .sync-dot.ok      { background: #4caf50; }
+    .sync-dot.error   { background: #e57373; }
+    .sync-dot.loading { background: #ffb74d; animation: blink 1s infinite; }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+    /* ── Formulario ─────────────────────────────────────────── */
+    .booking-form { display: flex; flex-direction: column; gap: 1rem; }
+    .form-group { display: flex; flex-direction: column; }
+    .form-label { font-size: 0.9rem; font-weight: 500; color: var(--gris-oscuro); margin-bottom: 0.5rem; }
+    .form-input { padding: 0.8rem; border: 1px solid #ddd; border-radius: 10px; font-size: 1rem; transition: border 0.3s; }
+    .form-input:focus { outline: none; border-color: var(--verde-primario); }
+    .form-row { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+    .field-error { display: none; color: var(--rojo); font-size: 0.82rem; margin-top: 0.3rem; }
+    .submit-btn { background: var(--verde-primario); color: var(--blanco); padding: 1rem; border: none; border-radius: 5px; font-size: 1.1rem; font-weight: 600; cursor: pointer; transition: all 0.3s; margin-top: 1rem; }
+    .submit-btn:hover { background: var(--verde-oscuro); transform: translateY(-2px); box-shadow: 0 10px 20px rgba(0,121,107,0.3); }
+    .form-success { display: none; text-align: center; padding: 2rem 1rem; }
+    .form-success .success-icon { font-size: 3.5rem; margin-bottom: 1rem; }
+    .form-success h4 { font-size: 1.3rem; font-weight: 600; color: var(--verde-oscuro); margin-bottom: 0.5rem; }
+    .form-error-msg { display: none; padding: 1rem; background: #fff0f0; border-radius: 10px; margin-bottom: 1rem; color: #c0392b; font-size: 0.95rem; }
+
+    /* ── Footer ─────────────────────────────────────────────── */
+    footer { background: var(--verde-oscuro); color: var(--blanco); padding: 3rem 0 1.5rem; text-align: center; margin-top: 4rem; }
+    .footer-text { opacity: 0.9; margin-bottom: 1rem; }
+
+    /* ── Lightbox ───────────────────────────────────────────── */
+    .lightbox-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.92); z-index: 9999; align-items: center; justify-content: center; }
+    .lightbox-overlay.active { display: flex; }
+    .lightbox-img { max-width: 90vw; max-height: 85vh; object-fit: contain; border-radius: 8px; box-shadow: 0 0 40px rgba(0,0,0,0.5); }
+    .lightbox-close { position: absolute; top: 1.5rem; right: 2rem; color: white; font-size: 2.5rem; cursor: pointer; background: none; border: none; line-height: 1; opacity: 0.8; transition: opacity 0.2s; }
+    .lightbox-close:hover { opacity: 1; }
+    .lightbox-arrow { position: absolute; top: 50%; transform: translateY(-50%); color: white; font-size: 3rem; cursor: pointer; background: rgba(255,255,255,0.1); border: none; padding: 0.5rem 1rem; border-radius: 8px; transition: background 0.2s; user-select: none; }
+    .lightbox-arrow:hover { background: rgba(255,255,255,0.25); }
+    .lightbox-prev { left: 1rem; }
+    .lightbox-next { right: 1rem; }
+    .lightbox-counter { position: absolute; bottom: 1.5rem; left: 50%; transform: translateX(-50%); color: white; font-size: 0.95rem; opacity: 0.7; }
+
+    /* ── WhatsApp flotante ──────────────────────────────────── */
+    .wa-container { position: fixed; bottom: 2rem; right: 2rem; display: flex; flex-direction: column; align-items: flex-end; gap: 0.75rem; z-index: 9999; }
+    .wa-container .wa-btn { width: 60px; height: 60px; border-radius: 50%; background: #25D366; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 20px rgba(37,211,102,0.4); transition: transform 0.3s ease, box-shadow 0.3s ease; }
+    .wa-container .wa-btn:hover { box-shadow: 0 6px 25px rgba(37,211,102,0.5); }
+    .wa-container .wa-btn.open { transform: rotate(45deg); }
+    .wa-container .wa-options { display: flex; flex-direction: column; gap: 0.5rem; align-items: flex-end; opacity: 0; pointer-events: none; transform: translateY(10px); transition: opacity 0.3s ease, transform 0.3s ease; }
+    .wa-container .wa-options.open { opacity: 1; pointer-events: all; transform: translateY(0); }
+    .wa-container .wa-option { display: flex; align-items: center; gap: 0.75rem; text-decoration: none; background: white; padding: 0.6rem 1rem 0.6rem 1.2rem; border-radius: 50px; box-shadow: 0 2px 12px rgba(0,0,0,0.15); transition: transform 0.2s ease, box-shadow 0.2s ease; white-space: nowrap; }
+    .wa-container .wa-option:hover { transform: translateX(-4px); box-shadow: 0 4px 16px rgba(0,0,0,0.2); }
+    .wa-container .wa-label { font-size: 0.95rem; font-weight: 500; color: #333; }
+    .wa-container .wa-icon-sm { width: 34px; height: 34px; background: #25D366; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1rem; flex-shrink: 0; }
+
+    /* ── Responsive ─────────────────────────────────────────── */
+    @media (max-width: 992px) {
+      .content-wrapper { grid-template-columns: 1fr; }
+      .booking-panel { position: static; }
+      .gallery { grid-template-columns: 1fr; }
+      .gallery-main { grid-column: span 1; grid-row: span 1; height: 300px; }
+      .property-title { font-size: 2.2rem; }
+    }
+
+    @media (max-width: 768px) {
+      .logo-img { width: 150px; height: 80px; }
+      nav { gap: 1rem; }
+      .features { grid-template-columns: 1fr; }
+      .form-row { grid-template-columns: 1fr; }
+      .mobile-menu-btn { display: block !important; position: absolute; right: 1rem; top: 1.5rem; }
+      #main-nav {
+        position: fixed !important; top: 0 !important; right: -100% !important;
+        width: 80vw !important; max-width: 300px !important; height: 100vh !important;
+        background: var(--blanco) !important; flex-direction: column !important;
+        gap: 2rem !important; padding: 7rem 1.5rem 2rem !important;
+        transition: right 0.3s ease !important; box-shadow: -5px 0 25px rgba(0,0,0,0.2) !important;
+        z-index: 999 !important;
+      }
+      #main-nav.active { right: 0 !important; }
+      #main-nav a { font-size: 1.2rem !important; padding: 1rem 0 !important; border-bottom: 1px solid var(--gris-claro) !important; text-align: center !important; }
+      .wa-container { bottom: 1.2rem; right: 1.2rem; }
+      .wa-container .wa-btn { width: 50px; height: 50px; }
+      .wa-container .wa-btn svg { width: 22px; height: 22px; }
+      .wa-container .wa-option { padding: 0.55rem 1rem; }
+      .wa-container .wa-label { font-size: 0.85rem; }
+      .wa-container .wa-icon-sm { width: 30px; height: 30px; font-size: 0.9rem; }
+    }
+
+    @media (max-width: 480px) {
+      .property-title { font-size: 1.8rem; }
+      .gallery-main { height: 250px; }
+      .gallery-item { height: 180px; }
+    }
+  </style>
 </head>
 <body>
-<header>
-<div class="container">
-<div class="header-content">
-<a href="index.html" class="logo-link"><img src="images/Logo1.png" alt="Casitas de Mar" class="logo-img"></a>
-<button class="mobile-menu-btn" onclick="toggleMobileMenu()">☰</button>
-<nav id="main-nav">
-<a href="index.html">Inicio</a>
-<a href="Casa_Gonda.html">Casa Gonda</a>
-<a href="loft_binibeca.html">Binibeca</a>
-<a href="Casa_blava.html">Peñíscola</a>
-<a href="Tarifa_apartamento.html">Tarifa Apt</a>
-</nav>
-</div>
-</div>
-</header>
 
-<main>
-<section class="property-hero">
-<div class="container">
-<h1 class="property-title">Tarifa - Sunny Beach Loft</h1>
-<div class="property-location">📍 Tarifa, Cádiz</div>
-<div class="gallery">
-<div class="gallery-main" style="background-image:url('images/tarifa/tarifa_portada2.jpg')"></div>
-<div class="gallery-item" style="background-image:url('images/tarifa/tarifa_puesta.JPG')"></div>
-<div class="gallery-item" style="background-image:url('images/tarifa/tarifa_playa.JPG')"></div>
-<div class="gallery-item" style="background-image:url('images/tarifa/loft/tarifa_loft_salon1.png')"></div>
-<div class="gallery-item" style="background-image:url('images/tarifa/loft/tarifa_loft_salon2.png')"></div>
-<div class="gallery-item" style="background-image:url('images/tarifa/loft/tarifa_loft_mesa1.png')"></div>
-<div class="gallery-item" style="background-image:url('images/tarifa/loft/tarifa_loft_hab1.png')"></div>
-<div class="gallery-item" style="background-image:url('images/tarifa/loft/tarifa_loft_hab2.png')"></div>
-<div class="gallery-item" style="background-image:url('images/tarifa/loft/tarifa_loft_bano1.png')"></div>
-<div class="gallery-item" style="background-image:url('images/tarifa/loft/tarifa_loft_bano2.png')"></div>
-</div>
-</div>
-</section>
+  <header>
+    <div class="container">
+      <div class="header-content">
+        <a href="index.html" class="logo-link">
+          <img src="images/Logo1.png" alt="Casitas de Mar" class="logo-img">
+        </a>
+        <button class="mobile-menu-btn" onclick="toggleMobileMenu()">☰</button>
+        <nav id="main-nav">
+          <a href="index.html">Inicio</a>
+          <a href="Casa_Gonda.html">Casa Gonda</a>
+          <a href="loft_binibeca.html">Binibeca</a>
+          <a href="Casa_blava.html">Peñíscola</a>
+          <a href="Tarifa_apartamento.html">Tarifa Apt</a>
+        </nav>
+      </div>
+    </div>
+  </header>
 
-<div class="container">
-<div class="content-wrapper">
-<div class="property-details">
-<div class="details-section">
-<h3>Descripción</h3>
-<p>Acogedor Loft/apartamento en Tarifa de 1 habitacion doble.</p>
-<p style="margin-top:1rem;">El alojamiento cuenta con una decoración mediterránea, situado en planta baja, muy tranquilo y bien ubicado. Cuenta con espacios luminosos y todas las comodidades necesarias para una estancia perfecta. Dispone de zona de estar, baño y cocina equipada.</p>
-<p style="margin-top:1rem;">Fácil aparcamiento, a 3 minutos de la playa y a 5 minutos del casco histórico, ideal para parejas.</p>
-</div>
+  <main>
+    <section class="property-hero">
+      <div class="container">
+        <h1 class="property-title">Tarifa - Sunny Beach Loft</h1>
+        <div class="property-location">📍 Tarifa, Cádiz</div>
+        <div class="gallery">
+          <div class="gallery-main" style="background-image: url('images/tarifa/tarifa_portada2.jpg')"></div>
+          <div class="gallery-item" style="background-image: url('images/tarifa/tarifa_puesta.JPG')"></div>
+          <div class="gallery-item" style="background-image: url('images/tarifa/tarifa_playa.JPG')"></div>
+          <div class="gallery-item" style="background-image: url('images/tarifa/loft/tarifa_loft_salon1.png')"></div>
+          <div class="gallery-item" style="background-image: url('images/tarifa/loft/tarifa_loft_salon2.png')"></div>
+          <div class="gallery-item" style="background-image: url('images/tarifa/loft/tarifa_loft_mesa1.png')"></div>
+          <div class="gallery-item" style="background-image: url('images/tarifa/loft/tarifa_loft_hab1.png')"></div>
+          <div class="gallery-item" style="background-image: url('images/tarifa/loft/tarifa_loft_hab2.png')"></div>
+          <div class="gallery-item" style="background-image: url('images/tarifa/loft/tarifa_loft_bano1.png')"></div>
+          <div class="gallery-item" style="background-image: url('images/tarifa/loft/tarifa_loft_bano2.png')"></div>
+        </div>
+      </div>
+    </section>
 
-<div class="price-highlight">
-<h4>Precio por noche</h4>
-<div class="price-amount">A consultar</div>
-<p style="margin-top:.5rem;font-size:.9rem;">Consultar precios semanales y otras temporadas.</p>
-</div>
+    <div class="container">
+      <div class="content-wrapper">
 
-<div class="details-section">
-<h3>Características</h3>
-<div class="features">
-<div class="feature-item"><svg class="feature-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>1-2 personas</div>
-<div class="feature-item"><svg class="feature-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>1 dormitorio doble</div>
-<div class="feature-item"><svg class="feature-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"></path></svg>1 baño</div>
-<div class="feature-item"><svg class="feature-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>WiFi gratis</div>
-<div class="feature-item"><svg class="feature-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z"></path></svg>Aire Acondicionado</div>
-<div class="feature-item"><svg class="feature-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 10l-2 1m0 0l-2-1m2 1v2.5M20 7l-2 1m2-1l-2-1m2 1v2.5M14 4l-2-1-2 1M4 7l2-1M4 7l2 1M4 7v2.5M12 21l-2-1m2 1l2-1m-2 1v-2.5M6 18l-2-1v-2.5M18 18l2-1v-2.5"></path></svg>Cocina equipada</div>
-<div class="feature-item"><svg class="feature-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>Céntrico</div>
-<div class="feature-item"><svg class="feature-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>Servicios a pie de calle</div>
-</div>
-</div>
+        <!-- DETALLES -->
+        <div class="property-details">
+          <div class="details-section">
+            <h3>Descripción</h3>
+            <p>Acogedor Loft/apartamento en Tarifa de 1 habitacion doble.</p>
+            <p style="margin-top: 1rem;">El alojamiento cuenta con una decoración mediterránea, situado en planta baja, muy tranquilo y bien ubicado. Cuenta con espacios luminosos y todas las comodidades necesarias para una estancia perfecta. Dispone de zona de estar, baño y cocina equipada.</p>
+            <p style="margin-top: 1rem;">Fácil aparcamiento, a 3 minutos de la playa y a 5 minutos del casco histórico, ideal para parejas.</p>
+          </div>
 
-<div class="details-section">
-<h3>Información adicional</h3>
-<ul style="padding-left:1.5rem;line-height:2;">
-<li>Check-in: a partir de las 17:00h</li>
-<li>Check-out: hasta las 12:00h</li>
-<li>Estancia mínima: 4 noches en temporada alta</li>
-<li>No se admiten mascotas</li>
-<li>No se permite fumar en el interior</li>
-</ul>
-</div>
-</div>
+          <div class="price-highlight">
+            <h4>Precio por noche</h4>
+            <div class="price-amount">A consultar</div>
+            <p style="margin-top: 0.5rem; font-size: 0.9rem;">Consultar precios semanales y otras temporadas.</p>
+          </div>
 
-<div class="booking-panel">
-<h2 class="booking-title">Reservar</h2>
-<div class="calendar">
-<div class="calendar-header">
-<button class="calendar-nav" onclick="cambiarMes(-1)">‹</button>
-<span class="calendar-month" id="mesActual"></span>
-<button class="calendar-nav" onclick="cambiarMes(1)">›</button>
-</div>
-<div class="sync-status">
-<div class="sync-dot loading" id="syncDot"></div>
-<span id="syncText">Cargando disponibilidad...</span>
-</div>
-<div class="calendar-grid" id="calendarioGrid"></div>
-<div class="calendar-legend">
-<div class="legend-item"><span class="legend-dot available"></span>Disponible</div>
-<div class="legend-item"><span class="legend-dot booked"></span>Reservado</div>
-<div class="legend-item"><span class="legend-dot selected"></span>Seleccionado</div>
-</div>
-<p class="calendar-note">Selecciona fecha de entrada y salida</p>
-</div>
+          <div class="details-section">
+            <h3>Características</h3>
+            <div class="features">
+              <div class="feature-item">
+                <svg class="feature-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                1-2 personas
+              </div>
+              <div class="feature-item">
+                <svg class="feature-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+                1 dormitorio doble
+              </div>
+              <div class="feature-item">
+                <svg class="feature-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"></path></svg>
+                1 baño
+              </div>
+              <div class="feature-item">
+                <svg class="feature-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
+                WiFi gratis
+              </div>
+              <div class="feature-item">
+                <svg class="feature-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z"></path></svg>
+                Aire Acondicionado
+              </div>
+              <div class="feature-item">
+                <svg class="feature-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 10l-2 1m0 0l-2-1m2 1v2.5M20 7l-2 1m2-1l-2-1m2 1v2.5M14 4l-2-1-2 1M4 7l2-1M4 7l2 1M4 7v2.5M12 21l-2-1m2 1l2-1m-2 1v-2.5M6 18l-2-1v-2.5M18 18l2-1v-2.5"></path></svg>
+                Cocina equipada
+              </div>
+              <div class="feature-item">
+                <svg class="feature-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
+                Céntrico
+              </div>
+              <div class="feature-item">
+                <svg class="feature-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                Servicios a pie de calle
+              </div>
+            </div>
+          </div>
 
-<form class="booking-form" id="formularioReserva" action="https://api.web3forms.com/submit" method="POST" novalidate>
-<input type="hidden" name="access_key" value="ba4d4800-cc82-4659-86e0-f10021d29924">
-<input type="hidden" name="subject" value="Nueva solicitud de reserva - Tarifa Loft">
-<input type="hidden" name="from_name" value="Web Casitas de Mar - Tarifa Loft">
-<input type="checkbox" name="botcheck" style="display:none;">
+          <div class="details-section">
+            <h3>Información adicional</h3>
+            <ul style="padding-left: 1.5rem; line-height: 2;">
+              <li>Check-in: a partir de las 17:00h</li>
+              <li>Check-out: hasta las 12:00h</li>
+              <li>Estancia mínima: 4 noches en temporada alta</li>
+              <li>No se admiten mascotas</li>
+              <li>No se permite fumar en el interior</li>
+            </ul>
+          </div>
+        </div>
 
-<div id="form-success" style="display:none;text-align:center;padding:2rem 1rem;">
-<div style="font-size:3.5rem;margin-bottom:1rem;">✅</div>
-<h4 style="font-size:1.3rem;font-weight:600;color:var(--verde-oscuro);margin-bottom:.5rem;">¡Mensaje enviado correctamente!</h4>
-<p style="color:var(--gris-oscuro);font-size:1rem;">Gracias por contactarnos. Te responderemos en breve.</p>
-</div>
+        <!-- PANEL DE RESERVA -->
+        <div class="booking-panel">
+          <h2 class="booking-title">Reservar</h2>
 
-<div id="mensajeError" style="display:none;padding:1rem;background:#fff0f0;border-radius:10px;margin-bottom:1rem;">
-<p style="color:#c0392b;font-size:.95rem;margin:0;">⚠️ Hubo un problema al enviar la solicitud. Por favor, inténtalo de nuevo.</p>
-</div>
+          <div class="calendar">
+            <div class="calendar-header">
+              <button class="calendar-nav" onclick="cambiarMes(-1)">&#8249;</button>
+              <span class="calendar-month" id="mesActual"></span>
+              <button class="calendar-nav" onclick="cambiarMes(1)">&#8250;</button>
+            </div>
+            <div class="sync-status">
+              <div class="sync-dot loading" id="syncDot"></div>
+              <span id="syncText">Cargando disponibilidad...</span>
+            </div>
+            <div class="calendar-grid" id="calendarioGrid"></div>
+            <div class="calendar-legend">
+              <div class="legend-item"><div class="legend-dot available"></div> Disponible</div>
+              <div class="legend-item"><div class="legend-dot booked"></div> Reservado</div>
+              <div class="legend-item"><div class="legend-dot selected"></div> Seleccionado</div>
+            </div>
+            <p class="calendar-note">Selecciona fecha de entrada y salida</p>
+          </div>
 
-<div class="form-row">
-<div class="form-group">
-<label class="form-label">Entrada</label>
-<input type="date" class="form-input" id="fechaEntrada" name="entrada" required>
-</div>
-<div class="form-group">
-<label class="form-label">Salida</label>
-<input type="date" class="form-input" id="fechaSalida" name="salida" required>
-</div>
-</div>
+          <form class="booking-form" id="formularioReserva" action="https://api.web3forms.com/submit" method="POST" novalidate>
+            <input type="hidden" name="access_key" value="ba4d4800-cc82-4659-86e0-f10021d29924">
+            <input type="hidden" name="subject" value="Nueva solicitud de reserva - Tarifa Loft">
+            <input type="hidden" name="from_name" value="Web Casitas de Mar - Tarifa Loft">
+            <input type="checkbox" name="botcheck" style="display:none;">
 
-<span id="errorFechas" style="display:none;color:#e74c3c;font-size:.82rem;margin-top:.3rem;">⚠️ Debes seleccionar las fechas de entrada y salida</span>
+            <div class="form-success" id="formSuccess">
+              <div class="success-icon">✅</div>
+              <h4>¡Mensaje enviado correctamente!</h4>
+              <p style="color: var(--gris-oscuro); font-size: 1rem;">Gracias por contactarnos. Te responderemos en breve.</p>
+            </div>
 
-<div class="form-row">
-<div class="form-group">
-<label class="form-label">Adultos</label>
-<input type="number" class="form-input" name="adultos" min="1" max="2" value="2" required>
-</div>
-<div class="form-group">
-<label class="form-label">Niños</label>
-<input type="number" class="form-input" name="ninos" min="0" max="1" value="0">
-</div>
-</div>
+            <div class="form-error-msg" id="mensajeError">
+              ⚠️ Hubo un problema al enviar la solicitud. Por favor, inténtalo de nuevo.
+            </div>
 
-<div class="form-group">
-<label class="form-label">Nombre completo</label>
-<input type="text" class="form-input" name="name" required oninput="validarNombre(this)" onblur="validarNombre(this)">
-<span class="error-nombre" style="display:none;color:#e74c3c;font-size:.82rem;margin-top:.3rem;">⚠️ El nombre solo puede contener letras</span>
-</div>
+            <!-- Fechas -->
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Entrada</label>
+                <input type="date" class="form-input" id="fechaEntrada" name="entrada" required readonly onkeydown="return false" style="cursor:default;pointer-events:none;">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Salida</label>
+                <input type="date" class="form-input" id="fechaSalida" name="salida" required readonly onkeydown="return false" style="cursor:default;pointer-events:none;">
+              </div>
+            </div>
+            <span class="field-error" id="errorFechas">⚠️ Debes seleccionar las fechas de entrada y salida</span>
 
-<div class="form-group">
-<label class="form-label">Email</label>
-<input type="email" class="form-input" name="email" required data-error-id="errorEmail">
-<span id="errorEmail" style="display:none;color:#e74c3c;font-size:.82rem;margin-top:.3rem;">⚠️ Introduce un email válido</span>
-</div>
+            <!-- Personas -->
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Adultos</label>
+                <input type="number" class="form-input" name="adultos" min="1" max="2" value="1" required oninput="validarPersonas()">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Niños</label>
+                <input type="number" class="form-input" name="ninos" min="0" max="1" value="0" oninput="validarPersonas()">
+              </div>
+            </div>
+            <span class="field-error" id="errorPersonas">⚠️ El total de personas no puede superar 2</span>
 
-<div class="form-group">
-<label class="form-label">Teléfono</label>
-<input type="tel" class="form-input" name="telefono" required data-error-id="errorTelefono">
-<span id="errorTelefono" style="display:none;color:#e74c3c;font-size:.82rem;margin-top:.3rem;">⚠️ Introduce un teléfono válido</span>
-</div>
+            <!-- Nombre -->
+            <div class="form-group">
+              <label class="form-label">Nombre completo</label>
+              <input type="text" class="form-input" name="name" required
+                     oninput="validarNombre(this)" onblur="validarNombre(this)">
+              <span class="field-error error-nombre">⚠️ El nombre solo puede contener letras</span>
+            </div>
 
-<div class="form-group">
-<label class="form-label">Comentarios (opcional)</label>
-<textarea class="form-input" name="message" rows="3" placeholder="Hora aproximada de llegada, peticiones especiales..."></textarea>
-</div>
+            <!-- Email -->
+            <div class="form-group">
+              <label class="form-label">Email</label>
+              <input type="email" class="form-input" name="email" required onblur="validarEmail(this)">
+              <span class="field-error error-email">⚠️ Introduce un email válido</span>
+            </div>
 
-<button type="submit" class="submit-btn" id="submitBtnReserva">Solicitar reserva</button>
-<div class="success-message" id="mensajeExito">✓ Tu solicitud se ha enviado correctamente. Te responderemos en breve.</div>
-</form>
-</div>
-</div>
-</div>
-</main>
+            <!-- Teléfono -->
+            <div class="form-group">
+              <label class="form-label">Teléfono</label>
+              <input type="tel" class="form-input" name="telefono" required onblur="validarTelefono(this)">
+              <span class="field-error error-tel">⚠️ Introduce un teléfono válido</span>
+            </div>
 
-<footer>
-<div class="footer-content">
-<p class="footer-text">© 2026 Casitas de Mar | Alquiler vacacional</p>
-<p>Email: info@casitasdemar.com | Telf./ Whatsapp <a href="https://wa.me/34652306031" target="_blank" rel="noopener noreferrer" style="color:white !important;">+34 652 306 031</a></p>
-</div>
-</footer>
+            <!-- Comentarios -->
+            <div class="form-group">
+              <label class="form-label">Comentarios (opcional)</label>
+              <textarea class="form-input" name="message" rows="3" placeholder="Hora aproximada de llegada, peticiones especiales..."></textarea>
+            </div>
 
-<div class="lightbox-overlay" id="lightbox">
-<button class="lightbox-close" onclick="closeLightbox()">✕</button>
-<button class="lightbox-arrow lightbox-prev" onclick="changeImage(-1)">‹</button>
-<img class="lightbox-img" id="lightbox-img" src="" alt="">
-<button class="lightbox-arrow lightbox-next" onclick="changeImage(1)">›</button>
-<div class="lightbox-counter" id="lightbox-counter"></div>
-</div>
+            <button type="submit" class="submit-btn" id="submitBtnReserva">Solicitar reserva</button>
+          </form>
+        </div>
 
-<script>
-const formReserva=document.getElementById('formularioReserva');
-const btnReserva=document.getElementById('submitBtnReserva');
-const exito=document.getElementById('mensajeExito');
-const error=document.getElementById('mensajeError');
+      </div>
+    </div>
+  </main>
 
-formReserva.addEventListener('submit',async function(e){
-e.preventDefault();
-const nombreInput=formReserva.querySelector('input[name="name"]');
-const telInput=formReserva.querySelector('input[name="telefono"]');
-const emailInput=formReserva.querySelector('input[name="email"]');
-let hayErrores=false;
-if(!validarFechas())hayErrores=true;
-if(nombreInput&&!validarNombre(nombreInput))hayErrores=true;
-if(telInput&&!validarTelefono(telInput))hayErrores=true;
-if(emailInput&&!validarCampo(emailInput))hayErrores=true;
-if(hayErrores){
-formReserva.querySelector('input[style*="e74c3c"]')?.scrollIntoView({behavior:'smooth',block:'center'});
-return;
-}
-btnReserva.disabled=true;
-btnReserva.textContent='Enviando...';
-btnReserva.style.opacity='0.7';
-error.style.display='none';
-try{
-const response=await fetch('https://api.web3forms.com/submit',{method:'POST',body:new FormData(formReserva)});
-const data=await response.json();
-if(data.success){
-formReserva.querySelectorAll('.form-row,.form-group,.submit-btn').forEach(el=>el.style.display='none');
-exito.style.display='block';
-}else{
-throw new Error('Fallo en el envío');
-}
-}catch(err){
-error.style.display='block';
-btnReserva.disabled=false;
-btnReserva.textContent='Solicitar reserva';
-btnReserva.style.opacity='1';
-}
-});
+  <footer>
+    <div class="footer-content">
+      <p class="footer-text">© 2026 Casitas de Mar | Alquiler vacacional</p>
+      <p>Email: info@casitasdemar.com | Telf./ Whatsapp
+        <a href="https://wa.me/34652306031" target="_blank" rel="noopener noreferrer" style="color:white;">+34 652 306 031</a>
+      </p>
+    </div>
+  </footer>
 
-function validarNombre(input){
-const valor=input.value.trim();
-const msg=input.parentElement.querySelector('.error-nombre,#errorNombre');
-const valido=/^[a-zA-ZáéíóúàèìòùäëïöüÁÉÍÓÚÀÈÌÒÙÄËÏÖÜñÑçÇ\s\-']+$/.test(valor);
-if(valor===''){
-input.style.borderColor='#e74c3c';
-if(msg){msg.textContent='⚠️ El nombre es obligatorio';msg.style.display='block';}
-return false;
-}else if(!valido){
-input.style.borderColor='#e74c3c';
-if(msg){msg.textContent='⚠️ El nombre solo puede contener letras';msg.style.display='block';}
-return false;
-}else{
-input.style.borderColor='#27ae60';
-if(msg)msg.style.display='none';
-return true;
-}
-}
+  <!-- LIGHTBOX -->
+  <div class="lightbox-overlay" id="lightbox">
+    <button class="lightbox-close" onclick="closeLightbox()">✕</button>
+    <button class="lightbox-arrow lightbox-prev" onclick="changeImage(-1)">&#8249;</button>
+    <img class="lightbox-img" id="lightbox-img" src="" alt="">
+    <button class="lightbox-arrow lightbox-next" onclick="changeImage(1)">&#8250;</button>
+    <div class="lightbox-counter" id="lightbox-counter"></div>
+  </div>
 
-function validarTelefono(input){
-const tel=input.value.trim();
-const tieneCaracteresInvalidos=/[^0-9+\s\-]/.test(input.value);
-const valido=/^[6-9]\d{8}$/.test(tel.replace(/\s/g,''))||/^\+34[6-9]\d{8}$/.test(tel.replace(/\s/g,''))||/^\+[1-9]\d{6,14}$/.test(tel.replace(/\s/g,''));
-const msgId=input.dataset.errorId;
-const msg=document.getElementById(msgId);
-if(tieneCaracteresInvalidos){
-input.style.borderColor='#e74c3c';
-if(msg){msg.textContent='⚠️ Solo se permiten números, espacios, guiones y el símbolo +';msg.style.display='block';}
-}else if(!valido&&tel.length>0){
-input.style.borderColor='#e74c3c';
-if(msg){msg.textContent='⚠️ Introduce un teléfono válido (ej: 612 345 678 o +34 612 345 678)';msg.style.display='block';}
-}else{
-input.style.borderColor=tel.length>0?'#27ae60':'#ddd';
-if(msg){msg.style.display='none';}
-}
-return !tieneCaracteresInvalidos&&valido;
-}
+  <!-- BOTÓN WHATSAPP FLOTANTE -->
+  <div class="wa-container">
+    <div class="wa-options" id="waOptions">
+      <a href="https://wa.me/34613119183?text=Hola,%20estoy%20interesado/a%20en%20obtener%20más%20información,%20gracias."
+         target="_blank" rel="noopener noreferrer" class="wa-option">
+        <span class="wa-label">Peñíscola</span>
+        <div class="wa-icon-sm">📱</div>
+      </a>
+      <a href="https://wa.me/34690288196?text=Hola,%20estoy%20interesado/a%20en%20obtener%20más%20información,%20gracias."
+         target="_blank" rel="noopener noreferrer" class="wa-option">
+        <span class="wa-label">Menorca</span>
+        <div class="wa-icon-sm">📱</div>
+      </a>
+      <a href="https://wa.me/34652306031?text=Hola,%20estoy%20interesado/a%20en%20obtener%20más%20información,%20gracias."
+         target="_blank" rel="noopener noreferrer" class="wa-option">
+        <span class="wa-label">Tarifa</span>
+        <div class="wa-icon-sm">📱</div>
+      </a>
+    </div>
+    <button class="wa-btn" id="waBtn" onclick="toggleWA()" aria-label="Contactar por WhatsApp">
+      <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="white">
+        <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+      </svg>
+    </button>
+  </div>
 
-function validarCampo(input){
-const valor=input.value.trim();
-const msgId=input.dataset.errorId;
-const msg=document.getElementById(msgId);
-const esEmail=input.type==='email';
-const emailValido=/^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$/.test(valor);
-if(valor===''){
-input.style.borderColor='#e74c3c';
-if(msg){msg.textContent='⚠️ Este campo es obligatorio';msg.style.display='block';}
-return false;
-}else if(esEmail&&!emailValido){
-input.style.borderColor='#e74c3c';
-if(msg){msg.textContent='⚠️ Introduce un email válido (ej: nombre@dominio.com)';msg.style.display='block';}
-return false;
-}else{
-input.style.borderColor='#27ae60';
-if(msg){msg.style.display='none';}
-return true;
-}
-}
+  <script>
+  // ── iCAL + CALENDARIO ────────────────────────────────────────────────────────
+  const WORKER          = 'https://tuscasasvacaciones.eduardgomez-4.workers.dev';
+  const MESES           = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+  const DIAS            = ['L','M','X','J','V','S','D'];
+  const MAX_MESES_VISTA = 9;
 
-function validarFechas(){
-const inputEntrada=document.getElementById('fechaEntrada');
-const inputSalida=document.getElementById('fechaSalida');
-let valido=true;
-if(!inputEntrada||!inputSalida)return true;
-if(!inputEntrada.value){
-inputEntrada.style.borderColor='#e74c3c';
-inputEntrada.style.backgroundColor='#fff5f5';
-valido=false;
-}else{
-inputEntrada.style.borderColor='#27ae60';
-inputEntrada.style.backgroundColor='';
-}
-if(!inputSalida.value){
-inputSalida.style.borderColor='#e74c3c';
-inputSalida.style.backgroundColor='#fff5f5';
-valido=false;
-}else{
-inputSalida.style.borderColor='#27ae60';
-inputSalida.style.backgroundColor='';
-}
-const msgFecha=document.getElementById('errorFechas');
-if(msgFecha){msgFecha.style.display=valido?'none':'block';}
-return valido;
-}
+  let fechasReservadas = new Set();
+  let mesActual        = new Date().getMonth();
+  let anyoActual       = new Date().getFullYear();
+  let fechaEntrada     = null;
+  let fechaSalida      = null;
 
-document.querySelectorAll('form').forEach(form=>{
-form.addEventListener('submit',function(e){
-let hayErrores=false;
-const telInput=this.querySelector('input[name="telefono"]');
-const nombreInput=this.querySelector('input[name="name"], input[name="nombre"]');
-const emailInput=this.querySelector('input[name="email"]');
-if(!validarFechas())hayErrores=true;
-if(telInput&&!validarTelefono(telInput))hayErrores=true;
-if(nombreInput&&!validarCampo(nombreInput))hayErrores=true;
-if(emailInput&&!validarCampo(emailInput))hayErrores=true;
-if(hayErrores){
-e.stopImmediatePropagation();
-e.preventDefault();
-this.querySelector('input[style*="e74c3c"]')?.scrollIntoView({behavior:'smooth',block:'center'});
-}
-},true);
-const nombreInput=form.querySelector('input[name="name"], input[name="nombre"]');
-const emailInput=form.querySelector('input[name="email"]');
-if(nombreInput){nombreInput.addEventListener('blur',()=>validarCampo(nombreInput));}
-if(emailInput){emailInput.addEventListener('blur',()=>validarCampo(emailInput));}
-});
-</script>
+  async function cargarIcal() {
+    const dot  = document.getElementById('syncDot');
+    const text = document.getElementById('syncText');
+    try {
+      const [resA, resB] = await Promise.all([
+        fetch(WORKER + '/ical/tarifa-loft-airbnb'),
+        fetch(WORKER + '/ical/tarifa-loft-booking'),
+      ]);
+      const [icsA, icsB] = await Promise.all([
+        resA.ok ? resA.text() : Promise.resolve(''),
+        resB.ok ? resB.text() : Promise.resolve(''),
+      ]);
+      fechasReservadas = new Set([...parsearIcal(icsA), ...parsearIcal(icsB)]);
+      dot.className    = 'sync-dot ok';
+      text.textContent = 'Sincronizado';
+    } catch (e) {
+      dot.className    = 'sync-dot error';
+      text.textContent = 'Sin conexión — mostrando sin reservas';
+      console.error('iCal error:', e);
+    }
+    renderCalendario();
+  }
 
-<script>
-const WORKER='https://tuscasasvacaciones.eduardgomez-4.workers.dev';
-let fechasReservadas=new Set();
+  function parsearIcal(texto) {
+    const fechas    = new Set();
+    const textoNorm = texto.replace(/\r\n|\r/g, '\n');
+    const eventos   = textoNorm.split('BEGIN:VEVENT');
+    const hoy       = new Date(); hoy.setHours(0,0,0,0);
+    for (let i = 1; i < eventos.length; i++) {
+      const bloque  = eventos[i];
+      const dtStart = bloque.match(/DTSTART[^:\n]*:(\d{8})/);
+      const dtEnd   = bloque.match(/DTEND[^:\n]*:(\d{8})/);
+      if (!dtStart || !dtEnd) continue;
+      let cur   = parseFecha(dtStart[1]);
+      const fin = parseFecha(dtEnd[1]);
+      if (cur.getTime() === fin.getTime()) {
+        if (cur >= hoy) fechas.add(toKey(cur));
+      } else {
+        while (cur < fin) {
+          if (cur >= hoy) fechas.add(toKey(cur));
+          cur = new Date(cur.getTime() + 86400000);
+        }
+      }
+    }
+    return fechas;
+  }
 
-async function cargarIcal(){
-const dot=document.getElementById('syncDot');
-const text=document.getElementById('syncText');
-try{
-const [resAirbnb,resBooking]=await Promise.all([
-fetch(WORKER+'/ical/tarifa-loft-airbnb'),
-fetch(WORKER+'/ical/tarifa-loft-booking'),
-]);
-const [icsAirbnb,icsBooking]=await Promise.all([
-resAirbnb.ok?resAirbnb.text():Promise.resolve(''),
-resBooking.ok?resBooking.text():Promise.resolve(''),
-]);
-fechasReservadas=new Set([...parsearIcal(icsAirbnb),...parsearIcal(icsBooking)]);
-dot.className='sync-dot ok';
-text.textContent='Sincronizado · ';
-}catch(e){
-dot.className='sync-dot error';
-text.textContent='Sin conexión — mostrando sin reservas';
-console.error('iCal error:',e);
-}
-renderCalendario();
-}
+  function parseFecha(s) {
+    return new Date(+s.slice(0,4), +s.slice(4,6) - 1, +s.slice(6,8));
+  }
 
-function parsearIcal(texto){
-const fechas=new Set();
-const textoNorm=texto.replace(/\r\n/g,'\n').replace(/\r/g,'\n');
-const eventos=textoNorm.split('BEGIN:VEVENT');
-const hoy=new Date();hoy.setHours(0,0,0,0);
-for(let i=1;i<eventos.length;i++){
-const bloque=eventos[i];
-const dtStart=bloque.match(/DTSTART[^:\n]*:(\d{8})/);
-const dtEnd=bloque.match(/DTEND[^:\n]*:(\d{8})/);
-if(dtStart&&dtEnd){
-let cur=parseFecha(dtStart[1]);
-const fin=parseFecha(dtEnd[1]);
-if(cur.getTime()===fin.getTime()){
-if(cur>=hoy)fechas.add(toKey(cur));
-}else{
-while(cur<fin){
-if(cur>=hoy)fechas.add(toKey(cur));
-cur=new Date(cur.getTime()+86400000);
-}
-}
-}
-}
-return fechas;
-}
-function parseFecha(str){return new Date(parseInt(str.slice(0,4)),parseInt(str.slice(4,6))-1,parseInt(str.slice(6,8)));}
-function toKey(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
+  function toKey(d) {
+    return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+  }
 
-const meses=['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
-const diasSemana=['L','M','X','J','V','S','D'];
-let fechaActual=new Date();
-let mesActual=fechaActual.getMonth();
-let anyoActual=fechaActual.getFullYear();
-let fechaEntrada=null;
-let fechaSalida=null;
+  function renderCalendario() {
+    const grid     = document.getElementById('calendarioGrid');
+    const labelMes = document.getElementById('mesActual');
+    grid.innerHTML = '';
+    labelMes.textContent = `${MESES[mesActual]} ${anyoActual}`;
 
-function renderCalendario(){
-const grid=document.getElementById('calendarioGrid');
-const labelMes=document.getElementById('mesActual');
-grid.innerHTML='';
-labelMes.textContent=meses[mesActual]+' '+anyoActual;
-diasSemana.forEach(d=>{
-const el=document.createElement('div');
-el.className='calendar-day-name';
-el.textContent=d;
-grid.appendChild(el);
-});
-const primerDia=new Date(anyoActual,mesActual,1).getDay();
-const ultimoDia=new Date(anyoActual,mesActual+1,0).getDate();
-const offset=primerDia===0?6:primerDia-1;
-const hoy=new Date();hoy.setHours(0,0,0,0);
-for(let i=0;i<offset;i++){
-const el=document.createElement('div');
-el.className='calendar-day empty';
-grid.appendChild(el);
-}
-for(let dia=1;dia<=ultimoDia;dia++){
-const fecha=new Date(anyoActual,mesActual,dia);
-const key=toKey(fecha);
-const el=document.createElement('div');
-el.className='calendar-day';
-el.textContent=dia;
-const esPasado=fecha<hoy;
-const esReservado=fechasReservadas.has(key);
-if(esPasado){
-el.classList.add('disabled');
-}else if(esReservado){
-el.classList.add('booked');
-el.title='Reservado en Airbnb';
-}else{
-el.addEventListener('click',()=>seleccionarFecha(fecha));
-}
-if(fechaEntrada&&compararFechas(fecha,fechaEntrada))el.classList.add('selected');
-if(fechaSalida&&compararFechas(fecha,fechaSalida))el.classList.add('selected');
-if(fechaEntrada&&fechaSalida&&fecha>fechaEntrada&&fecha<fechaSalida)el.classList.add('range');
-grid.appendChild(el);
-}
-}
-function compararFechas(a,b){return a.getFullYear()===b.getFullYear()&&a.getMonth()===b.getMonth()&&a.getDate()===b.getDate();}
-function seleccionarFecha(fecha){
-const key=toKey(fecha);
-if(fechasReservadas.has(key))return;
-if(!fechaEntrada||(fechaEntrada&&fechaSalida)){
-fechaEntrada=fecha;fechaSalida=null;
-}else if(fecha>fechaEntrada){
-let cur=new Date(fechaEntrada.getTime()+86400000);
-let hayConflicto=false;
-while(cur<fecha){
-if(fechasReservadas.has(toKey(cur))){hayConflicto=true;break;}
-cur=new Date(cur.getTime()+86400000);
-}
-if(hayConflicto){
-alert('No puedes seleccionar un rango que incluya días ya reservados.');
-fechaEntrada=fecha;fechaSalida=null;
-}else{
-fechaSalida=fecha;
-}
-}else{
-fechaEntrada=fecha;fechaSalida=null;
-}
-if(fechaEntrada)document.getElementById('fechaEntrada').value=fechaEntrada.toISOString().split('T')[0];
-if(fechaSalida)document.getElementById('fechaSalida').value=fechaSalida.toISOString().split('T')[0];
-validarFechas();
-renderCalendario();
-}
-function cambiarMes(delta){
-const hoy=new Date();
-const minMes=new Date(hoy.getFullYear(),hoy.getMonth(),1);
-const maxMes=new Date(hoy.getFullYear(),hoy.getMonth()+9,1);
-const siguiente=new Date(anyoActual,mesActual+delta,1);
-if(siguiente<minMes)return;
-if(siguiente>maxMes)return;
-mesActual+=delta;
-if(mesActual<0){mesActual=11;anyoActual--;}
-if(mesActual>11){mesActual=0;anyoActual++;}
-renderCalendario();
-}
-renderCalendario();
-cargarIcal();
-</script>
+    DIAS.forEach(d => {
+      const el = document.createElement('div');
+      el.className = 'calendar-day-name';
+      el.textContent = d;
+      grid.appendChild(el);
+    });
 
-<script>
-function toggleMobileMenu(){
-const nav=document.getElementById('main-nav');
-if(nav)nav.classList.toggle('active');
-}
-document.querySelectorAll('#main-nav a').forEach(link=>{
-link.addEventListener('click',()=>{document.getElementById('main-nav').classList.remove('active');});
-});
-document.addEventListener('click',e=>{
-const nav=document.getElementById('main-nav');
-const btn=document.querySelector('.mobile-menu-btn');
-if(nav&&btn&&!nav.contains(e.target)&&!btn.contains(e.target))nav.classList.remove('active');
-});
-</script>
+    const hoy       = new Date(); hoy.setHours(0,0,0,0);
+    const primerDia = new Date(anyoActual, mesActual, 1).getDay();
+    const ultimoDia = new Date(anyoActual, mesActual + 1, 0).getDate();
+    const offset    = primerDia === 0 ? 6 : primerDia - 1;
 
-<script>
-let currentIndex=0;
-let currentGallery=[];
-document.addEventListener('DOMContentLoaded',()=>{
-document.querySelectorAll('.gallery').forEach(gallery=>{
-const items=gallery.querySelectorAll('.gallery-main,.gallery-item');
-items.forEach((item,index)=>{
-item.addEventListener('click',()=>{
-const bg=item.style.backgroundImage;
-const url=bg.replace(/url\(["']?|["']?\)/g,'');
-currentGallery=Array.from(items).map(i=>i.style.backgroundImage.replace(/url\(["']?|["']?\)/g,''));
-currentIndex=index;
-openLightbox(url);
-});
-});
-});
-});
-function openLightbox(src){
-document.getElementById('lightbox-img').src=src;
-document.getElementById('lightbox').classList.add('active');
-updateCounter();
-document.body.style.overflow='hidden';
-}
-function closeLightbox(){
-document.getElementById('lightbox').classList.remove('active');
-document.body.style.overflow='';
-}
-function changeImage(direction){
-currentIndex=(currentIndex+direction+currentGallery.length)%currentGallery.length;
-document.getElementById('lightbox-img').src=currentGallery[currentIndex];
-updateCounter();
-}
-function updateCounter(){
-document.getElementById('lightbox-counter').textContent=(currentIndex+1)+' / '+currentGallery.length;
-}
-document.addEventListener('keydown',e=>{
-if(e.key==='Escape')closeLightbox();
-if(e.key==='ArrowRight')changeImage(1);
-if(e.key==='ArrowLeft')changeImage(-1);
-});
-document.getElementById('lightbox').addEventListener('click',e=>{
-if(e.target===document.getElementById('lightbox'))closeLightbox();
-});
-</script>
+    for (let i = 0; i < offset; i++) {
+      const el = document.createElement('div');
+      el.className = 'calendar-day empty';
+      grid.appendChild(el);
+    }
 
-<div class="wa-container">
-<div class="wa-options" id="waOptions">
-<a href="https://wa.me/34613119183?text=Hola,%20estoy%20interesado/a%20en%20obtener%20más%20información,%20gracias." target="_blank" rel="noopener noreferrer" class="wa-option"><span class="wa-label">Peñíscola</span><div class="wa-icon-sm">📱</div></a>
-<a href="https://wa.me/34690288196?text=Hola,%20estoy%20interesado/a%20en%20obtener%20más%20información,%20gracias." target="_blank" rel="noopener noreferrer" class="wa-option"><span class="wa-label">Menorca</span><div class="wa-icon-sm">📱</div></a>
-<a href="https://wa.me/34652306031?text=Hola,%20estoy%20interesado/a%20en%20obtener%20más%20información,%20gracias." target="_blank" rel="noopener noreferrer" class="wa-option"><span class="wa-label">Tarifa</span><div class="wa-icon-sm">📱</div></a>
-</div>
-<button class="wa-btn" id="waBtn" onclick="toggleWA()" aria-label="Contactar por WhatsApp">
-<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-</button>
-</div>
+    for (let dia = 1; dia <= ultimoDia; dia++) {
+      const fecha = new Date(anyoActual, mesActual, dia);
+      const key   = toKey(fecha);
+      const el    = document.createElement('div');
+      el.className   = 'calendar-day';
+      el.textContent = dia;
 
-<script>
-function toggleWA(){
-const options=document.getElementById('waOptions');
-const btn=document.getElementById('waBtn');
-options.classList.toggle('open');
-btn.classList.toggle('open');
-}
-document.addEventListener('click',e=>{
-const container=document.querySelector('.wa-container');
-if(container&&!container.contains(e.target)){
-document.getElementById('waOptions').classList.remove('open');
-document.getElementById('waBtn').classList.remove('open');
-}
-});
-</script>
+      if (fecha < hoy) {
+        el.classList.add('disabled');
+      } else if (fechasReservadas.has(key)) {
+        el.classList.add('booked');
+        el.title = 'No disponible';
+      } else {
+        el.addEventListener('click', () => seleccionarFecha(fecha));
+      }
+
+      if (fechaEntrada && compararFechas(fecha, fechaEntrada)) el.classList.add('selected');
+      if (fechaSalida  && compararFechas(fecha, fechaSalida))  el.classList.add('selected');
+      if (fechaEntrada && fechaSalida && fecha > fechaEntrada && fecha < fechaSalida) el.classList.add('range');
+
+      grid.appendChild(el);
+    }
+  }
+
+  function compararFechas(a, b) {
+    return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
+  }
+
+  function seleccionarFecha(fecha) {
+    if (fechasReservadas.has(toKey(fecha))) return;
+    if (!fechaEntrada || (fechaEntrada && fechaSalida)) {
+      fechaEntrada = fecha;
+      fechaSalida  = null;
+    } else if (fecha > fechaEntrada) {
+      let cur = new Date(fechaEntrada.getTime() + 86400000);
+      while (cur < fecha) {
+        if (fechasReservadas.has(toKey(cur))) {
+          alert('No puedes seleccionar un rango que incluya días ya reservados.');
+          fechaEntrada = fecha;
+          fechaSalida  = null;
+          actualizarInputsFecha();
+          renderCalendario();
+          return;
+        }
+        cur = new Date(cur.getTime() + 86400000);
+      }
+      fechaSalida = fecha;
+    } else {
+      fechaEntrada = fecha;
+      fechaSalida  = null;
+    }
+    actualizarInputsFecha();
+    validarFechas();
+    renderCalendario();
+  }
+
+  function actualizarInputsFecha() {
+    document.getElementById('fechaEntrada').value = fechaEntrada ? fechaEntrada.toISOString().split('T')[0] : '';
+    document.getElementById('fechaSalida').value  = fechaSalida  ? fechaSalida.toISOString().split('T')[0]  : '';
+  }
+
+  function cambiarMes(delta) {
+    const hoy       = new Date();
+    const minMes    = new Date(hoy.getFullYear(), hoy.getMonth(), 1);
+    const maxMes    = new Date(hoy.getFullYear(), hoy.getMonth() + MAX_MESES_VISTA, 1);
+    const siguiente = new Date(anyoActual, mesActual + delta, 1);
+    if (siguiente < minMes || siguiente > maxMes) return;
+    mesActual += delta;
+    if (mesActual < 0)  { mesActual = 11; anyoActual--; }
+    if (mesActual > 11) { mesActual = 0;  anyoActual++; }
+    renderCalendario();
+  }
+
+  (function initCalendario() {
+    const hoyStr  = new Date().toISOString().split('T')[0];
+    const maxDate = new Date(); maxDate.setMonth(maxDate.getMonth() + 9);
+    const maxStr  = maxDate.toISOString().split('T')[0];
+    const iE = document.getElementById('fechaEntrada');
+    const iS = document.getElementById('fechaSalida');
+    iE.min = hoyStr; iE.max = maxStr;
+    iS.min = hoyStr; iS.max = maxStr;
+    renderCalendario();
+    cargarIcal();
+  })();
+
+
+  // ── Validaciones ─────────────────────────────────────────────────────────────
+  function setFieldState(input, errorEl, valid, msg) {
+    input.style.borderColor = valid ? 'var(--verde-ok)' : 'var(--rojo)';
+    if (errorEl) {
+      if (msg) errorEl.textContent = msg;
+      errorEl.style.display = valid ? 'none' : 'block';
+    }
+    return valid;
+  }
+
+  function validarNombre(input) {
+    const val = input.value.trim();
+    const msg = input.parentElement.querySelector('.error-nombre');
+    if (!val)  return setFieldState(input, msg, false, '⚠️ El nombre es obligatorio');
+    if (!/^[a-zA-ZáéíóúàèìòùäëïöüÁÉÍÓÚÀÈÌÒÙÄËÏÖÜñÑçÇ\s\-']+$/.test(val))
+               return setFieldState(input, msg, false, '⚠️ El nombre solo puede contener letras');
+    return setFieldState(input, msg, true);
+  }
+
+  function validarEmail(input) {
+    const val = input.value.trim();
+    const msg = input.parentElement.querySelector('.error-email');
+    if (!val)  return setFieldState(input, msg, false, '⚠️ El email es obligatorio');
+    if (!/^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$/.test(val))
+               return setFieldState(input, msg, false, '⚠️ Introduce un email válido');
+    return setFieldState(input, msg, true);
+  }
+
+  function validarTelefono(input) {
+    const val = input.value.trim().replace(/\s/g, '');
+    const msg = input.parentElement.querySelector('.error-tel');
+    if (!val)  return setFieldState(input, msg, false, '⚠️ El teléfono es obligatorio');
+    const ok  = /^[6-9]\d{8}$/.test(val) || /^\+34[6-9]\d{8}$/.test(val) || /^\+[1-9]\d{6,14}$/.test(val);
+    return setFieldState(input, msg, ok, '⚠️ Introduce un teléfono válido');
+  }
+
+  function validarPersonas() {
+    const iA    = document.querySelector('input[name="adultos"]');
+    const iN    = document.querySelector('input[name="ninos"]');
+    const msg   = document.getElementById('errorPersonas');
+    const total = (parseInt(iA.value) || 0) + (parseInt(iN.value) || 0);
+    const ok    = total >= 1 && total <= 2;
+    iA.style.borderColor = ok ? 'var(--verde-ok)' : 'var(--rojo)';
+    iN.style.borderColor = ok ? 'var(--verde-ok)' : 'var(--rojo)';
+    if (msg) msg.style.display = ok ? 'none' : 'block';
+    return ok;
+  }
+
+  function validarFechas() {
+    const iE  = document.getElementById('fechaEntrada');
+    const iS  = document.getElementById('fechaSalida');
+    const msg = document.getElementById('errorFechas');
+    const hoy = new Date(); hoy.setHours(0,0,0,0);
+    const max = new Date(); max.setMonth(max.getMonth() + 9);
+    let ok    = true;
+
+    if (!iE.value || new Date(iE.value) < hoy || new Date(iE.value) > max) {
+      iE.style.borderColor = 'var(--rojo)'; ok = false;
+    } else {
+      iE.style.borderColor = 'var(--verde-ok)';
+    }
+
+    const entrada = new Date(iE.value);
+    const salida  = new Date(iS.value);
+    if (!iS.value || salida <= entrada || salida < hoy || salida > max) {
+      iS.style.borderColor = 'var(--rojo)'; ok = false;
+    } else {
+      iS.style.borderColor = 'var(--verde-ok)';
+    }
+
+    if (msg) msg.style.display = ok ? 'none' : 'block';
+    return ok;
+  }
+
+
+  // ── Formulario — handler único ───────────────────────────────────────────────
+  (function initForm() {
+    const form      = document.getElementById('formularioReserva');
+    const btn       = document.getElementById('submitBtnReserva');
+    const errorMsg  = document.getElementById('mensajeError');
+    const formExito = document.getElementById('formSuccess');
+    const nombreInput = form.querySelector('input[name="name"]');
+    const emailInput  = form.querySelector('input[name="email"]');
+    const telInput    = form.querySelector('input[name="telefono"]');
+
+    nombreInput.addEventListener('blur', () => validarNombre(nombreInput));
+    emailInput.addEventListener('blur',  () => validarEmail(emailInput));
+    telInput.addEventListener('blur',    () => validarTelefono(telInput));
+
+    form.addEventListener('submit', async function (e) {
+      e.preventDefault();
+
+      const esValido =
+        validarFechas()            &
+        validarPersonas()          &
+        validarNombre(nombreInput) &
+        validarEmail(emailInput)   &
+        validarTelefono(telInput);
+
+      if (!esValido) {
+        (form.querySelector('.form-input[style*="var(--rojo)"]') ||
+         form.querySelector('.form-input[style*="e74c3c"]'))
+          ?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        return;
+      }
+
+      btn.disabled      = true;
+      btn.textContent   = 'Enviando...';
+      btn.style.opacity = '0.7';
+      errorMsg.style.display = 'none';
+
+      try {
+        const res  = await fetch('https://api.web3forms.com/submit', { method: 'POST', body: new FormData(form) });
+        const data = await res.json();
+        if (data.success) {
+          form.querySelectorAll('.form-row, .form-group, .submit-btn, .field-error')
+              .forEach(el => el.style.display = 'none');
+          formExito.style.display = 'block';
+        } else {
+          throw new Error('Respuesta no exitosa');
+        }
+      } catch {
+        errorMsg.style.display = 'block';
+        btn.disabled      = false;
+        btn.textContent   = 'Solicitar reserva';
+        btn.style.opacity = '1';
+      }
+    });
+  })();
+
+
+  // ── Menú móvil ───────────────────────────────────────────────────────────────
+  function toggleMobileMenu() {
+    document.getElementById('main-nav').classList.toggle('active');
+  }
+  document.querySelectorAll('#main-nav a').forEach(link => {
+    link.addEventListener('click', () => document.getElementById('main-nav').classList.remove('active'));
+  });
+  document.addEventListener('click', (e) => {
+    const nav = document.getElementById('main-nav');
+    const btn = document.querySelector('.mobile-menu-btn');
+    if (nav && btn && !nav.contains(e.target) && !btn.contains(e.target)) nav.classList.remove('active');
+  });
+
+
+  // ── Lightbox ─────────────────────────────────────────────────────────────────
+  let currentIndex   = 0;
+  let currentGallery = [];
+
+  document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.gallery').forEach(gallery => {
+      const items = [...gallery.querySelectorAll('.gallery-main, .gallery-item')];
+      currentGallery = items.map(i => i.style.backgroundImage.replace(/url\(["']?|["']?\)/g, ''));
+      items.forEach((item, index) => {
+        item.addEventListener('click', () => { currentIndex = index; openLightbox(currentGallery[index]); });
+      });
+    });
+  });
+
+  function openLightbox(src) {
+    document.getElementById('lightbox-img').src = src;
+    document.getElementById('lightbox').classList.add('active');
+    document.body.style.overflow = 'hidden';
+    updateCounter();
+  }
+  function closeLightbox() {
+    document.getElementById('lightbox').classList.remove('active');
+    document.body.style.overflow = '';
+  }
+  function changeImage(dir) {
+    currentIndex = (currentIndex + dir + currentGallery.length) % currentGallery.length;
+    document.getElementById('lightbox-img').src = currentGallery[currentIndex];
+    updateCounter();
+  }
+  function updateCounter() {
+    document.getElementById('lightbox-counter').textContent = `${currentIndex + 1} / ${currentGallery.length}`;
+  }
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape')     closeLightbox();
+    if (e.key === 'ArrowRight') changeImage(1);
+    if (e.key === 'ArrowLeft')  changeImage(-1);
+  });
+  document.getElementById('lightbox').addEventListener('click', (e) => {
+    if (e.target === document.getElementById('lightbox')) closeLightbox();
+  });
+
+
+  // ── WhatsApp flotante ─────────────────────────────────────────────────────────
+  function toggleWA() {
+    document.getElementById('waOptions').classList.toggle('open');
+    document.getElementById('waBtn').classList.toggle('open');
+  }
+  document.addEventListener('click', (e) => {
+    const c = document.querySelector('.wa-container');
+    if (c && !c.contains(e.target)) {
+      document.getElementById('waOptions').classList.remove('open');
+      document.getElementById('waBtn').classList.remove('open');
+    }
+  });
+  </script>
 </body>
 </html>
