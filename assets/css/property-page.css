@@ -171,74 +171,14 @@ footer { background: var(--verde-oscuro); color: var(--blanco); padding: 3rem 0 
   .gallery-main { height: 250px; }
   .gallery-item { height: 180px; }
 }
-/* ── Selector de idioma ─────────────────────────────────── */
-.lang-selector {
-  display: flex;
-  align-items: center;
-  gap: 0.4rem;
-}
-
+.lang-selector { display: flex; align-items: center; gap: 0.4rem; }
 .lang-selector a {
-  display: flex;
-  align-items: center;
-  font-size: 0.85rem;
-  font-weight: 500;
-  text-decoration: none;
-  padding: 0.3rem 0.6rem;
-  border-radius: 6px;
+  display: flex; align-items: center; gap: 0.3rem;
+  font-size: 0.85rem; font-weight: 500; text-decoration: none;
+  padding: 0.3rem 0.6rem; border-radius: 6px;
   transition: background 0.2s, color 0.2s;
   color: var(--gris);
-  white-space: nowrap;
 }
-
-.lang-selector a:hover {
-  background: var(--gris-claro);
-  color: var(--verde-primario);
-}
-
-.lang-selector .divider {
-  color: #ccc;
-  font-size: 0.8rem;
-}
-
-/* Activo automático por lang del documento */
-:root:lang(es) .lang-selector a[hreflang="es"],
-:root:lang(en) .lang-selector a[hreflang="en"] {
-  background: var(--verde-primario);
-  color: var(--blanco);
-  pointer-events: none;
-}
-
-/* ── Selector móvil ─────────────────────────────────────── */
-@media (max-width: 768px) {
-  /* Ocultar el del header en móvil */
-  .header-content > .lang-selector {
-    display: none;
-  }
-
-  /* El que va dentro del nav */
-  #main-nav .lang-selector {
-    display: flex;
-    justify-content: center;
-    padding: 0.6rem 0 0.2rem;
-    border-top: 1px solid var(--gris-claro);
-    margin-top: 0.4rem;
-    gap: 0.4rem;
-  }
-
-  #main-nav .lang-selector a {
-    font-size: 1rem;
-    padding: 0.5rem 1.2rem;
-    min-height: 44px;
-    justify-content: center;
-    border-bottom: none !important;
-  }
-}
-
-/* ── Selector desktop ───────────────────────────────────── */
-@media (min-width: 769px) {
-  /* Ocultar el del nav en desktop */
-  #main-nav .lang-selector {
-    display: none;
-  }
-}
+.lang-selector a:hover { background: var(--gris-claro); color: var(--verde-primario); }
+.lang-selector a.active { background: var(--verde-primario); color: var(--blanco); }
+.lang-selector .divider { color: #ccc; font-size: 0.8rem; }
