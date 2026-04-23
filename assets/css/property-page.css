@@ -171,3 +171,14 @@ footer { background: var(--verde-oscuro); color: var(--blanco); padding: 3rem 0 
   .gallery-main { height: 250px; }
   .gallery-item { height: 180px; }
 }
+.lang-selector { display: flex; align-items: center; gap: 0.4rem; }
+.lang-selector a {
+  display: flex; align-items: center; gap: 0.3rem;
+  font-size: 0.85rem; font-weight: 500; text-decoration: none;
+  padding: 0.3rem 0.6rem; border-radius: 6px;
+  transition: background 0.2s, color 0.2s;
+  color: var(--gris);
+}
+.lang-selector a:hover { background: var(--gris-claro); color: var(--verde-primario); }
+.lang-selector a.active { background: var(--verde-primario); color: var(--blanco); }
+.lang-selector .divider { color: #ccc; font-size: 0.8rem; }
