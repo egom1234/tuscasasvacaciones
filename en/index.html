@@ -100,7 +100,7 @@
     .hero {
       height: 100vh;
        background: linear-gradient(rgba(255,255,255,0.4), rgba(255,255,255,0.2)),
-        url('images/fotoportada1.avif') center/cover;
+        url('../images/fotoportada1.avif') center/cover;
       display: flex;
       align-items: center;
       text-align: center;
@@ -471,7 +471,7 @@
       </a>
 
       <!-- TARIFA LOFT -->
-      <a href="../Tarifa_loft.html" class="card">
+      <a href="Tarifa_loft.html" class="card">
         <div class="card-image" style="background-image: url('../images/tarifa/tarifa_portada2.avif')"></div>
         <div class="card-content">
           <h3 class="card-title">Loft in Tarifa</h3>
@@ -567,25 +567,36 @@
               <div>
                 <label style="display:block; font-size:0.9rem; font-weight:500; color:var(--gris-oscuro); margin-bottom:0.5rem;">Name</label>
                 <input type="text" name="name" required class="contact-form-input"
-                       oninput="validarNombre(this)" onblur="validarNombre(this)">
-                <span id="errorNombre" class="field-error">⚠️ Name can only contain letters</span>
-              </div>
+                       oninput="validarNombre(this)" 
+                       onblur="validarNombre(this)"
+                       style="width: 100%; padding: 1rem; border: 1px solid #ddd; border-radius: 12px; font-size: 1rem; transition: border 0.3s;">
+                      <span id="errorNombre" style="display:none; color:#e74c3c; font-size:0.82rem; margin-top:0.3rem;">
+                     ⚠️ Name can only contain letters
+                      </span>
+               </div>
               <div>
                 <label style="display:block; font-size:0.9rem; font-weight:500; color:var(--gris-oscuro); margin-bottom:0.5rem;">Phone</label>
                 <input type="tel" name="telefono" required class="contact-form-input"
-                       oninput="validarTelefono(this)" onblur="validarTelefono(this)"
-                       data-error-id="errorTelefono">
-                <span id="errorTelefono" class="field-error">⚠️ Please enter a valid phone number</span>
-              </div>
+                       oninput="validarTelefono(this)" 
+                       onblur="validarTelefono(this)"
+                       data-error-id="errorTelefono"
+                       style="width: 100%; padding: 1rem; border: 1px solid #ddd; border-radius: 12px; font-size: 1rem; transition: border 0.3s;">
+                <span id="errorTelefono" style="display:none; color:#e74c3c; font-size:0.82rem; margin-top:0.3rem;">
+                ⚠️ Please enter a valid phone number
+               </span>
+               </div>
             </div>
 
             <div>
               <label style="display:block; font-size:0.9rem; font-weight:500; color:var(--gris-oscuro); margin-bottom:0.5rem;">Email</label>
               <input type="email" name="email" required class="contact-form-input"
-                     oninput="validarCampo(this)" onblur="validarCampo(this)"
-                     data-error-id="errorEmail">
-              <span id="errorEmail" class="field-error">⚠️ Please enter a valid email address</span>
-            </div>
+                     oninput="validarCampo(this)" 
+                     onblur="validarCampo(this)"
+                     data-error-id="errorEmail"
+                     style="width: 100%; padding: 1rem; border: 1px solid #ddd; border-radius: 12px; font-size: 1rem; transition: border 0.3s;">
+                <span id="errorEmail" style="display:none; color:#e74c3c; font-size:0.82rem; margin-top:0.3rem;">
+                ⚠️ Please enter a valid email address</span>
+               </div>
 
             <div>
               <label style="display:block; font-size:0.9rem; font-weight:500; color:var(--gris-oscuro); margin-bottom:0.5rem;">Message</label>
