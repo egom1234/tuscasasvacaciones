@@ -171,3 +171,19 @@ footer { background: var(--verde-oscuro); color: var(--blanco); padding: 3rem 0 
   .gallery-main { height: 250px; }
   .gallery-item { height: 180px; }
 }
+.lang-switcher {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.95rem;
+}
+
+.lang-link {
+  text-decoration: none;
+  color: var(--gris);
+  font-weight: 500;
+}
+
+.lang-link.active {
+  color: var(--verde-primario);
+}
