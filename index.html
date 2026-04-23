@@ -395,6 +395,42 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 .lang-selector a:hover { background: var(--gris-claro); color: var(--verde-primario); }
 .lang-selector a.active { background: var(--verde-primario); color: var(--blanco); }
 .lang-selector .divider { color: #ccc; font-size: 0.8rem; }
+/* ── MÓVIL ── */
+@media (max-width: 768px) {
+
+  /* En móvil el selector se mete dentro del menú desplegable */
+  .lang-selector {
+    justify-content: center;
+    padding: 0.6rem 1rem 0.8rem;
+    border-top: 1px solid var(--gris-claro);
+    margin-top: 0.4rem;
+  }
+
+  .lang-selector a {
+    font-size: 0.9rem;
+    padding: 0.45rem 1rem;
+    border-radius: 8px;
+    min-height: 44px;          /* touch target mínimo */
+    justify-content: center;
+  }
+
+  /* Ocultar el selector del header en móvil (va dentro del nav) */
+  .header-content > .lang-selector {
+    display: none;
+  }
+
+  /* Mostrar el selector dentro del nav abierto */
+  #main-nav .lang-selector {
+    display: flex;
+  }
+}
+
+/* En desktop ocultar el que está dentro del nav */
+@media (min-width: 769px) {
+  #main-nav .lang-selector {
+    display: none;
+  }
+}
   </style>
 </head>
 <body>
