@@ -333,6 +333,7 @@ document.addEventListener('click', (e) => {
   const nav = document.getElementById('main-nav');
   const btn = document.querySelector('.mobile-menu-btn');
   if (nav && btn && !nav.contains(e.target) && !btn.contains(e.target)) nav.classList.remove('active');
+  setTimeout(() => nav.classList.remove('active'), 50);
 });
 
 
