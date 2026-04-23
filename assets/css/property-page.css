@@ -197,7 +197,7 @@ footer { background: var(--verde-oscuro); color: var(--blanco); padding: 3rem 0 
   .lang-selector a {
     font-size: 0.9rem;
     padding: 0.45rem 1rem;
-    border-radius: 10px;
+    border-radius: 8px;
     min-height: 44px;          /* touch target mínimo */
     justify-content: center;
   }
