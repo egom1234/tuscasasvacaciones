@@ -200,7 +200,7 @@ footer { background: var(--verde-oscuro); color: var(--blanco); padding: 3rem 0 
 @media (max-width: 768px) {
   .lang-selector {
     position: absolute;
-    right: 2rem; /* justo a la izquierda del botón hamburguesa */
+    right: 4rem; /* justo a la izquierda del botón hamburguesa */
     top: 50%;
     transform: translateY(-50%);
   }
