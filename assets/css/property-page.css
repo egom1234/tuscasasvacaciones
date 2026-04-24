@@ -208,16 +208,16 @@ footer { background: var(--verde-oscuro); color: var(--blanco); padding: 3rem 0 
 
   .lang-selector-mobile {
     display: flex;
-    position: absolute;
-    right: 4rem;
-    top: 50%;
-    transform: translateY(-50%);
+    margin-left: auto; /* empuja hacia la derecha */
+    margin-right: 0.5rem; /* separación del botón ☰ */
   }
+  
 
   .lang-selector-mobile a {
     font-size: 1.6rem; /* un poco más grande en móvil */
     min-height: 44px;
     display: flex;
     align-items: center;
+    padding: 0 0.3rem;
   }
 }
