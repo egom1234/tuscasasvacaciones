@@ -320,26 +320,28 @@ function validarFechas() {
     }
   });
 })();
+
+
 // ── Menú móvil ───────────────────────────────────────────────────────────────
 function toggleMobileMenu() {
   document.getElementById('main-nav').classList.toggle('active');
 }
 
 document.querySelectorAll('#main-nav a').forEach(link => {
-  link.addEventListener('click', () => {
+  link.addEventListener('click', (e) => {
     const href = link.getAttribute('href');
-    if (!href || href.startsWith('#')) {
-      document.getElementById('main-nav').classList.remove('active');
-    }
-    // Links de página: el navegador gestiona la navegación directamente
-  });
+    const nav  = document.getElementById('main-nav');
 
-  // iOS fix: usar touchend para navegar sin esperar el delay de click
-  link.addEventListener('touchend', (e) => {
-    const href = link.getAttribute('href');
-    if (!href || href.startsWith('#')) return; // dejar actuar el click normal
+    // Anchor links (#) → cierra inmediatamente
+    if (!href || href.startsWith('#')) {
+      nav.classList.remove('active');
+      return;
+    }
+
+    // Links de navegación → deja navegar primero, cierra después
     e.preventDefault();
-    window.location.href = href;
+    nav.classList.remove('active');
+    setTimeout(() => { window.location.href = href; }, 50);
   });
 });
 
@@ -350,6 +352,8 @@ document.addEventListener('click', (e) => {
     nav.classList.remove('active');
   }
 });
+
+
 // ── Lightbox ─────────────────────────────────────────────────────────────────
 let currentIndex   = 0;
 let currentGallery = [];
