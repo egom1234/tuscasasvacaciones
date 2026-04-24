@@ -208,8 +208,10 @@ footer { background: var(--verde-oscuro); color: var(--blanco); padding: 3rem 0 
 
   .lang-selector-mobile {
     display: flex;
-    margin-left: auto; /* empuja hacia la derecha */
-    margin-right: 0.5rem; /* separación del botón ☰ */
+    position: absolute;
+    right: 4rem;
+    top: 50%;
+    transform: translateY(-50%);
   }
   
 
@@ -218,6 +220,5 @@ footer { background: var(--verde-oscuro); color: var(--blanco); padding: 3rem 0 
     min-height: 44px;
     display: flex;
     align-items: center;
-    padding: 0 0.3rem;
   }
 }
