@@ -395,6 +395,14 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 .lang-selector a:hover { background: var(--gris-claro); color: var(--verde-primario); }
 .lang-selector a.active { background: var(--verde-primario); color: var(--blanco); }
 .lang-selector .divider { color: #ccc; font-size: 0.8rem; }
+@media (max-width: 768px) {
+  .lang-selector {
+    position: absolute;
+    right: 4rem; /* justo a la izquierda del botón hamburguesa */
+    top: 50%;
+    transform: translateY(-50%);
+  }
+}
   </style>
 </head>
 <body>
