@@ -384,17 +384,62 @@
   .property-title { font-size: 1.8rem; }
   .gallery-main, .gallery-item { height: 180px; }
 }
-.lang-selector { display: flex; align-items: center; gap: 0.4rem; }
-.lang-selector a {
-  display: flex; align-items: center; gap: 0.3rem;
-  font-size: 0.85rem; font-weight: 500; text-decoration: none;
-  padding: 0.3rem 0.6rem; border-radius: 6px;
-  transition: background 0.2s, color 0.2s;
-  color: var(--gris);
+/* ── Selector base ── */
+.lang-selector {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
 }
-.lang-selector a:hover { background: var(--gris-claro); color: var(--verde-primario); }
-.lang-selector a.active { background: var(--verde-primario); color: var(--blanco); }
-.lang-selector .divider { color: #ccc; font-size: 0.8rem; }
+
+.lang-selector a {
+  display: flex;
+  align-items: center;
+  padding: 0.2rem 0.3rem;
+  border-radius: 6px;
+  text-decoration: none;
+  opacity: 0.55;
+  transition: transform 0.2s, opacity 0.2s;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.lang-selector a img {
+  width: 26px;
+  height: auto;
+  border-radius: 3px;
+  display: block;
+}
+
+.lang-selector a:hover  { opacity: 1; transform: scale(1.1); }
+.lang-selector a.active { opacity: 1; pointer-events: none; cursor: default; }
+/* ── Desktop: selector dentro del nav, móvil oculto ── */
+@media (min-width: 769px) {
+  .lang-selector-mobile {
+    display: none;
+  }
+}
+
+/* ── Móvil: selector del nav oculto, el externo visible y posicionado ── */
+@media (max-width: 768px) {
+  #main-nav .lang-selector {
+    display: none;
+  }
+
+  .lang-selector-mobile {
+    display: flex;
+    position: absolute;
+    right: 4rem;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+
+  .lang-selector-mobile a {
+    font-size: 1.6rem; /* un poco más grande en móvil */
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+  }
+}
   </style>
 </head>
 <body>
@@ -406,19 +451,23 @@
     <div class="container">
       <div class="header-content">
         <a href="../index.html" class="logo-link">
-          <img src="../images/Logo1.png" alt="Casitas de Mar" class="logo-img">
-        </a>
-        <button class="mobile-menu-btn" onclick="toggleMobileMenu()">☰</button>
+          <img src="../images/Logo1.png" alt="Casitas de Mar" class="logo-img"></a>        
         <nav id="main-nav">
           <a href="#properties">Properties</a>
           <a href="#contact">Contact</a>
-          <!-- Language selector -->
           <div class="lang-selector">
-            <a href="../index.html">ES</a>
-            <span class="divider">|</span>
-            <a href="index.html" class="active">EN</a>
+          <a href="../index.html" hreflang="es" title="Español"><img src="https://flagcdn.com/es.svg" alt="Español" width="24" height="16"></a>
+          <span class="divider">|</span>
+          <a href="index.html"class="active"hreflang="en" title="English">
+          <img src="https://flagcdn.com/gb.svg" alt="English" width="24" height="16"></a>
           </div>
         </nav>
+        <div class="lang-selector lang-selector-mobile">
+          <a href="../index.html" hreflang="es" aria-label="Español">🇪🇸</a>
+          <span class="divider">|</span>
+          <a href="index.html" class="active"hreflang="en" aria-label="English">🇬🇧</a>
+          </div>
+         <button class="mobile-menu-btn" onclick="toggleMobileMenu()">☰</button>
       </div>
     </div>
   </header>

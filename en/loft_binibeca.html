@@ -27,23 +27,29 @@
     <div class="container">
       <div class="header-content">
         <a href="../index.html" class="logo-link">
-          <img src="../images/Logo1.png" alt="Casitas de Mar" class="logo-img">
-        </a>
-        <button class="mobile-menu-btn" onclick="toggleMobileMenu()">☰</button>
+          <img src="../images/Logo1.png" alt="Casitas de Mar" class="logo-img"></a>
         <nav id="main-nav">
           <a href="index.html">Home</a>
           <a href="Casa_Gonda.html">Casa Gonda</a>
           <a href="Casa_blava.html">Peñíscola</a>
           <a href="Tarifa_apartamento.html">Tarifa Apt</a>
           <a href="Tarifa_loft.html">Tarifa Loft</a>
-          <!-- Language selector -->
           <div class="lang-selector">
-            <a href="../loft_binibeca.html">ES</a>
+          <a href="../loft_binibeca.html" hreflang="es" title="Español"><img src="https://flagcdn.com/es.svg" alt="Español" width="24" height="16"></a>
+          <span class="divider">|</span>
+          <a href="loft_binibeca.html" class="active"hreflang="en" title="English">
+          <img src="https://flagcdn.com/gb.svg" alt="English" width="24" height="16"></a>
+          </div>
+          </nav>
+          <!-- Language selector fuera de nav-->
+          <div class="lang-selector lang-selector-mobile">
+            <a href="../loft_binibeca.html">🇪🇸 </a>
             <span class="divider">|</span>
-            <a href="loft_binibeca.html" class="active">EN</a>
-        </nav>
+            <a href="loft_binibeca.html" class="active">🇬🇧 </a>
+          </div>
+          <button class="mobile-menu-btn" onclick="toggleMobileMenu()">☰</button>
       </div>
-    </div>
+     </div>
   </header>
 
   <main>
