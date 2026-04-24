@@ -182,3 +182,11 @@ footer { background: var(--verde-oscuro); color: var(--blanco); padding: 3rem 0 
 .lang-selector a:hover { background: var(--gris-claro); color: var(--verde-primario); }
 .lang-selector a.active { background: var(--verde-primario); color: var(--blanco); }
 .lang-selector .divider { color: #ccc; font-size: 0.8rem; }
+
+@media (max-width: 768px) {
+  .lang-selector {
+    position: absolute;
+    right: 4rem; /* justo a la izquierda del botón hamburguesa */
+    top: 50%;
+    transform: translateY(-50%);
+  }
