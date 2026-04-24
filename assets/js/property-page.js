@@ -326,13 +326,31 @@ function validarFechas() {
 function toggleMobileMenu() {
   document.getElementById('main-nav').classList.toggle('active');
 }
+
 document.querySelectorAll('#main-nav a').forEach(link => {
-  link.addEventListener('click', () => document.getElementById('main-nav').classList.remove('active'));
+  link.addEventListener('click', (e) => {
+    const href = link.getAttribute('href');
+    const nav  = document.getElementById('main-nav');
+
+    // Anchor links (#) → cierra inmediatamente
+    if (!href || href.startsWith('#')) {
+      nav.classList.remove('active');
+      return;
+    }
+
+    // Links de navegación → deja navegar primero, cierra después
+    e.preventDefault();
+    nav.classList.remove('active');
+    setTimeout(() => { window.location.href = href; }, 50);
+  });
 });
+
 document.addEventListener('click', (e) => {
   const nav = document.getElementById('main-nav');
   const btn = document.querySelector('.mobile-menu-btn');
-  if (nav && btn && !nav.contains(e.target) && !btn.contains(e.target)) nav.classList.remove('active');
+  if (nav && btn && !nav.contains(e.target) && !btn.contains(e.target)) {
+    nav.classList.remove('active');
+  }
 });
 
 
