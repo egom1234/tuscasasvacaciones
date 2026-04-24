@@ -413,9 +413,9 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 .lang-selector a:hover  { opacity: 1; transform: scale(1.1); }
 .lang-selector a.active { opacity: 1; pointer-events: none; cursor: default; box-shadow: 0 0 0 2px var(--verde-primario); border-radius: 4px; }
 /* ── Desktop: selector dentro del nav, móvil oculto ── */
-@media (max-width: 768px) {
-  .lang-selector-mobile a img {
-    width: 30px;
+@media (min-width: 769px) {
+  .lang-selector-mobile {
+    display: none;
   }
 }
 
