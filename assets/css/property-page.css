@@ -182,3 +182,29 @@ footer { background: var(--verde-oscuro); color: var(--blanco); padding: 3rem 0 
 .lang-selector a:hover { background: var(--gris-claro); color: var(--verde-primario); }
 .lang-selector a.active { background: var(--verde-primario); color: var(--blanco); }
 .lang-selector .divider { color: #ccc; font-size: 0.8rem; }
+/* ── Language selector en menú móvil ─────────────────────── */
+@media (max-width: 768px) {
+  #main-nav .lang-selector {
+    display: flex !important;
+    flex-direction: row !important;
+    justify-content: center;
+    align-items: center;
+    gap: 0.4rem;
+    width: 100%;
+    padding: 0.75rem 0 !important;
+    border-bottom: 1px solid var(--gris-claro);
+  }
+
+  #main-nav .lang-selector a {
+    font-size: 0.9rem !important;
+    padding: 0.4rem 0.8rem !important;
+    border-bottom: none !important;
+    text-align: center !important;
+  }
+
+  #main-nav .lang-selector .divider {
+    display: inline-block;
+    color: #ccc;
+    font-size: 0.8rem;
+  }
+}
