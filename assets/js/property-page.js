@@ -320,28 +320,26 @@ function validarFechas() {
     }
   });
 })();
-
-
 // ── Menú móvil ───────────────────────────────────────────────────────────────
 function toggleMobileMenu() {
   document.getElementById('main-nav').classList.toggle('active');
 }
 
 document.querySelectorAll('#main-nav a').forEach(link => {
-  link.addEventListener('click', (e) => {
+  link.addEventListener('click', () => {
     const href = link.getAttribute('href');
-    const nav  = document.getElementById('main-nav');
-
-    // Anchor links (#) → cierra inmediatamente
     if (!href || href.startsWith('#')) {
-      nav.classList.remove('active');
-      return;
+      document.getElementById('main-nav').classList.remove('active');
     }
+    // Links de página: el navegador gestiona la navegación directamente
+  });
 
-    // Links de navegación → deja navegar primero, cierra después
+  // iOS fix: usar touchend para navegar sin esperar el delay de click
+  link.addEventListener('touchend', (e) => {
+    const href = link.getAttribute('href');
+    if (!href || href.startsWith('#')) return; // dejar actuar el click normal
     e.preventDefault();
-    nav.classList.remove('active');
-    setTimeout(() => { window.location.href = href; }, 50);
+    window.location.href = href;
   });
 });
 
@@ -352,8 +350,6 @@ document.addEventListener('click', (e) => {
     nav.classList.remove('active');
   }
 });
-
-
 // ── Lightbox ─────────────────────────────────────────────────────────────────
 let currentIndex   = 0;
 let currentGallery = [];
