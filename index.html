@@ -384,23 +384,54 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   .property-title { font-size: 1.8rem; }
   .gallery-main, .gallery-item { height: 180px; }
 }
-.lang-selector { display: flex; align-items: center; gap: 0.4rem; }
-.lang-selector a {
-  display: flex; align-items: center; gap: 0.3rem;
-  font-size: 0.85rem; font-weight: 500; text-decoration: none;
-  padding: 0.3rem 0.6rem; border-radius: 6px;
-  transition: background 0.2s, color 0.2s;
-  color: var(--gris);
+/* ── Selector base ── */
+.lang-selector {
+  display: flex;
+  align-items: center;
+  gap: 0.2rem;
 }
-.lang-selector a:hover { background: var(--gris-claro); color: var(--verde-primario); }
-.lang-selector a.active { background: var(--verde-primario); color: var(--blanco); }
-.lang-selector .divider { color: #ccc; font-size: 0.8rem; }
+
+.lang-selector a {
+  font-size: 1.4rem;
+  padding: 0.2rem 0.4rem;
+  border-radius: 6px;
+  text-decoration: none;
+  transition: transform 0.2s, opacity 0.2s;
+  line-height: 1;
+  opacity: 0.7;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.lang-selector a:hover   { opacity: 1; transform: scale(1.15); }
+.lang-selector a.active  { opacity: 1; pointer-events: none; cursor: default; }
+
+/* ── Desktop: selector dentro del nav, móvil oculto ── */
+@media (min-width: 769px) {
+  .lang-selector-mobile {
+    display: none;
+  }
+}
+
+/* ── Móvil: selector del nav oculto, el externo visible y posicionado ── */
 @media (max-width: 768px) {
-  .lang-selector {
+  #main-nav .lang-selector {
+    display: none;
+  }
+
+  .lang-selector-mobile {
+    display: flex;
     position: absolute;
-    right: 4rem; /* justo a la izquierda del botón hamburguesa */
+    right: 4rem;
     top: 50%;
     transform: translateY(-50%);
+  }
+
+  .lang-selector-mobile a {
+    font-size: 1.6rem; /* un poco más grande en móvil */
+    min-height: 44px;
+    display: flex;
+    align-items: center;
   }
 }
   </style>
@@ -427,6 +458,11 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
           <a href="en/index.html"hreflang="en" aria-label="English">🇬🇧</a>
           </div>
         </nav>
+        <div class="lang-selector lang-selector-mobile">
+          <a href="index.html" class="active"hreflang="es" aria-label="Español">🇪🇸</a>
+          <span class="divider">|</span>
+          <a href="en/index.html"hreflang="en" aria-label="English">🇬🇧</a>
+          </div>
       </div>
     </div>
   </header>
