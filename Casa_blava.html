@@ -28,22 +28,29 @@
       <div class="header-content">
         <a href="index.html" class="logo-link">
           <img src="images/Logo1.png" alt="Casitas de Mar" class="logo-img">
-        </a>
-        <button class="mobile-menu-btn" onclick="toggleMobileMenu()">☰</button>
-        <nav id="main-nav">
+          </a>
+         <nav id="main-nav">
           <a href="index.html">Inicio</a>
           <a href="loft_binibeca.html">Binibeca</a>
           <a href="Casa_Gonda.html">Casa Gonda</a>
           <a href="Tarifa_apartamento.html">Tarifa Apt</a>
           <a href="Tarifa_loft.html">Tarifa Loft</a>
-          <!-- Language selector -->
           <div class="lang-selector">
-            <a href="Casa_blava.html" class="active">ES</a>
+          <a href="Casa_blava.html" class="active"hreflang="es" title="Español"><img src="https://flagcdn.com/es.svg" alt="Español" width="24" height="16"></a>
+          <span class="divider">|</span>
+          <a href="en/Casa_blava.html"hreflang="en" title="English">
+          <img src="https://flagcdn.com/gb.svg" alt="English" width="24" height="16"></a>
+          </div>
+          </nav>
+          <!-- Language selector fuera de nav-->
+          <div class="lang-selector lang-selector-mobile">
+            <a href="Casa_blava.html" class="active">🇪🇸 </a>
             <span class="divider">|</span>
-            <a href="en/Casa_blava.html">EN</a>
-        </nav>
+            <a href="en/Casa_blava.html">🇬🇧 </a>
+          </div>
+          <button class="mobile-menu-btn" onclick="toggleMobileMenu()">☰</button>
       </div>
-    </div>
+     </div>
   </header>
 
   <main>
