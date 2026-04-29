@@ -419,7 +419,7 @@ function actualizarWAMensajes() {
     const originalHref = a.getAttribute('data-original-href') || a.href;
     a.setAttribute('data-original-href', originalHref);
     const url = new URL(originalHref);
-    url.searchParams.set('text', encodeURIComponent(msg));
+    url.searchParams.set('text', msg); // Sin encodeURIComponent para que aparezca legible
     a.href = url.toString();
   });
 }
