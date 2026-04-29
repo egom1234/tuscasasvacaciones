@@ -113,16 +113,12 @@ function renderCalendario() {
       // No agregar listener aquí, usar delegación
     }
 
-    if (fechaEntrada && compararFechas(fecha, fechaEntrada)) el.classList.add('selected');
-    if (fechaSalida  && compararFechas(fecha, fechaSalida))  el.classList.add('selected');
+    if (fechaEntrada && toKey(fecha) === toKey(fechaEntrada)) el.classList.add('selected');
+    if (fechaSalida  && toKey(fecha) === toKey(fechaSalida))  el.classList.add('selected');
     if (fechaEntrada && fechaSalida && fecha > fechaEntrada && fecha < fechaSalida) el.classList.add('range');
 
     grid.appendChild(el);
   }
-}
-
-function compararFechas(a, b) {
-  return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
 }
 
 function seleccionarFecha(fecha) {
