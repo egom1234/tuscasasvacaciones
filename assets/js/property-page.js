@@ -72,7 +72,6 @@ function toKey(d) {
 }
 
 function renderCalendario() {
-  console.log('Render calendario, fechaEntrada:', fechaEntrada ? toKey(fechaEntrada) : null);
   const grid     = document.getElementById('calendarioGrid');
   const labelMes = document.getElementById('mesActual');
   grid.innerHTML = '';
