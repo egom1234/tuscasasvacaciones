@@ -110,16 +110,12 @@ function renderCalendario() {
       el.addEventListener('click', () => seleccionarFecha(fecha));
     }
 
-    if (fechaEntrada && compararFechas(fecha, fechaEntrada)) el.classList.add('selected');
-    if (fechaSalida  && compararFechas(fecha, fechaSalida))  el.classList.add('selected');
+    if (fechaEntrada && toKey(fecha) === toKey(fechaEntrada)) el.classList.add('selected');
+    if (fechaSalida  && toKey(fecha) === toKey(fechaSalida))  el.classList.add('selected');
     if (fechaEntrada && fechaSalida && fecha > fechaEntrada && fecha < fechaSalida) el.classList.add('range');
 
     grid.appendChild(el);
   }
-}
-
-function compararFechas(a, b) {
-  return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
 }
 
 function seleccionarFecha(fecha) {
@@ -184,6 +180,16 @@ function cambiarMes(delta) {
     minSalida.setDate(minSalida.getDate() + 1);
     iS.min = toKey(minSalida);
     if (iS.value && iS.value <= this.value) iS.value = '';
+  });
+  // Delegación de eventos en el grid
+  document.getElementById('calendarioGrid').addEventListener('click', (e) => {
+    const el = e.target.closest('[data-date]');
+    if (!el) return;
+    if (el.classList.contains('available')) {
+      const key = el.getAttribute('data-date');
+      const fecha = parseFecha(key.replace(/-/g, ''));
+      seleccionarFecha(fecha);
+    }
   });
   renderCalendario();
   cargarIcal();
@@ -382,6 +388,33 @@ document.getElementById('lightbox').addEventListener('click', (e) => {
 function toggleWA() {
   document.getElementById('waOptions').classList.toggle('open');
   document.getElementById('waBtn').classList.toggle('open');
+  // Actualizar mensajes de WhatsApp con fechas seleccionadas
+  actualizarWAMensajes();
+}
+function actualizarWAMensajes() {
+  const isEnglish = document.documentElement.lang?.startsWith('en') || window.location.pathname.includes('/en/');
+  const baseMsg = isEnglish
+    ? 'Hello, I would like to book this property.'
+    : 'Hola, me gustaría reservar esta propiedad.';
+  let msg = baseMsg;
+  if (fechaEntrada && fechaSalida) {
+    const noches = Math.ceil((fechaSalida - fechaEntrada) / (1000 * 60 * 60 * 24));
+    msg += isEnglish
+      ? ` From ${toKey(fechaEntrada)} to ${toKey(fechaSalida)} (${noches} nights).`
+      : ` Del ${toKey(fechaEntrada)} al ${toKey(fechaSalida)} (${noches} noches).`;
+  } else if (fechaEntrada) {
+    msg += isEnglish
+      ? ` Starting from ${toKey(fechaEntrada)}.`
+      : ` A partir del ${toKey(fechaEntrada)}.`;
+  }
+  // Asumiendo que hay enlaces con data-wa dentro de waOptions
+  document.querySelectorAll('#waOptions a').forEach(a => {
+    const originalHref = a.getAttribute('data-original-href') || a.href;
+    a.setAttribute('data-original-href', originalHref);
+    const url = new URL(originalHref);
+    url.searchParams.set('text', msg); // Sin encodeURIComponent para que aparezca legible
+    a.href = url.toString();
+  });
 }
 document.addEventListener('click', (e) => {
   const c = document.querySelector('.wa-container');
