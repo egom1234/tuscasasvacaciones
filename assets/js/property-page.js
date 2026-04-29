@@ -416,22 +416,32 @@ function calcularPrecio() {
 
     try {
       const fd = new FormData(form);
-        fd.append('nights', String(lastPricing.nights));
-        fd.append('subtotal', lastPricing.subtotal.toFixed(2));
-        fd.append('cleaning', lastPricing.cleaning.toFixed(2));
-        fd.append('total_price', lastPricing.total.toFixed(2));
-        fd.append('price_breakdown', lastPricing.breakdown);
-        const res = await fetch('https://api.web3forms.com/submit', { method: 'POST', body: fd });
-      const data = await res.json();
-      if (data.success) {
+      fd.append('nights', String(lastPricing.nights));
+      fd.append('subtotal', lastPricing.subtotal.toFixed(2));
+      fd.append('cleaning', lastPricing.cleaning.toFixed(2));
+      fd.append('total_price', lastPricing.total.toFixed(2));
+      fd.append('price_breakdown', lastPricing.breakdown);
+
+      const res = await fetch('https://api.web3forms.com/submit', { method: 'POST', body: fd });
+      const text = await res.text();
+      let data = {};
+      try { data = text ? JSON.parse(text) : {}; } catch (e) { console.warn('Non-JSON response from web3forms:', text); }
+
+      if (!res.ok) {
+        throw new Error(`HTTP ${res.status} ${res.statusText} - ${data.message || text.slice(0,200)}`);
+      }
+
+      if (data && data.success) {
         form.querySelectorAll('.form-row, .form-group, .submit-btn, .field-error')
             .forEach(el => el.style.display = 'none');
         formExito.style.display = 'block';
       } else {
-        throw new Error('Respuesta no exitosa');
+        throw new Error('Respuesta no exitosa: ' + (JSON.stringify(data) || text));
       }
-    } catch {
+    } catch (err) {
+      console.error('Reservation submit error:', err);
       errorMsg.style.display = 'block';
+      errorMsg.textContent = '⚠️ Error al enviar la solicitud: ' + (err && err.message ? err.message : 'comprueba la consola');
       btn.disabled      = false;
       btn.textContent   = 'Solicitar reserva';
       btn.style.opacity = '1';
