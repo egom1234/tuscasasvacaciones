@@ -72,6 +72,7 @@ function toKey(d) {
 }
 
 function renderCalendario() {
+  console.log('Render calendario, fechaEntrada:', fechaEntrada ? toKey(fechaEntrada) : null);
   const grid     = document.getElementById('calendarioGrid');
   const labelMes = document.getElementById('mesActual');
   grid.innerHTML = '';
@@ -122,6 +123,7 @@ function renderCalendario() {
 }
 
 function seleccionarFecha(fecha) {
+  console.log('Seleccionando fecha:', toKey(fecha));
   if (fechasReservadas.has(toKey(fecha))) return;
   const minNoches = (window.PAGE_CONFIG || {}).minNoches || 2;
   if (!fechaEntrada || (fechaEntrada && fechaSalida)) {
@@ -195,8 +197,10 @@ function cambiarMes(delta) {
   });
   // Delegación de eventos en el grid
   document.getElementById('calendarioGrid').addEventListener('click', (e) => {
+    console.log('Click en grid, target class:', e.target.className);
     if (e.target.classList.contains('available')) {
       const key = e.target.getAttribute('data-date');
+      console.log('Seleccionando key:', key);
       const fecha = parseFecha(key.replace(/-/g, ''));
       seleccionarFecha(fecha);
     }
