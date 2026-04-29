@@ -255,6 +255,12 @@
               <textarea class="form-input" name="message" rows="3" placeholder="Hora aproximada de llegada, peticiones especiales..."></textarea>
             </div>
 
+            <input type="hidden" name="nights" id="hdNights" value="">
+            <input type="hidden" name="subtotal" id="hdSubtotal" value="">
+            <input type="hidden" name="cleaning" id="hdCleaning" value="">
+            <input type="hidden" name="total_price" id="hdTotalPrice" value="">
+            <input type="hidden" name="price_breakdown" id="hdPriceBreakdown" value="">
+
             <button type="submit" class="submit-btn" id="submitBtnReserva">Solicitar reserva</button>
           </form>
         </div>
@@ -305,6 +311,7 @@
     minNoches:   2,
   };
   </script>
+  <script src="calendario-component.js"></script>
   <script src="assets/js/property-page.js"></script>
 </body>
 </html>

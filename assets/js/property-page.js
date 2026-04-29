@@ -323,6 +323,17 @@ function calcularPrecio() {
     if (pa) pa.textContent = 'Selecciona fechas';
     if (ps) ps.style.display = 'none';
     lastPricing = { nights: 0, subtotal: 0, cleaning: LIMPIEZA, total: 0, breakdown: '' };
+    // Clear hidden fields
+    const hN2 = document.getElementById('hdNights');
+    const hS2 = document.getElementById('hdSubtotal');
+    const hC2 = document.getElementById('hdCleaning');
+    const hT2 = document.getElementById('hdTotalPrice');
+    const hB2 = document.getElementById('hdPriceBreakdown');
+    if (hN2) hN2.value = '';
+    if (hS2) hS2.value = '';
+    if (hC2) hC2.value = '';
+    if (hT2) hT2.value = '';
+    if (hB2) hB2.value = '';
     actualizarWAMensajes();
     return;
   }
@@ -350,6 +361,19 @@ function calcularPrecio() {
     ps.querySelector('.breakdown').innerHTML = breakdownHTML;
   }
   lastPricing = { nights: noches, subtotal: subtotal, cleaning: limpieza, total: total, breakdown: breakdownText };
+
+  // Update hidden fields so other scripts (calendar component) or form submissions include pricing
+  const hN = document.getElementById('hdNights');
+  const hS = document.getElementById('hdSubtotal');
+  const hC = document.getElementById('hdCleaning');
+  const hT = document.getElementById('hdTotalPrice');
+  const hB = document.getElementById('hdPriceBreakdown');
+  if (hN) hN.value = String(lastPricing.nights);
+  if (hS) hS.value = lastPricing.subtotal.toFixed(2);
+  if (hC) hC.value = lastPricing.cleaning.toFixed(2);
+  if (hT) hT.value = lastPricing.total.toFixed(2);
+  if (hB) hB.value = lastPricing.breakdown;
+
   actualizarWAMensajes();
 }
 
