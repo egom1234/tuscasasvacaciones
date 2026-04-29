@@ -122,7 +122,6 @@ function renderCalendario() {
 }
 
 function seleccionarFecha(fecha) {
-  console.log('Seleccionando fecha:', toKey(fecha));
   if (fechasReservadas.has(toKey(fecha))) return;
   const minNoches = (window.PAGE_CONFIG || {}).minNoches || 2;
   if (!fechaEntrada || (fechaEntrada && fechaSalida)) {
@@ -196,10 +195,10 @@ function cambiarMes(delta) {
   });
   // Delegación de eventos en el grid
   document.getElementById('calendarioGrid').addEventListener('click', (e) => {
-    console.log('Click en grid, target class:', e.target.className);
-    if (e.target.classList.contains('available')) {
-      const key = e.target.getAttribute('data-date');
-      console.log('Seleccionando key:', key);
+    const el = e.target.closest('[data-date]');
+    if (!el) return;
+    if (el.classList.contains('available')) {
+      const key = el.getAttribute('data-date');
       const fecha = parseFecha(key.replace(/-/g, ''));
       seleccionarFecha(fecha);
     }
@@ -405,13 +404,20 @@ function toggleWA() {
   actualizarWAMensajes();
 }
 function actualizarWAMensajes() {
-  const baseMsg = 'Hola, me gustaría reservar esta propiedad.';
+  const isEnglish = document.documentElement.lang?.startsWith('en') || window.location.pathname.includes('/en/');
+  const baseMsg = isEnglish
+    ? 'Hello, I would like to book this property.'
+    : 'Hola, me gustaría reservar esta propiedad.';
   let msg = baseMsg;
   if (fechaEntrada && fechaSalida) {
     const noches = Math.ceil((fechaSalida - fechaEntrada) / (1000 * 60 * 60 * 24));
-    msg += ` Del ${toKey(fechaEntrada)} al ${toKey(fechaSalida)} (${noches} noches).`;
+    msg += isEnglish
+      ? ` From ${toKey(fechaEntrada)} to ${toKey(fechaSalida)} (${noches} nights).`
+      : ` Del ${toKey(fechaEntrada)} al ${toKey(fechaSalida)} (${noches} noches).`;
   } else if (fechaEntrada) {
-    msg += ` A partir del ${toKey(fechaEntrada)}.`;
+    msg += isEnglish
+      ? ` Starting from ${toKey(fechaEntrada)}.`
+      : ` A partir del ${toKey(fechaEntrada)}.`;
   }
   // Asumiendo que hay enlaces con data-wa dentro de waOptions
   document.querySelectorAll('#waOptions a').forEach(a => {
