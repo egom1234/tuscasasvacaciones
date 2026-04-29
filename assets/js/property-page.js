@@ -393,9 +393,10 @@ function toggleWA() {
 }
 function actualizarWAMensajes() {
   const isEnglish = document.documentElement.lang?.startsWith('en') || window.location.pathname.includes('/en/');
+  const propertyName = document.title.split(' - ')[0] || 'esta propiedad'; // Asumiendo que el título es "Nombre - Sitio"
   const baseMsg = isEnglish
-    ? 'Hello, I would like to book this property.'
-    : 'Hola, me gustaría reservar esta propiedad.';
+    ? `Hello, I would like to book ${propertyName}.`
+    : `Hola, me gustaría reservar ${propertyName}.`;
   let msg = baseMsg;
   if (fechaEntrada && fechaSalida) {
     const noches = Math.ceil((fechaSalida - fechaEntrada) / (1000 * 60 * 60 * 24));
