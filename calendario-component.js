@@ -1,7 +1,7 @@
 /**
  * COMPONENTE CALENDARIO iCal — Casitas de Mar
  * Añade este script en cada página HTML de propiedad.
- * Llama a initCalendario({ propiedad, containerId }) tras cargar el DOM.
+ * Llama a initCalendario({ propiedad, containerId, minNoches: 2 }) tras cargar el DOM.
  */
 
 const WORKER_BASE = 'https://tuscasasvacaciones.eduardgomez-4.workers.dev';
@@ -43,17 +43,28 @@ function parseIcal(text) {
 }
 
 function parseFechaIcal(str) {
-  return new Date(parseInt(str.slice(0,4)), parseInt(str.slice(4,6))-1, parseInt(str.slice(6,8)));
+  // Normalizar a fecha pura (sin timezone)
+  const year = parseInt(str.slice(0,4));
+  const month = parseInt(str.slice(4,6)) - 1;
+  const day = parseInt(str.slice(6,8));
+  return new Date(year, month, day);
 }
 
 function toYMD(date) {
+  // Fecha pura en formato YYYY-MM-DD
   const y = date.getFullYear();
   const m = String(date.getMonth()+1).padStart(2,'0');
   const d = String(date.getDate()).padStart(2,'0');
   return `${y}-${m}-${d}`;
 }
 
-async function initCalendario({ propiedad, containerId }) {
+function fromYMD(ymd) {
+  // Crear fecha pura desde YYYY-MM-DD
+  const [y, m, d] = ymd.split('-').map(Number);
+  return new Date(y, m-1, d);
+}
+
+async function initCalendario({ propiedad, containerId, minNoches = 2 }) {
   const container = document.getElementById(containerId);
   if (!container) return;
 
@@ -72,6 +83,7 @@ async function initCalendario({ propiedad, containerId }) {
         <div class="ical-spinner"></div><span>Cargando disponibilidad&hellip;</span>
       </div>
       <div class="ical-grid" id="${containerId}-grid" style="display:none"></div>
+      <div class="ical-noches" id="${containerId}-noches" style="display:none">Noches seleccionadas: <span id="${containerId}-noches-count">0</span></div>
       <div class="ical-leyenda">
         <span class="ical-leyenda-item"><span class="ical-dot ocupado"></span>Ocupado</span>
         <span class="ical-leyenda-item"><span class="ical-dot seleccionado"></span>Seleccionado</span>
@@ -128,12 +140,13 @@ async function initCalendario({ propiedad, containerId }) {
       const ymd   = toYMD(fecha);
       const el    = document.createElement('div');
       el.className = 'ical-day'; el.textContent = d;
+      el.setAttribute('data-date', ymd); // Guardar fecha en data-date
 
       if (fecha < hoy) { el.classList.add('ical-pasado'); }
       else if (ocupadas.has(ymd)) { el.classList.add('ical-ocupado'); el.title = 'No disponible'; }
       else {
         el.classList.add('ical-libre');
-        el.addEventListener('click', () => seleccionar(fecha));
+        // No agregar listener aquí, usar delegación
       }
       if (entrada && toYMD(fecha) === toYMD(entrada)) el.classList.add('ical-sel');
       if (salida  && toYMD(fecha) === toYMD(salida))  el.classList.add('ical-sel');
@@ -152,15 +165,45 @@ async function initCalendario({ propiedad, containerId }) {
         cursor.setDate(cursor.getDate()+1);
       }
       if (hayOcupado) { entrada = fecha; salida = null; }
-      else { salida = fecha; }
+      else {
+        const noches = Math.ceil((fecha - entrada) / (1000 * 60 * 60 * 24));
+        if (noches < minNoches) {
+          alert(`Mínimo ${minNoches} noches requeridas.`);
+          entrada = fecha; salida = null;
+        } else {
+          salida = fecha;
+        }
+      }
     } else { entrada = fecha; salida = null; }
 
     const inE = document.getElementById('fechaEntrada');
     const inS = document.getElementById('fechaSalida');
     if (inE && entrada) inE.value = toYMD(entrada);
     if (inS && salida)  inS.value = toYMD(salida);
+
+    // Actualizar previsualización de noches
+    const nochesEl = document.getElementById(`${containerId}-noches`);
+    const countEl = document.getElementById(`${containerId}-noches-count`);
+    if (entrada && salida) {
+      const noches = Math.ceil((salida - entrada) / (1000 * 60 * 60 * 24));
+      countEl.textContent = noches;
+      nochesEl.style.display = 'block';
+    } else {
+      countEl.textContent = '0';
+      nochesEl.style.display = 'none';
+    }
+
     render();
   }
+
+  // Delegación de eventos: un solo listener en el grid
+  document.getElementById(`${containerId}-grid`).addEventListener('click', (e) => {
+    if (e.target.classList.contains('ical-libre')) {
+      const ymd = e.target.getAttribute('data-date');
+      const fecha = fromYMD(ymd);
+      seleccionar(fecha);
+    }
+  });
 
   document.getElementById(`${containerId}-prev`).addEventListener('click', () => {
     mesVista.setMonth(mesVista.getMonth()-1); render();
