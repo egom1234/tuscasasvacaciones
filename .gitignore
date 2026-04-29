@@ -1,1 +1,7 @@
 .github
+
+# Ignore Copilot instructions (private)
+.copilot/copilot-instructions.md
+
+# Optionally ignore the entire Copilot folder
+.copilot/
