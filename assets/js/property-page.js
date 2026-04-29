@@ -5,7 +5,6 @@
  *   window.PAGE_CONFIG = {
  *     icalSlugs:   ['slug-airbnb', 'slug-booking'],
  *     maxPersonas: 4,
- *     minNoches:   2,
  *   };
  */
 
@@ -101,7 +100,6 @@ function renderCalendario() {
     const el    = document.createElement('div');
     el.className   = 'calendar-day';
     el.textContent = dia;
-    el.setAttribute('data-date', key); // Guardar fecha en data-date
 
     if (fecha < hoy) {
       el.classList.add('disabled');
@@ -109,8 +107,7 @@ function renderCalendario() {
       el.classList.add('booked');
       el.title = 'No disponible';
     } else {
-      el.classList.add('available');
-      // No agregar listener aquí, usar delegación
+      el.addEventListener('click', () => seleccionarFecha(fecha));
     }
 
     if (fechaEntrada && compararFechas(fecha, fechaEntrada)) el.classList.add('selected');
@@ -127,7 +124,6 @@ function compararFechas(a, b) {
 
 function seleccionarFecha(fecha) {
   if (fechasReservadas.has(toKey(fecha))) return;
-  const minNoches = (window.PAGE_CONFIG || {}).minNoches || 2;
   if (!fechaEntrada || (fechaEntrada && fechaSalida)) {
     fechaEntrada = fecha;
     fechaSalida  = null;
@@ -144,14 +140,7 @@ function seleccionarFecha(fecha) {
       }
       cur = new Date(cur.getTime() + 86400000);
     }
-    const noches = Math.ceil((fecha - fechaEntrada) / (1000 * 60 * 60 * 24));
-    if (noches < minNoches) {
-      alert(`Mínimo ${minNoches} noches requeridas.`);
-      fechaEntrada = fecha;
-      fechaSalida  = null;
-    } else {
-      fechaSalida = fecha;
-    }
+    fechaSalida = fecha;
   } else {
     fechaEntrada = fecha;
     fechaSalida  = null;
@@ -165,7 +154,6 @@ function seleccionarFecha(fecha) {
 function actualizarInputsFecha() {
   document.getElementById('fechaEntrada').value = fechaEntrada ? toKey(fechaEntrada) : '';
   document.getElementById('fechaSalida').value  = fechaSalida  ? toKey(fechaSalida)  : '';
-  actualizarWAMensajes(); // Actualizar WhatsApp al cambiar fechas
 }
 
 function cambiarMes(delta) {
@@ -196,14 +184,6 @@ function cambiarMes(delta) {
     minSalida.setDate(minSalida.getDate() + 1);
     iS.min = toKey(minSalida);
     if (iS.value && iS.value <= this.value) iS.value = '';
-  });
-  // Delegación de eventos en el grid
-  document.getElementById('calendarioGrid').addEventListener('click', (e) => {
-    if (e.target.classList.contains('available')) {
-      const key = e.target.getAttribute('data-date');
-      const fecha = parseFecha(key.replace(/-/g, ''));
-      seleccionarFecha(fecha);
-    }
   });
   renderCalendario();
   cargarIcal();
@@ -402,26 +382,6 @@ document.getElementById('lightbox').addEventListener('click', (e) => {
 function toggleWA() {
   document.getElementById('waOptions').classList.toggle('open');
   document.getElementById('waBtn').classList.toggle('open');
-  // Actualizar mensajes de WhatsApp con fechas seleccionadas
-  actualizarWAMensajes();
-}
-function actualizarWAMensajes() {
-  const baseMsg = 'Hola, me gustaría reservar esta propiedad.';
-  let msg = baseMsg;
-  if (fechaEntrada && fechaSalida) {
-    const noches = Math.ceil((fechaSalida - fechaEntrada) / (1000 * 60 * 60 * 24));
-    msg += ` Del ${toKey(fechaEntrada)} al ${toKey(fechaSalida)} (${noches} noches).`;
-  } else if (fechaEntrada) {
-    msg += ` A partir del ${toKey(fechaEntrada)}.`;
-  }
-  // Asumiendo que hay enlaces con data-wa dentro de waOptions
-  document.querySelectorAll('#waOptions a').forEach(a => {
-    const originalHref = a.getAttribute('data-original-href') || a.href;
-    a.setAttribute('data-original-href', originalHref);
-    const url = new URL(originalHref);
-    url.searchParams.set('text', encodeURIComponent(msg));
-    a.href = url.toString();
-  });
 }
 document.addEventListener('click', (e) => {
   const c = document.querySelector('.wa-container');
