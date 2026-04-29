@@ -150,6 +150,7 @@ function seleccionarFecha(fecha) {
 function actualizarInputsFecha() {
   document.getElementById('fechaEntrada').value = fechaEntrada ? toKey(fechaEntrada) : '';
   document.getElementById('fechaSalida').value  = fechaSalida  ? toKey(fechaSalida)  : '';
+  calcularPrecio();
 }
 
 function cambiarMes(delta) {
@@ -269,6 +270,65 @@ function validarFechas() {
 
   if (msg) msg.style.display = ok ? 'none' : 'block';
   return ok;
+}
+
+
+// ── Cálculo de precios específico para Casa Blava (tarifas facilitadas por el propietario)
+const LIMPIEZA = 75;
+
+function esFinDeSemana(fecha) {
+  const d = fecha.getDay();
+  return d === 5 || d === 6; // viernes o sábado
+}
+
+function obtenerTarifaNoche(fecha) {
+  const m = fecha.getMonth() + 1;
+  const dia = fecha.getDate();
+  if (m === 7) return 250;
+  if (m === 8) return 260;
+  if (m === 5) return esFinDeSemana(fecha) ? 190 : 140;
+  if (m === 6) return esFinDeSemana(fecha) ? 200 : 160;
+  if (m === 9) {
+    if (dia >= 1 && dia <= 6) return 190;
+    if (dia >= 7 && dia <= 30) return esFinDeSemana(fecha) ? 180 : 150;
+  }
+  if (m === 10) return esFinDeSemana(fecha) ? 180 : 130;
+  if (m === 11) return esFinDeSemana(fecha) ? 180 : 110;
+  return 140;
+}
+
+function calcularPrecio() {
+  if (!fechaEntrada || !fechaSalida) {
+    const pa = document.getElementById('priceAmount');
+    if (pa) pa.textContent = 'A consultar';
+    const ps = document.getElementById('priceSummary');
+    if (ps) ps.style.display = 'none';
+    return;
+  }
+  const noches = Math.ceil((fechaSalida - fechaEntrada) / 86400000);
+  let subtotal = 0;
+  let cur = new Date(fechaEntrada.getTime());
+  let breakdown = '';
+  for (let i = 0; i < noches; i++) {
+    const rate = obtenerTarifaNoche(cur);
+    subtotal += rate;
+    breakdown += `<div>${toKey(cur)}: ${rate} €</div>`;
+    cur = new Date(cur.getTime() + 86400000);
+  }
+  const limpieza = LIMPIEZA;
+  const total = subtotal + limpieza;
+  const pa = document.getElementById('priceAmount');
+  if (pa) pa.textContent = total.toFixed(2) + ' €';
+  const ps = document.getElementById('priceSummary');
+  if (ps) {
+    ps.style.display = 'block';
+    ps.querySelector('#nightsCount').textContent = noches;
+    ps.querySelector('#subtotalAmount').textContent = subtotal.toFixed(2) + ' €';
+    ps.querySelector('#cleaningAmount').textContent = limpieza.toFixed(2) + ' €';
+    ps.querySelector('#totalAmount').textContent = total.toFixed(2) + ' €';
+    ps.querySelector('.breakdown').innerHTML = breakdown;
+  }
+  actualizarWAMensajes();
 }
 
 
