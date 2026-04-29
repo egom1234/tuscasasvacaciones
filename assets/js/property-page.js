@@ -100,14 +100,18 @@ function renderCalendario() {
     const el    = document.createElement('div');
     el.className   = 'calendar-day';
     el.textContent = dia;
+    el.setAttribute('data-date', key);
 
     if (fecha < hoy) {
       el.classList.add('disabled');
-    } else if (fechasReservadas.has(key)) {
-      el.classList.add('booked');
-      el.title = 'No disponible';
     } else {
-      el.addEventListener('click', () => seleccionarFecha(fecha));
+      if (fechasReservadas.has(key)) {
+        el.classList.add('booked');
+        el.title = 'No disponible';
+      } else {
+        el.classList.add('available');
+      }
+      // Clicks handled by delegated listener so booked days can be used as checkout.
     }
 
     if (fechaEntrada && toKey(fecha) === toKey(fechaEntrada)) el.classList.add('selected');
@@ -201,11 +205,10 @@ function cambiarMes(delta) {
   document.getElementById('calendarioGrid').addEventListener('click', (e) => {
     const el = e.target.closest('[data-date]');
     if (!el) return;
-    if (el.classList.contains('available')) {
-      const key = el.getAttribute('data-date');
-      const fecha = parseFecha(key.replace(/-/g, ''));
-      seleccionarFecha(fecha);
-    }
+    if (el.classList.contains('disabled')) return;
+    const key = el.getAttribute('data-date');
+    const fecha = parseFecha(key.replace(/-/g, ''));
+    seleccionarFecha(fecha);
   });
   renderCalendario();
   cargarIcal();
