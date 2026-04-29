@@ -119,11 +119,19 @@ function renderCalendario() {
 }
 
 function seleccionarFecha(fecha) {
-  if (fechasReservadas.has(toKey(fecha))) return;
+  const key = toKey(fecha);
+  const isBooked = fechasReservadas.has(key);
+
   if (!fechaEntrada || (fechaEntrada && fechaSalida)) {
+    // Selecting a new entrada: must not be a booked date
+    if (isBooked) {
+      alert('No puedes seleccionar una fecha de entrada que ya está reservada.');
+      return;
+    }
     fechaEntrada = fecha;
     fechaSalida  = null;
   } else if (fecha > fechaEntrada) {
+    // Selecting salida: allow selecting a booked date as checkout (so long as there are no booked days between entrada and salida)
     let cur = new Date(fechaEntrada.getTime() + 86400000);
     while (cur < fecha) {
       if (fechasReservadas.has(toKey(cur))) {
@@ -136,11 +144,18 @@ function seleccionarFecha(fecha) {
       }
       cur = new Date(cur.getTime() + 86400000);
     }
+    // fecha (checkout) can be a booked day (checkout before that booking)
     fechaSalida = fecha;
   } else {
+    // Selecting an earlier or same day as entrada -> set new entrada (must not be booked)
+    if (isBooked) {
+      alert('No puedes seleccionar una fecha de entrada que ya está reservada.');
+      return;
+    }
     fechaEntrada = fecha;
     fechaSalida  = null;
   }
+
   actualizarInputsFecha();
   validarFechas();
   renderCalendario();
@@ -274,7 +289,8 @@ function validarFechas() {
 
 
 // ── Cálculo de precios específico para Casa Blava (tarifas facilitadas por el propietario)
-const LIMPIEZA = 75;
+const LIMPIEZA = 50;
+let lastPricing = { nights: 0, subtotal: 0, cleaning: LIMPIEZA, total: 0, breakdown: '' };
 
 function esFinDeSemana(fecha) {
   const d = fecha.getDay();
@@ -298,36 +314,39 @@ function obtenerTarifaNoche(fecha) {
 }
 
 function calcularPrecio() {
+  const pa = document.getElementById('priceAmount');
+  const ps = document.getElementById('priceSummary');
   if (!fechaEntrada || !fechaSalida) {
-    const pa = document.getElementById('priceAmount');
-    if (pa) pa.textContent = 'A consultar';
-    const ps = document.getElementById('priceSummary');
+    if (pa) pa.textContent = 'Selecciona fechas';
     if (ps) ps.style.display = 'none';
+    lastPricing = { nights: 0, subtotal: 0, cleaning: LIMPIEZA, total: 0, breakdown: '' };
+    actualizarWAMensajes();
     return;
   }
   const noches = Math.ceil((fechaSalida - fechaEntrada) / 86400000);
   let subtotal = 0;
   let cur = new Date(fechaEntrada.getTime());
-  let breakdown = '';
+  let breakdownHTML = '';
+  let breakdownText = '';
   for (let i = 0; i < noches; i++) {
     const rate = obtenerTarifaNoche(cur);
     subtotal += rate;
-    breakdown += `<div>${toKey(cur)}: ${rate} €</div>`;
+    breakdownHTML += `<div>${toKey(cur)}: ${rate} €</div>`;
+    breakdownText += `${toKey(cur)}: ${rate} €\n`;
     cur = new Date(cur.getTime() + 86400000);
   }
   const limpieza = LIMPIEZA;
   const total = subtotal + limpieza;
-  const pa = document.getElementById('priceAmount');
   if (pa) pa.textContent = total.toFixed(2) + ' €';
-  const ps = document.getElementById('priceSummary');
   if (ps) {
     ps.style.display = 'block';
     ps.querySelector('#nightsCount').textContent = noches;
     ps.querySelector('#subtotalAmount').textContent = subtotal.toFixed(2) + ' €';
     ps.querySelector('#cleaningAmount').textContent = limpieza.toFixed(2) + ' €';
     ps.querySelector('#totalAmount').textContent = total.toFixed(2) + ' €';
-    ps.querySelector('.breakdown').innerHTML = breakdown;
+    ps.querySelector('.breakdown').innerHTML = breakdownHTML;
   }
+  lastPricing = { nights: noches, subtotal: subtotal, cleaning: limpieza, total: total, breakdown: breakdownText };
   actualizarWAMensajes();
 }
 
@@ -369,7 +388,13 @@ function calcularPrecio() {
     errorMsg.style.display = 'none';
 
     try {
-      const res  = await fetch('https://api.web3forms.com/submit', { method: 'POST', body: new FormData(form) });
+      const fd = new FormData(form);
+        fd.append('nights', String(lastPricing.nights));
+        fd.append('subtotal', lastPricing.subtotal.toFixed(2));
+        fd.append('cleaning', lastPricing.cleaning.toFixed(2));
+        fd.append('total_price', lastPricing.total.toFixed(2));
+        fd.append('price_breakdown', lastPricing.breakdown);
+        const res = await fetch('https://api.web3forms.com/submit', { method: 'POST', body: fd });
       const data = await res.json();
       if (data.success) {
         form.querySelectorAll('.form-row, .form-group, .submit-btn, .field-error')
@@ -459,10 +484,16 @@ function actualizarWAMensajes() {
     : `Hola, me gustaría reservar ${propertyName}.`;
   let msg = baseMsg;
   if (fechaEntrada && fechaSalida) {
-    const noches = Math.ceil((fechaSalida - fechaEntrada) / (1000 * 60 * 60 * 24));
-    msg += isEnglish
-      ? ` From ${toKey(fechaEntrada)} to ${toKey(fechaSalida)} (${noches} nights).`
-      : ` Del ${toKey(fechaEntrada)} al ${toKey(fechaSalida)} (${noches} noches).`;
+    const noches = lastPricing && lastPricing.nights ? lastPricing.nights : Math.ceil((fechaSalida - fechaEntrada) / (1000 * 60 * 60 * 24));
+    if (isEnglish) {
+      msg += ` From ${toKey(fechaEntrada)} to ${toKey(fechaSalida)} (${noches} nights).`;
+      if (lastPricing && lastPricing.total) msg += ` Total: ${lastPricing.total.toFixed(2)} € (Subtotal: ${lastPricing.subtotal.toFixed(2)} €, Cleaning: ${lastPricing.cleaning.toFixed(2)} €).`;
+      if (lastPricing && lastPricing.breakdown) msg += ` Breakdown:\n${lastPricing.breakdown}`;
+    } else {
+      msg += ` Del ${toKey(fechaEntrada)} al ${toKey(fechaSalida)} (${noches} noches).`;
+      if (lastPricing && lastPricing.total) msg += ` Importe: ${lastPricing.total.toFixed(2)} € (Subtotal: ${lastPricing.subtotal.toFixed(2)} €, Limpieza: ${lastPricing.cleaning.toFixed(2)} €).`;
+      if (lastPricing && lastPricing.breakdown) msg += ` Desglose:\n${lastPricing.breakdown}`;
+    }
   } else if (fechaEntrada) {
     msg += isEnglish
       ? ` Starting from ${toKey(fechaEntrada)}.`
@@ -473,7 +504,7 @@ function actualizarWAMensajes() {
     const originalHref = a.getAttribute('data-original-href') || a.href;
     a.setAttribute('data-original-href', originalHref);
     const url = new URL(originalHref);
-    url.searchParams.set('text', msg); // Sin encodeURIComponent para que aparezca legible
+    url.searchParams.set('text', msg);
     a.href = url.toString();
   });
 }
