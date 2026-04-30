@@ -291,9 +291,9 @@ function validarFechas() {
 }
 
 
-// ── Cálculo de precios específico para Casa Blava (tarifas facilitadas por el propietario)
+// ── Cálculo de precios (parametrizable por página vía window.PAGE_CONFIG)
 const LIMPIEZA = 50;
-let lastPricing = { nights: 0, subtotal: 0, cleaning: LIMPIEZA, total: 0, breakdown: '' };
+let lastPricing = { nights: 0, subtotal: 0, cleaning: (window.PAGE_CONFIG && window.PAGE_CONFIG.cleaning) || LIMPIEZA, total: 0, breakdown: '' };
 
 function esFinDeSemana(fecha) {
   const d = fecha.getDay();
@@ -301,8 +301,25 @@ function esFinDeSemana(fecha) {
 }
 
 function obtenerTarifaNoche(fecha) {
+  // If the page provides explicit rates per month, use them. Rates can be:
+  //  - a number (same price every day that month)
+  //  - an object { weekday: X, weekend: Y }
+  const cfg = window.PAGE_CONFIG || {};
+  const rates = cfg.rates || null;
   const m = fecha.getMonth() + 1;
   const dia = fecha.getDate();
+
+  if (rates) {
+    const r = rates[String(m)];
+    if (r === null || r === undefined) {
+      // Explicitly closed month -> return 0 so total shows 0
+      return 0;
+    }
+    if (typeof r === 'number') return r;
+    if (typeof r === 'object') return (esFinDeSemana(fecha) && r.weekend !== undefined) ? r.weekend : (r.weekday !== undefined ? r.weekday : 0);
+  }
+
+  // Fallback: legacy Casa Blava hard-coded rules
   if (m === 7) return 250;
   if (m === 8) return 260;
   if (m === 5) return esFinDeSemana(fecha) ? 190 : 140;
@@ -362,7 +379,7 @@ function calcularPrecio() {
     breakdownText += `${toKey(cur)}: ${rate} €\n`;
     cur = new Date(cur.getTime() + 86400000);
   }
-  const limpieza = LIMPIEZA;
+  const limpieza = (window.PAGE_CONFIG && window.PAGE_CONFIG.cleaning) || LIMPIEZA;
   const total = subtotal + limpieza;
 
   if (pa) pa.textContent = total.toFixed(2) + ' €';
