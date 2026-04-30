@@ -100,14 +100,33 @@ function renderCalendario() {
     const el    = document.createElement('div');
     el.className   = 'calendar-day';
     el.textContent = dia;
+    el.setAttribute('data-date', key);
 
     if (fecha < hoy) {
       el.classList.add('disabled');
-    } else if (fechasReservadas.has(key)) {
-      el.classList.add('booked');
-      el.title = 'No disponible';
     } else {
-      el.addEventListener('click', () => seleccionarFecha(fecha));
+      if (fechasReservadas.has(key)) {
+        // Determine if this booked date can be used as a checkout (i.e., fecha > fechaEntrada and no booked days between entrada and this day)
+        let canBeCheckout = false;
+        if (fechaEntrada && fecha > fechaEntrada) {
+          let cur = new Date(fechaEntrada.getTime() + 86400000);
+          canBeCheckout = true;
+          while (cur < fecha) {
+            if (fechasReservadas.has(toKey(cur))) { canBeCheckout = false; break; }
+            cur = new Date(cur.getTime() + 86400000);
+          }
+        }
+        if (canBeCheckout) {
+          el.classList.add('available');
+          el.title = 'Salida';
+        } else {
+          el.classList.add('booked');
+          el.title = 'No disponible';
+        }
+      } else {
+        el.classList.add('available');
+      }
+      // Clicks handled by delegated listener so booked days can be used as checkout.
     }
 
     if (fechaEntrada && toKey(fecha) === toKey(fechaEntrada)) el.classList.add('selected');
@@ -119,11 +138,19 @@ function renderCalendario() {
 }
 
 function seleccionarFecha(fecha) {
-  if (fechasReservadas.has(toKey(fecha))) return;
+  const key = toKey(fecha);
+  const isBooked = fechasReservadas.has(key);
+
   if (!fechaEntrada || (fechaEntrada && fechaSalida)) {
+    // Selecting a new entrada: must not be a booked date
+    if (isBooked) {
+      alert('No puedes seleccionar una fecha de entrada que ya está reservada.');
+      return;
+    }
     fechaEntrada = fecha;
     fechaSalida  = null;
   } else if (fecha > fechaEntrada) {
+    // Selecting salida: allow selecting a booked date as checkout (so long as there are no booked days between entrada and salida)
     let cur = new Date(fechaEntrada.getTime() + 86400000);
     while (cur < fecha) {
       if (fechasReservadas.has(toKey(cur))) {
@@ -136,11 +163,18 @@ function seleccionarFecha(fecha) {
       }
       cur = new Date(cur.getTime() + 86400000);
     }
+    // fecha (checkout) can be a booked day (checkout before that booking)
     fechaSalida = fecha;
   } else {
+    // Selecting an earlier or same day as entrada -> set new entrada (must not be booked)
+    if (isBooked) {
+      alert('No puedes seleccionar una fecha de entrada que ya está reservada.');
+      return;
+    }
     fechaEntrada = fecha;
     fechaSalida  = null;
   }
+
   actualizarInputsFecha();
   validarFechas();
   renderCalendario();
@@ -150,6 +184,7 @@ function seleccionarFecha(fecha) {
 function actualizarInputsFecha() {
   document.getElementById('fechaEntrada').value = fechaEntrada ? toKey(fechaEntrada) : '';
   document.getElementById('fechaSalida').value  = fechaSalida  ? toKey(fechaSalida)  : '';
+  calcularPrecio();
 }
 
 function cambiarMes(delta) {
@@ -185,11 +220,10 @@ function cambiarMes(delta) {
   document.getElementById('calendarioGrid').addEventListener('click', (e) => {
     const el = e.target.closest('[data-date]');
     if (!el) return;
-    if (el.classList.contains('available')) {
-      const key = el.getAttribute('data-date');
-      const fecha = parseFecha(key.replace(/-/g, ''));
-      seleccionarFecha(fecha);
-    }
+    if (el.classList.contains('disabled')) return;
+    const key = el.getAttribute('data-date');
+    const fecha = parseFecha(key.replace(/-/g, ''));
+    seleccionarFecha(fecha);
   });
   renderCalendario();
   cargarIcal();
@@ -272,6 +306,142 @@ function validarFechas() {
 }
 
 
+// ── Cálculo de precios (parametrizable por página vía window.PAGE_CONFIG)
+const LIMPIEZA = 50;
+let lastPricing = { nights: 0, subtotal: 0, cleaning: (window.PAGE_CONFIG && window.PAGE_CONFIG.cleaning) || LIMPIEZA, total: 0, breakdown: '' };
+
+function esFinDeSemana(fecha) {
+  const d = fecha.getDay();
+  return d === 5 || d === 6; // viernes o sábado
+}
+
+function obtenerTarifaNoche(fecha) {
+  // If the page provides explicit rates per month, use them. Rates can be:
+  //  - a number (same price every day that month)
+  //  - an object { weekday: X, weekend: Y }
+  const cfg = window.PAGE_CONFIG || {};
+  const rates = cfg.rates || null;
+  const m = fecha.getMonth() + 1;
+  const dia = fecha.getDate();
+
+  if (rates) {
+    const r = rates[String(m)];
+    if (r === null || r === undefined) {
+      // Explicitly closed month -> return 0 so total shows 0
+      return 0;
+    }
+    if (typeof r === 'number') return r;
+    if (typeof r === 'object') return (esFinDeSemana(fecha) && r.weekend !== undefined) ? r.weekend : (r.weekday !== undefined ? r.weekday : 0);
+  }
+
+  // Fallback: legacy Casa Blava hard-coded rules
+  if (m === 7) return 250;
+  if (m === 8) return 260;
+  if (m === 5) return esFinDeSemana(fecha) ? 190 : 140;
+  if (m === 6) return esFinDeSemana(fecha) ? 200 : 160;
+  if (m === 9) {
+    if (dia >= 1 && dia <= 6) return 190;
+    if (dia >= 7 && dia <= 30) return esFinDeSemana(fecha) ? 180 : 150;
+  }
+  if (m === 10) return esFinDeSemana(fecha) ? 180 : 130;
+  if (m === 11) return esFinDeSemana(fecha) ? 180 : 110;
+  return 140;
+}
+
+function calcularPrecio() {
+  const pa = document.getElementById('priceAmount');
+  const ps = document.getElementById('priceSummary');
+  // mobile/alternate targets
+  const paM = document.getElementById('priceAmountMobile');
+  const psM = document.getElementById('priceSummaryMobile');
+  const mobileContainer = document.getElementById('mobilePrice');
+  const lang = (window.PAGE_CONFIG && window.PAGE_CONFIG.lang) || 'es';
+  const texts = { es: 'Selecciona fechas', en: 'Select dates' };
+
+  if (!fechaEntrada || !fechaSalida) {
+    const msg = texts[lang] || texts.es;
+    if (pa) pa.textContent = msg;
+    if (ps) ps.style.display = 'none';
+    if (paM) paM.textContent = msg;
+    if (psM) psM.style.display = 'none';
+    if (mobileContainer) mobileContainer.style.display = 'none';
+
+    lastPricing = { nights: 0, subtotal: 0, cleaning: LIMPIEZA, total: 0, breakdown: '' };
+    // Clear hidden fields
+    const hN2 = document.getElementById('hdNights');
+    const hS2 = document.getElementById('hdSubtotal');
+    const hC2 = document.getElementById('hdCleaning');
+    const hT2 = document.getElementById('hdTotalPrice');
+    const hB2 = document.getElementById('hdPriceBreakdown');
+    if (hN2) hN2.value = '';
+    if (hS2) hS2.value = '';
+    if (hC2) hC2.value = '';
+    if (hT2) hT2.value = '';
+    if (hB2) hB2.value = '';
+    actualizarWAMensajes();
+    return;
+  }
+
+  const noches = Math.ceil((fechaSalida - fechaEntrada) / 86400000);
+  let subtotal = 0;
+  let cur = new Date(fechaEntrada.getTime());
+  let breakdownHTML = '';
+  let breakdownText = '';
+  for (let i = 0; i < noches; i++) {
+    const rate = obtenerTarifaNoche(cur);
+    subtotal += rate;
+    breakdownHTML += `<div>${toKey(cur)}: ${rate} €</div>`;
+    breakdownText += `${toKey(cur)}: ${rate} €\n`;
+    cur = new Date(cur.getTime() + 86400000);
+  }
+  const limpieza = (window.PAGE_CONFIG && window.PAGE_CONFIG.cleaning) || LIMPIEZA;
+  const total = subtotal + limpieza;
+
+  if (pa) pa.textContent = total.toFixed(2) + ' €';
+  if (ps) {
+    ps.style.display = 'block';
+    ps.querySelector('#nightsCount').textContent = noches;
+    ps.querySelector('#subtotalAmount').textContent = subtotal.toFixed(2) + ' €';
+    ps.querySelector('#cleaningAmount').textContent = limpieza.toFixed(2) + ' €';
+    ps.querySelector('#totalAmount').textContent = total.toFixed(2) + ' €';
+    ps.querySelector('.breakdown').innerHTML = breakdownHTML;
+  }
+
+  // Update mobile targets if present
+  if (paM) paM.textContent = total.toFixed(2) + ' €';
+  if (psM) {
+    psM.style.display = 'block';
+    const nM = document.getElementById('nightsCountMobile');
+    const subM = document.getElementById('subtotalAmountMobile');
+    const cleanM = document.getElementById('cleaningAmountMobile');
+    const totM = document.getElementById('totalAmountMobile');
+    if (nM) nM.textContent = noches;
+    if (subM) subM.textContent = subtotal.toFixed(2) + ' €';
+    if (cleanM) cleanM.textContent = limpieza.toFixed(2) + ' €';
+    if (totM) totM.textContent = total.toFixed(2) + ' €';
+    const bdM = document.querySelector('.breakdown-mobile');
+    if (bdM) bdM.innerHTML = breakdownHTML;
+  }
+  if (mobileContainer) mobileContainer.style.display = 'block';
+
+  lastPricing = { nights: noches, subtotal: subtotal, cleaning: limpieza, total: total, breakdown: breakdownText };
+
+  // Update hidden fields so other scripts (calendar component) or form submissions include pricing
+  const hN = document.getElementById('hdNights');
+  const hS = document.getElementById('hdSubtotal');
+  const hC = document.getElementById('hdCleaning');
+  const hT = document.getElementById('hdTotalPrice');
+  const hB = document.getElementById('hdPriceBreakdown');
+  if (hN) hN.value = String(lastPricing.nights);
+  if (hS) hS.value = lastPricing.subtotal.toFixed(2);
+  if (hC) hC.value = lastPricing.cleaning.toFixed(2);
+  if (hT) hT.value = lastPricing.total.toFixed(2);
+  if (hB) hB.value = lastPricing.breakdown;
+
+  actualizarWAMensajes();
+}
+
+
 // ── Formulario — handler único ───────────────────────────────────────────────
 (function initForm() {
   const form        = document.getElementById('formularioReserva');
@@ -309,20 +479,63 @@ function validarFechas() {
     errorMsg.style.display = 'none';
 
     try {
-      const res  = await fetch('https://api.web3forms.com/submit', { method: 'POST', body: new FormData(form) });
-      const data = await res.json();
-      if (data.success) {
+      const fd = new FormData(form);
+      fd.append('nights', String(lastPricing.nights));
+      fd.append('subtotal', lastPricing.subtotal.toFixed(2));
+      fd.append('cleaning', lastPricing.cleaning.toFixed(2));
+      fd.append('total_price', lastPricing.total.toFixed(2));
+      fd.append('price_breakdown', lastPricing.breakdown);
+
+      const res = await fetch('https://api.web3forms.com/submit', { method: 'POST', body: fd });
+      const text = await res.text();
+      let data = {};
+      try { data = text ? JSON.parse(text) : {}; } catch (e) { console.warn('Non-JSON response from web3forms:', text); }
+
+      if (!res.ok) {
+        throw new Error(`HTTP ${res.status} ${res.statusText} - ${data.message || text.slice(0,200)}`);
+      }
+
+      if (data && data.success) {
         form.querySelectorAll('.form-row, .form-group, .submit-btn, .field-error')
             .forEach(el => el.style.display = 'none');
         formExito.style.display = 'block';
       } else {
-        throw new Error('Respuesta no exitosa');
+        throw new Error('Respuesta no exitosa: ' + (JSON.stringify(data) || text));
       }
-    } catch {
-      errorMsg.style.display = 'block';
-      btn.disabled      = false;
-      btn.textContent   = 'Solicitar reserva';
-      btn.style.opacity = '1';
+    } catch (err) {
+      console.error('Reservation submit error:', err);
+
+      // Fallback: si fetch falla (CORS o red), intentar envío tradicional del formulario
+      try {
+        const fallback = document.createElement('form');
+        fallback.method = 'POST';
+        fallback.action = form.action;
+        fallback.style.display = 'none';
+
+        const fd = new FormData(form);
+        fd.append('nights', String(lastPricing.nights));
+        fd.append('subtotal', lastPricing.subtotal.toFixed(2));
+        fd.append('cleaning', lastPricing.cleaning.toFixed(2));
+        fd.append('total_price', lastPricing.total.toFixed(2));
+        fd.append('price_breakdown', lastPricing.breakdown);
+
+        for (const [k, v] of fd.entries()) {
+          const inp = document.createElement('input');
+          inp.type = 'hidden'; inp.name = k; inp.value = v;
+          fallback.appendChild(inp);
+        }
+        document.body.appendChild(fallback);
+        // Esto navegará fuera de la SPA y realiza el POST directamente (evita problemas CORS)
+        fallback.submit();
+        return;
+      } catch (e2) {
+        console.error('Fallback submit error:', e2);
+        errorMsg.style.display = 'block';
+        errorMsg.textContent = '⚠️ Error al enviar la solicitud: ' + (err && err.message ? err.message : 'comprueba la consola');
+        btn.disabled      = false;
+        btn.textContent   = 'Solicitar reserva';
+        btn.style.opacity = '1';
+      }
     }
   });
 })();
@@ -399,10 +612,16 @@ function actualizarWAMensajes() {
     : `Hola, me gustaría reservar ${propertyName}.`;
   let msg = baseMsg;
   if (fechaEntrada && fechaSalida) {
-    const noches = Math.ceil((fechaSalida - fechaEntrada) / (1000 * 60 * 60 * 24));
-    msg += isEnglish
-      ? ` From ${toKey(fechaEntrada)} to ${toKey(fechaSalida)} (${noches} nights).`
-      : ` Del ${toKey(fechaEntrada)} al ${toKey(fechaSalida)} (${noches} noches).`;
+    const noches = lastPricing && lastPricing.nights ? lastPricing.nights : Math.ceil((fechaSalida - fechaEntrada) / (1000 * 60 * 60 * 24));
+    if (isEnglish) {
+      msg += ` From ${toKey(fechaEntrada)} to ${toKey(fechaSalida)} (${noches} nights).`;
+      if (lastPricing && lastPricing.total) msg += ` Total: ${lastPricing.total.toFixed(2)} € (Subtotal: ${lastPricing.subtotal.toFixed(2)} €, Cleaning: ${lastPricing.cleaning.toFixed(2)} €).`;
+      if (lastPricing && lastPricing.breakdown) msg += ` Breakdown:\n${lastPricing.breakdown}`;
+    } else {
+      msg += ` Del ${toKey(fechaEntrada)} al ${toKey(fechaSalida)} (${noches} noches).`;
+      if (lastPricing && lastPricing.total) msg += ` Importe: ${lastPricing.total.toFixed(2)} € (Subtotal: ${lastPricing.subtotal.toFixed(2)} €, Limpieza: ${lastPricing.cleaning.toFixed(2)} €).`;
+      if (lastPricing && lastPricing.breakdown) msg += ` Desglose:\n${lastPricing.breakdown}`;
+    }
   } else if (fechaEntrada) {
     msg += isEnglish
       ? ` Starting from ${toKey(fechaEntrada)}.`
@@ -413,7 +632,7 @@ function actualizarWAMensajes() {
     const originalHref = a.getAttribute('data-original-href') || a.href;
     a.setAttribute('data-original-href', originalHref);
     const url = new URL(originalHref);
-    url.searchParams.set('text', msg); // Sin encodeURIComponent para que aparezca legible
+    url.searchParams.set('text', msg);
     a.href = url.toString();
   });
 }

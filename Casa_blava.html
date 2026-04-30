@@ -95,11 +95,7 @@
             <p style="margin-top: 1rem;">La casa dispone de tres dormitorios amplios, salón-comedor con salida a terraza, cocina completa equipada y dos baños. Situado en zona tranquila a poca distancia de las playas y del centro histórico con su castillo templario.</p>
           </div>
 
-          <div class="price-highlight">
-            <h4>Precio por noche</h4>
-            <div class="price-amount">A consultar</div>
-            <p style="margin-top: 0.5rem; font-size: 0.9rem;">*Consultar otras temporadas y descuentos por larga estancia.</p>
-          </div>
+
 
           <div class="details-section">
             <h3>Características</h3>
@@ -176,6 +172,18 @@
             <p class="calendar-note">Selecciona fecha de entrada y salida</p>
           </div>
 
+          <div id="mobilePrice" class="price-highlight" style="display:none;margin-bottom:1rem;">
+            <h4>Importe estimado</h4>
+            <div id="priceAmountMobile" class="price-amount">A consultar</div>
+            <div id="priceSummaryMobile" class="price-summary" style="display:none;margin-top:0.5rem;font-size:0.95rem;background:#fbfbfb;padding:0.5rem;border-radius:6px;">
+              <div><strong>Noches:</strong> <span id="nightsCountMobile">0</span></div>
+              <div><strong>Subtotal:</strong> <span id="subtotalAmountMobile">0 €</span></div>
+              <div><strong>Limpieza:</strong> <span id="cleaningAmountMobile">75 €</span></div>
+              <div style="margin-top:0.5rem;"><strong>Total:</strong> <span id="totalAmountMobile">0 €</span></div>
+              <div class="breakdown-mobile" style="margin-top:0.5rem;font-size:0.9rem;color:#555;"></div>
+            </div>
+          </div>
+
           <form class="booking-form" id="formularioReserva" action="https://api.web3forms.com/submit" method="POST" novalidate>
             <input type="hidden" name="access_key" value="ba4d4800-cc82-4659-86e0-f10021d29924">
             <input type="hidden" name="subject" value="Nueva solicitud de reserva - Casa Blava">
@@ -248,6 +256,12 @@
               <textarea class="form-input" name="message" rows="3" placeholder="Hora aproximada de llegada, peticiones especiales..."></textarea>
             </div>
 
+            <input type="hidden" name="nights" id="hdNights" value="">
+            <input type="hidden" name="subtotal" id="hdSubtotal" value="">
+            <input type="hidden" name="cleaning" id="hdCleaning" value="">
+            <input type="hidden" name="total_price" id="hdTotalPrice" value="">
+            <input type="hidden" name="price_breakdown" id="hdPriceBreakdown" value="">
+
             <button type="submit" class="submit-btn" id="submitBtnReserva">Solicitar reserva</button>
           </form>
         </div>
@@ -298,6 +312,7 @@
     minNoches:   2,
   };
   </script>
+
   <script src="assets/js/property-page.js"></script>
 </body>
 </html>

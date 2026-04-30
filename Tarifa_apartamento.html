@@ -84,11 +84,7 @@
             <p style="margin-top: 1rem;">Fácil aparcamiento, a 3 minutos de la playa y a 5 minutos del casco histórico, ideal para parejas, familias o grupos.</p>
           </div>
 
-          <div class="price-highlight">
-            <h4>Precio por noche</h4>
-            <div class="price-amount">A consultar</div>
-            <p style="margin-top: 0.5rem; font-size: 0.9rem;">Consultar precios semanales y otras temporadas.</p>
-          </div>
+
 
           <div class="details-section">
             <h3>Características</h3>
@@ -161,6 +157,18 @@
               <div class="legend-item"><div class="legend-dot selected"></div> Seleccionado</div>
             </div>
             <p class="calendar-note">Selecciona fecha de entrada y salida</p>
+          </div>
+
+          <div id="mobilePrice" class="price-highlight" style="display:none;margin-bottom:1rem;">
+            <h4>Importe estimado</h4>
+            <div id="priceAmountMobile" class="price-amount">A consultar</div>
+            <div id="priceSummaryMobile" class="price-summary" style="display:none;margin-top:0.5rem;font-size:0.95rem;background:#fbfbfb;padding:0.5rem;border-radius:6px;">
+              <div><strong>Noches:</strong> <span id="nightsCountMobile">0</span></div>
+              <div><strong>Subtotal:</strong> <span id="subtotalAmountMobile">0 €</span></div>
+              <div><strong>Limpieza:</strong> <span id="cleaningAmountMobile">75 €</span></div>
+              <div style="margin-top:0.5rem;"><strong>Total:</strong> <span id="totalAmountMobile">0 €</span></div>
+              <div class="breakdown-mobile" style="margin-top:0.5rem;font-size:0.9rem;color:#555;"></div>
+            </div>
           </div>
 
           <form class="booking-form" id="formularioReserva" action="https://api.web3forms.com/submit" method="POST" novalidate>
@@ -283,6 +291,12 @@
     icalSlugs:   ['tarifa-apt-airbnb', 'tarifa-apt-booking'],
     maxPersonas: 4,
     minNoches:   2,
+    cleaning: 50,
+    rates: {
+      "1": 50, "2": 50, "3": 50, "4": 50,
+      "5": 120, "6": 120, "7": 180, "8": 180,
+      "9": 120, "10": 120, "11": 50, "12": 50
+    }
   };
   </script>
   <script src="assets/js/property-page.js"></script>

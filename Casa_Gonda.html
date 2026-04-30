@@ -90,11 +90,7 @@
             <p style="margin-top: 1rem;">La vivienda dispone de un amplio dormitorio, un baño completo, salón-comedor luminoso con salida directa al porche, cocina completamente equipada con electrodomésticos modernos, y zona exterior con porche cubierto, y solárium. A pocos minutos a pie del faro de Artrutx y de calas de ensueño.</p>
           </div>
 
-          <div class="price-highlight">
-            <h4>Precio por noche</h4>
-            <div class="price-amount">A Consultar</div>
-            <p style="margin-top: 0.5rem; font-size: 0.9rem;">Consultar precios por temporadas y descuentos por estancias largas.</p>
-          </div>
+
 
           <div class="details-section">
             <h3>Características</h3>
@@ -187,6 +183,18 @@
               <div class="legend-item"><div class="legend-dot selected"></div> Seleccionado</div>
             </div>
             <p class="calendar-note">Selecciona fecha de entrada y salida</p>
+          </div>
+
+          <div id="mobilePrice" class="price-highlight" style="display:none;margin-bottom:1rem;">
+            <h4>Importe estimado</h4>
+            <div id="priceAmountMobile" class="price-amount">A consultar</div>
+            <div id="priceSummaryMobile" class="price-summary" style="display:none;margin-top:0.5rem;font-size:0.95rem;background:#fbfbfb;padding:0.5rem;border-radius:6px;">
+              <div><strong>Noches:</strong> <span id="nightsCountMobile">0</span></div>
+              <div><strong>Subtotal:</strong> <span id="subtotalAmountMobile">0 €</span></div>
+              <div><strong>Limpieza:</strong> <span id="cleaningAmountMobile">75 €</span></div>
+              <div style="margin-top:0.5rem;"><strong>Total:</strong> <span id="totalAmountMobile">0 €</span></div>
+              <div class="breakdown-mobile" style="margin-top:0.5rem;font-size:0.9rem;color:#555;"></div>
+            </div>
           </div>
 
           <form class="booking-form" id="formularioReserva" action="https://api.web3forms.com/submit" method="POST" novalidate>
@@ -309,6 +317,12 @@
     icalSlugs:   ['gonda-airbnb', 'gonda-booking'],
     maxPersonas: 2,
     minNoches:   2,
+    cleaning: 100,
+    rates: {
+      "1": 100, "2": 100, "3": 100, "4": 100,
+      "5": 150, "6": 165, "7": 190, "8": 200,
+      "9": 160, "10": 120, "11": 100, "12": 100
+    }
   };
   </script>
   <script src="assets/js/property-page.js"></script>
