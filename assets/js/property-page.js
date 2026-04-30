@@ -106,8 +106,17 @@ function renderCalendario() {
       el.classList.add('disabled');
     } else {
       if (fechasReservadas.has(key)) {
-        // Allow selecting a booked day as checkout: if this date is currently the selected checkout, don't show it as 'booked'
-        if (fechaSalida && toKey(fecha) === toKey(fechaSalida)) {
+        // Determine if this booked date can be used as a checkout (i.e., fecha > fechaEntrada and no booked days between entrada and this day)
+        let canBeCheckout = false;
+        if (fechaEntrada && fecha > fechaEntrada) {
+          let cur = new Date(fechaEntrada.getTime() + 86400000);
+          canBeCheckout = true;
+          while (cur < fecha) {
+            if (fechasReservadas.has(toKey(cur))) { canBeCheckout = false; break; }
+            cur = new Date(cur.getTime() + 86400000);
+          }
+        }
+        if (canBeCheckout) {
           el.classList.add('available');
           el.title = 'Salida';
         } else {
