@@ -319,9 +319,21 @@ function obtenerTarifaNoche(fecha) {
 function calcularPrecio() {
   const pa = document.getElementById('priceAmount');
   const ps = document.getElementById('priceSummary');
+  // mobile/alternate targets
+  const paM = document.getElementById('priceAmountMobile');
+  const psM = document.getElementById('priceSummaryMobile');
+  const mobileContainer = document.getElementById('mobilePrice');
+  const lang = (window.PAGE_CONFIG && window.PAGE_CONFIG.lang) || 'es';
+  const texts = { es: 'Selecciona fechas', en: 'Select dates' };
+
   if (!fechaEntrada || !fechaSalida) {
-    if (pa) pa.textContent = 'Selecciona fechas';
+    const msg = texts[lang] || texts.es;
+    if (pa) pa.textContent = msg;
     if (ps) ps.style.display = 'none';
+    if (paM) paM.textContent = msg;
+    if (psM) psM.style.display = 'none';
+    if (mobileContainer) mobileContainer.style.display = 'none';
+
     lastPricing = { nights: 0, subtotal: 0, cleaning: LIMPIEZA, total: 0, breakdown: '' };
     // Clear hidden fields
     const hN2 = document.getElementById('hdNights');
@@ -337,6 +349,7 @@ function calcularPrecio() {
     actualizarWAMensajes();
     return;
   }
+
   const noches = Math.ceil((fechaSalida - fechaEntrada) / 86400000);
   let subtotal = 0;
   let cur = new Date(fechaEntrada.getTime());
@@ -351,6 +364,7 @@ function calcularPrecio() {
   }
   const limpieza = LIMPIEZA;
   const total = subtotal + limpieza;
+
   if (pa) pa.textContent = total.toFixed(2) + ' €';
   if (ps) {
     ps.style.display = 'block';
@@ -360,6 +374,24 @@ function calcularPrecio() {
     ps.querySelector('#totalAmount').textContent = total.toFixed(2) + ' €';
     ps.querySelector('.breakdown').innerHTML = breakdownHTML;
   }
+
+  // Update mobile targets if present
+  if (paM) paM.textContent = total.toFixed(2) + ' €';
+  if (psM) {
+    psM.style.display = 'block';
+    const nM = document.getElementById('nightsCountMobile');
+    const subM = document.getElementById('subtotalAmountMobile');
+    const cleanM = document.getElementById('cleaningAmountMobile');
+    const totM = document.getElementById('totalAmountMobile');
+    if (nM) nM.textContent = noches;
+    if (subM) subM.textContent = subtotal.toFixed(2) + ' €';
+    if (cleanM) cleanM.textContent = limpieza.toFixed(2) + ' €';
+    if (totM) totM.textContent = total.toFixed(2) + ' €';
+    const bdM = document.querySelector('.breakdown-mobile');
+    if (bdM) bdM.innerHTML = breakdownHTML;
+  }
+  if (mobileContainer) mobileContainer.style.display = 'block';
+
   lastPricing = { nights: noches, subtotal: subtotal, cleaning: limpieza, total: total, breakdown: breakdownText };
 
   // Update hidden fields so other scripts (calendar component) or form submissions include pricing
@@ -440,11 +472,38 @@ function calcularPrecio() {
       }
     } catch (err) {
       console.error('Reservation submit error:', err);
-      errorMsg.style.display = 'block';
-      errorMsg.textContent = '⚠️ Error al enviar la solicitud: ' + (err && err.message ? err.message : 'comprueba la consola');
-      btn.disabled      = false;
-      btn.textContent   = 'Solicitar reserva';
-      btn.style.opacity = '1';
+
+      // Fallback: si fetch falla (CORS o red), intentar envío tradicional del formulario
+      try {
+        const fallback = document.createElement('form');
+        fallback.method = 'POST';
+        fallback.action = form.action;
+        fallback.style.display = 'none';
+
+        const fd = new FormData(form);
+        fd.append('nights', String(lastPricing.nights));
+        fd.append('subtotal', lastPricing.subtotal.toFixed(2));
+        fd.append('cleaning', lastPricing.cleaning.toFixed(2));
+        fd.append('total_price', lastPricing.total.toFixed(2));
+        fd.append('price_breakdown', lastPricing.breakdown);
+
+        for (const [k, v] of fd.entries()) {
+          const inp = document.createElement('input');
+          inp.type = 'hidden'; inp.name = k; inp.value = v;
+          fallback.appendChild(inp);
+        }
+        document.body.appendChild(fallback);
+        // Esto navegará fuera de la SPA y realiza el POST directamente (evita problemas CORS)
+        fallback.submit();
+        return;
+      } catch (e2) {
+        console.error('Fallback submit error:', e2);
+        errorMsg.style.display = 'block';
+        errorMsg.textContent = '⚠️ Error al enviar la solicitud: ' + (err && err.message ? err.message : 'comprueba la consola');
+        btn.disabled      = false;
+        btn.textContent   = 'Solicitar reserva';
+        btn.style.opacity = '1';
+      }
     }
   });
 })();

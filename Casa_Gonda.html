@@ -90,10 +90,17 @@
             <p style="margin-top: 1rem;">La vivienda dispone de un amplio dormitorio, un baño completo, salón-comedor luminoso con salida directa al porche, cocina completamente equipada con electrodomésticos modernos, y zona exterior con porche cubierto, y solárium. A pocos minutos a pie del faro de Artrutx y de calas de ensueño.</p>
           </div>
 
-          <div class="price-highlight">
+          <div class="price-highlight" id="priceHighlight">
             <h4>Precio por noche</h4>
-            <div class="price-amount">A Consultar</div>
+            <div class="price-amount" id="priceAmount">A Consultar</div>
             <p style="margin-top: 0.5rem; font-size: 0.9rem;">Consultar precios por temporadas y descuentos por estancias largas.</p>
+            <div id="priceSummary" class="price-summary" style="display:none;margin-top:0.5rem;font-size:0.95rem;background:#fbfbfb;padding:0.5rem;border-radius:6px;">
+              <div><strong>Noches:</strong> <span id="nightsCount">0</span></div>
+              <div><strong>Subtotal:</strong> <span id="subtotalAmount">0 €</span></div>
+              <div><strong>Limpieza:</strong> <span id="cleaningAmount">75 €</span></div>
+              <div style="margin-top:0.5rem;"><strong>Total:</strong> <span id="totalAmount">0 €</span></div>
+              <div class="breakdown" style="margin-top:0.5rem;font-size:0.9rem;color:#555;"></div>
+            </div>
           </div>
 
           <div class="details-section">
@@ -187,6 +194,18 @@
               <div class="legend-item"><div class="legend-dot selected"></div> Seleccionado</div>
             </div>
             <p class="calendar-note">Selecciona fecha de entrada y salida</p>
+          </div>
+
+          <div id="mobilePrice" class="price-highlight" style="display:none;margin-bottom:1rem;">
+            <h4>Importe estimado</h4>
+            <div id="priceAmountMobile" class="price-amount">A consultar</div>
+            <div id="priceSummaryMobile" class="price-summary" style="display:none;margin-top:0.5rem;font-size:0.95rem;background:#fbfbfb;padding:0.5rem;border-radius:6px;">
+              <div><strong>Noches:</strong> <span id="nightsCountMobile">0</span></div>
+              <div><strong>Subtotal:</strong> <span id="subtotalAmountMobile">0 €</span></div>
+              <div><strong>Limpieza:</strong> <span id="cleaningAmountMobile">75 €</span></div>
+              <div style="margin-top:0.5rem;"><strong>Total:</strong> <span id="totalAmountMobile">0 €</span></div>
+              <div class="breakdown-mobile" style="margin-top:0.5rem;font-size:0.9rem;color:#555;"></div>
+            </div>
           </div>
 
           <form class="booking-form" id="formularioReserva" action="https://api.web3forms.com/submit" method="POST" novalidate>

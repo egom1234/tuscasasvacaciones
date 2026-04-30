@@ -183,6 +183,18 @@
             <p class="calendar-note">Selecciona fecha de entrada y salida</p>
           </div>
 
+          <div id="mobilePrice" class="price-highlight" style="display:none;margin-bottom:1rem;">
+            <h4>Importe estimado</h4>
+            <div id="priceAmountMobile" class="price-amount">A consultar</div>
+            <div id="priceSummaryMobile" class="price-summary" style="display:none;margin-top:0.5rem;font-size:0.95rem;background:#fbfbfb;padding:0.5rem;border-radius:6px;">
+              <div><strong>Noches:</strong> <span id="nightsCountMobile">0</span></div>
+              <div><strong>Subtotal:</strong> <span id="subtotalAmountMobile">0 €</span></div>
+              <div><strong>Limpieza:</strong> <span id="cleaningAmountMobile">75 €</span></div>
+              <div style="margin-top:0.5rem;"><strong>Total:</strong> <span id="totalAmountMobile">0 €</span></div>
+              <div class="breakdown-mobile" style="margin-top:0.5rem;font-size:0.9rem;color:#555;"></div>
+            </div>
+          </div>
+
           <form class="booking-form" id="formularioReserva" action="https://api.web3forms.com/submit" method="POST" novalidate>
             <input type="hidden" name="access_key" value="ba4d4800-cc82-4659-86e0-f10021d29924">
             <input type="hidden" name="subject" value="Nueva solicitud de reserva - Casa Blava">
@@ -311,7 +323,7 @@
     minNoches:   2,
   };
   </script>
-  <script src="calendario-component.js"></script>
+
   <script src="assets/js/property-page.js"></script>
 </body>
 </html>
