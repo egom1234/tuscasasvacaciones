@@ -424,6 +424,62 @@ function calcularPrecio() {
   }
   if (mobileContainer) mobileContainer.style.display = 'block';
 
+  // Mobile sticky bottom bar for visibility on small screens
+  try {
+    if (window.matchMedia && window.matchMedia('(max-width: 768px)').matches) {
+      let bar = document.getElementById('mobilePriceBar');
+      if (!bar) {
+        bar = document.createElement('div');
+        bar.id = 'mobilePriceBar';
+        bar.style.position = 'fixed';
+        bar.style.left = '0';
+        bar.style.right = '0';
+        bar.style.bottom = '0';
+        bar.style.background = 'linear-gradient(90deg, rgba(83,126,117,0.98), rgba(36,94,86,0.98))';
+        bar.style.color = 'white';
+        bar.style.padding = '0.8rem 1rem';
+        bar.style.display = 'flex';
+        bar.style.justifyContent = 'space-between';
+        bar.style.alignItems = 'center';
+        bar.style.zIndex = '1100';
+        bar.style.borderTopLeftRadius = '10px';
+        bar.style.borderTopRightRadius = '10px';
+        bar.style.boxShadow = '0 -6px 20px rgba(0,0,0,0.12)';
+        const amt = document.createElement('div');
+        amt.id = 'mobilePriceBarAmount';
+        amt.style.fontWeight = '700';
+        amt.style.fontSize = '1.1rem';
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.textContent = 'Ver detalles';
+        btn.style.background = 'rgba(255,255,255,0.12)';
+        btn.style.border = 'none';
+        btn.style.color = 'white';
+        btn.style.padding = '0.5rem 0.8rem';
+        btn.style.borderRadius = '8px';
+        btn.style.cursor = 'pointer';
+        btn.addEventListener('click', () => {
+          const m = document.getElementById('mobilePrice');
+          if (m) {
+            m.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            // toggle summary visibility
+            const psM2 = document.getElementById('priceSummaryMobile');
+            if (psM2) psM2.style.display = psM2.style.display === 'block' ? 'none' : 'block';
+          }
+        });
+        bar.appendChild(amt);
+        bar.appendChild(btn);
+        document.body.appendChild(bar);
+      }
+      const amtEl = document.getElementById('mobilePriceBarAmount');
+      if (amtEl) amtEl.textContent = total.toFixed(2) + ' €';
+      bar.style.display = 'flex';
+    } else {
+      const existing = document.getElementById('mobilePriceBar');
+      if (existing) existing.style.display = 'none';
+    }
+  } catch (e) { console.warn('mobilePriceBar error', e); }
+
   lastPricing = { nights: noches, subtotal: subtotal, cleaning: limpieza, total: total, breakdown: breakdownText };
 
   // Update hidden fields so other scripts (calendar component) or form submissions include pricing
