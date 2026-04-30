@@ -106,8 +106,14 @@ function renderCalendario() {
       el.classList.add('disabled');
     } else {
       if (fechasReservadas.has(key)) {
-        el.classList.add('booked');
-        el.title = 'No disponible';
+        // Allow selecting a booked day as checkout: if this date is currently the selected checkout, don't show it as 'booked'
+        if (fechaSalida && toKey(fecha) === toKey(fechaSalida)) {
+          el.classList.add('available');
+          el.title = 'Salida';
+        } else {
+          el.classList.add('booked');
+          el.title = 'No disponible';
+        }
       } else {
         el.classList.add('available');
       }
