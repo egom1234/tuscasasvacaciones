@@ -20,6 +20,19 @@ let anyoActual       = new Date().getFullYear();
 let fechaEntrada     = null;
 let fechaSalida      = null;
 
+/* Casa Blava defaults: set rates & holidays in JS (keeps config out of HTML). */
+(function setCasaBlavaDefaults(){
+  try {
+    const path = window.location.pathname || '';
+    const title = document.title || '';
+    const isCasaBlava = path.includes('Casa_blava.html') || title.includes('Casa Blava') || path.includes('/Casa_blava');
+    if (!isCasaBlava) return;
+    window.PAGE_CONFIG = window.PAGE_CONFIG || {};
+    window.PAGE_CONFIG.rates = window.PAGE_CONFIG.rates || { "10": { weekday: 100, weekend: 150 }, "11": { weekday: 100, weekend: 150 } };
+    window.PAGE_CONFIG.holidays = window.PAGE_CONFIG.holidays || ['11-01','12-06','12-07','12-08','12-24','12-25','12-26','12-31'];
+  } catch (e) { console.warn('setCasaBlavaDefaults error', e); }
+})();
+
 async function cargarIcal() {
   const dot    = document.getElementById('syncDot');
   const text   = document.getElementById('syncText');
@@ -335,10 +348,19 @@ function obtenerTarifaNoche(fecha) {
   // If the page provides explicit rates per month, use them. Rates can be:
   //  - a number (same price every day that month)
   //  - an object { weekday: X, weekend: Y }
+  // Additionally pages can provide PAGE_CONFIG.holidays as array of 'MM-DD' strings.
   const cfg = window.PAGE_CONFIG || {};
   const rates = cfg.rates || null;
   const m = fecha.getMonth() + 1;
   const dia = fecha.getDate();
+
+  // Helper to detect if the NEXT day is a configured holiday (so the current night is the night before a holiday)
+  function isNightBeforeHoliday(d) {
+    const holidays = (cfg.holidays || []);
+    const next = new Date(d.getTime() + 86400000);
+    const mmdd = `${String(next.getMonth()+1).padStart(2,'0')}-${String(next.getDate()).padStart(2,'0')}`;
+    return holidays.includes(mmdd);
+  }
 
   if (rates) {
     const r = rates[String(m)];
@@ -346,22 +368,29 @@ function obtenerTarifaNoche(fecha) {
       // Explicitly closed month -> return 0 so total shows 0
       return 0;
     }
-    if (typeof r === 'number') return r;
-    if (typeof r === 'object') return (esFinDeSemana(fecha) && r.weekend !== undefined) ? r.weekend : (r.weekday !== undefined ? r.weekday : 0);
+    let base = 0;
+    if (typeof r === 'number') base = r;
+    else if (typeof r === 'object') base = (esFinDeSemana(fecha) && r.weekend !== undefined) ? r.weekend : (r.weekday !== undefined ? r.weekday : 0);
+
+    if (isNightBeforeHoliday(fecha)) return Math.round(base * 1.6);
+    return base;
   }
 
   // Fallback: legacy Casa Blava hard-coded rules
-  if (m === 7) return 250;
-  if (m === 8) return 260;
-  if (m === 5) return esFinDeSemana(fecha) ? 190 : 140;
-  if (m === 6) return esFinDeSemana(fecha) ? 200 : 160;
-  if (m === 9) {
-    if (dia >= 1 && dia <= 6) return 190;
-    if (dia >= 7 && dia <= 30) return esFinDeSemana(fecha) ? 180 : 150;
-  }
-  if (m === 10) return esFinDeSemana(fecha) ? 180 : 130;
-  if (m === 11) return esFinDeSemana(fecha) ? 180 : 110;
-  return 140;
+  let baseRate;
+  if (m === 7) baseRate = 250;
+  else if (m === 8) baseRate = 260;
+  else if (m === 5) baseRate = esFinDeSemana(fecha) ? 190 : 140;
+  else if (m === 6) baseRate = esFinDeSemana(fecha) ? 200 : 160;
+  else if (m === 9) {
+    if (dia >= 1 && dia <= 6) baseRate = 190;
+    else baseRate = esFinDeSemana(fecha) ? 180 : 150;
+  } else if (m === 10) baseRate = esFinDeSemana(fecha) ? 180 : 130;
+  else if (m === 11) baseRate = esFinDeSemana(fecha) ? 180 : 110;
+  else baseRate = 140;
+
+  if (isNightBeforeHoliday(fecha)) return Math.round(baseRate * 1.6);
+  return baseRate;
 }
 
 function calcularPrecio() {
