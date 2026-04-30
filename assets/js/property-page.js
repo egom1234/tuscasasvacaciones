@@ -253,17 +253,33 @@ function validarEmail(input) {
   const val = input.value.trim();
   const msg = input.parentElement.querySelector('.error-email');
   if (!val)  return setFieldState(input, msg, false, '⚠️ El email es obligatorio');
-  if (!/^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$/.test(val))
-             return setFieldState(input, msg, false, '⚠️ Introduce un email válido');
+  // Prefer built-in browser validation when available
+  if (input.type === 'email' && typeof input.checkValidity === 'function' && input.checkValidity()) {
+    return setFieldState(input, msg, true);
+  }
+  const re = /^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$/;
+  if (!re.test(val)) return setFieldState(input, msg, false, '⚠️ Introduce un email válido');
   return setFieldState(input, msg, true);
 }
 
 function validarTelefono(input) {
-  const val = input.value.trim().replace(/\s/g, '');
+  const raw = input.value.trim();
+  // Keep digits and leading + only
+  const val = raw.replace(/[^\d+]/g, '');
   const msg = input.parentElement.querySelector('.error-tel');
   if (!val)  return setFieldState(input, msg, false, '⚠️ El teléfono es obligatorio');
-  const ok  = /^[6-9]\d{8}$/.test(val) || /^\+34[6-9]\d{8}$/.test(val) || /^\+[1-9]\d{6,14}$/.test(val);
-  return setFieldState(input, msg, ok, '⚠️ Introduce un teléfono válido');
+  // If the number has Spanish country code, require mobile pattern (6-9). Otherwise accept E.164 for other countries.
+  if (/^(?:\+34|0034)/.test(val)) {
+    const ok = /^(?:\+34|0034)[6-9]\d{8}$/.test(val);
+    return setFieldState(input, msg, ok, '⚠️ Introduce un teléfono válido');
+  }
+  if (/^\+/.test(val)) {
+    const ok = /^\+[1-9]\d{6,14}$/.test(val);
+    return setFieldState(input, msg, ok, '⚠️ Introduce un teléfono válido');
+  }
+  // Local number without country code: assume Spanish mobile if starts 6-9 and 9 digits
+  const okLocal = /^[6-9]\d{8}$/.test(val);
+  return setFieldState(input, msg, okLocal, '⚠️ Introduce un teléfono válido');
 }
 
 function validarPersonas() {
