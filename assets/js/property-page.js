@@ -25,7 +25,7 @@ let fechaSalida      = null;
   try {
     const path = window.location.pathname || '';
     const title = document.title || '';
-    const isCasaBlava = path.includes('Casa_blava.html') || title.includes('Casa Blava') || path.includes('/Casa_blava');
+    const isCasaBlava = path.includes('Casa_blava') || title.includes('Casa Blava') || path.includes('/Casa_blava');
     if (!isCasaBlava) return;
     window.PAGE_CONFIG = window.PAGE_CONFIG || {};
     window.PAGE_CONFIG.rates = window.PAGE_CONFIG.rates || { "10": { weekday: 100, weekend: 150 }, "11": { weekday: 100, weekend: 150 } };
