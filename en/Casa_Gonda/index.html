@@ -259,7 +259,11 @@
               <label class="form-label">Comments (optional)</label>
               <textarea class="form-input" name="message" rows="3" placeholder="Approximate arrival time, special requests..."></textarea>
             </div>
-
+            <input type="hidden" name="nights" id="hdNights" value="">
+            <input type="hidden" name="subtotal" id="hdSubtotal" value="">
+            <input type="hidden" name="cleaning" id="hdCleaning" value="">
+            <input type="hidden" name="total_price" id="hdTotalPrice" value="">
+            <input type="hidden" name="price_breakdown" id="hdPriceBreakdown" value="">
             <button type="submit" class="submit-btn" id="submitBtnReserva">Request booking</button>
           </form>
         </div>
@@ -303,19 +307,19 @@
   </div>
 
   <script>
-    window.PAGE_CONFIG = {
-      icalSlugs: ['gonda-airbnb', 'gonda-booking'],
-      maxPersonas: 2,
-      minNoches:   2,
-      lang: 'en',
-      cleaning: 100,
-      rates: {
-        "1": 100, "2": 100, "3": 100, "4": 100,
-        "5": 150, "6": 165, "7": 190, "8": 200,
-        "9": 160, "10": 120, "11": 100, "12": 100
-      }
-    };
-  </script>
-  <script src="../../assets/js/property-page.js"></script>
+  window.PAGE_CONFIG = {
+    icalSlugs:   ['gonda-airbnb', 'gonda-booking'],
+    maxPersonas: 2,
+    minNoches:   2,
+    lang: 'en',
+    cleaning: 100,
+    rates: {
+      "1": 100, "2": 100, "3": 100, "4": 100,
+      "5": 150, "6": 165, "7": 190, "8": 200,
+      "9": 160, "10": 120, "11": 100, "12": 100
+    }
+  };
+</script>
+  <script src="/assets/js/property-page.js"></script>
 </body>
 </html>
