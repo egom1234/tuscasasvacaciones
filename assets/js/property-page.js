@@ -20,19 +20,6 @@ let anyoActual       = new Date().getFullYear();
 let fechaEntrada     = null;
 let fechaSalida      = null;
 
-/* Casa Blava defaults: set rates & holidays in JS (keeps config out of HTML). */
-function setCasaBlavaDefaults(){
-  try {
-    const path = window.location.pathname || '';
-    const title = document.title || '';
-    const isCasaBlava = title.includes('Casa Blava') || path.includes('/Casa_blava');
-    if (!isCasaBlava) return;
-    window.PAGE_CONFIG = window.PAGE_CONFIG || {};
-    window.PAGE_CONFIG.rates = window.PAGE_CONFIG.rates || { "10": { weekday: 100, weekend: 150 }, "11": { weekday: 100, weekend: 150 } };
-    window.PAGE_CONFIG.holidays = window.PAGE_CONFIG.holidays || ['11-01','12-06','12-07','12-08','12-24','12-25','12-26','12-31'];
-  } catch (e) { console.warn('setCasaBlavaDefaults error', e); }
-}
-
 async function cargarIcal() {
   const dot    = document.getElementById('syncDot');
   const text   = document.getElementById('syncText');
@@ -163,7 +150,12 @@ function seleccionarFecha(fecha) {
     fechaEntrada = fecha;
     fechaSalida  = null;
   } else if (fecha > fechaEntrada) {
-    // Selecting salida: allow selecting a booked date as checkout (so long as there are no booked days between entrada and salida)
+    const minNoches = (window.PAGE_CONFIG || {}).minNoches || 1;
+  const noches = Math.ceil((fecha - fechaEntrada) / 86400000);
+  if (noches < minNoches) {
+    alert(`La estancia mínima es de ${minNoches} noches.`);
+    return;
+  }
     let cur = new Date(fechaEntrada.getTime() + 86400000);
     while (cur < fecha) {
       if (fechasReservadas.has(toKey(cur))) {
@@ -337,7 +329,7 @@ function validarFechas() {
 
 // ── Cálculo de precios (parametrizable por página vía window.PAGE_CONFIG)
 const LIMPIEZA = 50;
-let lastPricing = { nights: 0, subtotal: 0, cleaning: (window.PAGE_CONFIG && window.PAGE_CONFIG.cleaning) || LIMPIEZA, total: 0, breakdown: '' };
+let lastPricing = { nights: 0, subtotal: 0, cleaning: 50, total: 0, breakdown: '' };
 
 function esFinDeSemana(fecha) {
   const d = fecha.getDay();
@@ -395,22 +387,15 @@ function obtenerTarifaNoche(fecha) {
 
 function calcularPrecio() {
   const pa = document.getElementById('priceAmount');
-  const ps = document.getElementById('priceSummary');
-  // mobile/alternate targets
-  const paM = document.getElementById('priceAmountMobile');
-  const psM = document.getElementById('priceSummaryMobile');
-  const mobileContainer = document.getElementById('mobilePrice');
+  const ps = document.getElementById('priceSummary'); 
   const lang = (window.PAGE_CONFIG && window.PAGE_CONFIG.lang) || 'es';
   const texts = { es: 'Selecciona fechas', en: 'Select dates' };
 
   if (!fechaEntrada || !fechaSalida) {
     const msg = texts[lang] || texts.es;
     if (pa) pa.textContent = msg;
-    if (ps) ps.style.display = 'none';
-    if (paM) paM.textContent = msg;
-    if (psM) psM.style.display = 'none';
-    if (mobileContainer) mobileContainer.style.display = 'none';
-
+    if (ps) ps.style.display = 'none';      
+   
     lastPricing = { nights: 0, subtotal: 0, cleaning: LIMPIEZA, total: 0, breakdown: '' };
     // Clear hidden fields
     const hN2 = document.getElementById('hdNights');
@@ -451,23 +436,6 @@ function calcularPrecio() {
     ps.querySelector('#totalAmount').textContent = total.toFixed(2) + ' €';
     ps.querySelector('.breakdown').innerHTML = breakdownHTML;
   }
-
-  // Update mobile targets if present
-  if (paM) paM.textContent = total.toFixed(2) + ' €';
-  if (psM) {
-    psM.style.display = 'block';
-    const nM = document.getElementById('nightsCountMobile');
-    const subM = document.getElementById('subtotalAmountMobile');
-    const cleanM = document.getElementById('cleaningAmountMobile');
-    const totM = document.getElementById('totalAmountMobile');
-    if (nM) nM.textContent = noches;
-    if (subM) subM.textContent = subtotal.toFixed(2) + ' €';
-    if (cleanM) cleanM.textContent = limpieza.toFixed(2) + ' €';
-    if (totM) totM.textContent = total.toFixed(2) + ' €';
-    const bdM = document.querySelector('.breakdown-mobile');
-    if (bdM) bdM.innerHTML = breakdownHTML;
-  }
-  if (mobileContainer) mobileContainer.style.display = 'block';
 
   lastPricing = { nights: noches, subtotal: subtotal, cleaning: limpieza, total: total, breakdown: breakdownText };
 
