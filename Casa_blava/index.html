@@ -1,341 +1,145 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <!-- Google tag (gtag.js) -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-2F51L7T7FV"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'G-2F51L7T7FV');
-  </script>
-
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Casa Blava Peñíscola - Alquiler turístico Costa Azahar</title>
+  <title>Casa Blava Peñíscola - Alquiler vacacional</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <link rel="icon" type="image/png" sizes="32x32" href="images/logo.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="images/logo.png">
-  <link rel="apple-touch-icon" sizes="180x180" href="images/logo.png">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <!-- ================= CONFIG PROPIEDAD ================= -->
+  <script>
+    window.PAGE_CONFIG = {
+      slug: "casa-blava",
+      name: "Casa Blava Peñíscola",
+      lang: "es",
+      maxPersonas: 6,
+      cleaning: 75,
 
-  <link rel="stylesheet" href="../assets/css/property-page.css">
+      icalSlugs: [
+        "casablava-airbnb",
+        "casablava-booking"
+      ],
+
+      rates: {
+        "5": { weekday: 140, weekend: 190 },
+        "6": { weekday: 160, weekend: 200 },
+        "7": 250,
+        "8": 260,
+        "9": { weekday: 150, weekend: 180 }
+      },
+
+      holidays: ["12-24", "12-25", "12-31"]
+    };
+  </script>
 </head>
+
 <body>
 
-  <header>
-    <div class="container">
-      <div class="header-content">
-        <a href="/index.html" class="logo-link">
-          <img src="/images/Logo1.png" alt="Casitas de Mar" class="logo-img">
-          </a>
-         <nav id="main-nav">
-          <a href="/index.html">Inicio</a>
-          <a href="/loft_binibeca.html">Binibeca</a>
-          <a href="/Casa_Gonda.html">Casa Gonda</a>
-          <a href="/Tarifa_apartamento.html">Tarifa Apt</a>
-          <a href="/Tarifa_loft.html">Tarifa Loft</a>
-          <div class="lang-selector">
-          <a href="/Casa_blava/" class="active"hreflang="es" title="Español"><img src="https://flagcdn.com/es.svg" alt="Español" width="24" height="16"></a>
-          <span class="divider">|</span>
-          <a href="/en/Casa_blava/"hreflang="en" title="English">
-          <img src="https://flagcdn.com/gb.svg" alt="English" width="24" height="16"></a>
-          </div>
-          </nav>
-          <!-- Language selector fuera de nav-->
-          <div class="lang-selector lang-selector-mobile">
-            <a href="/Casa_blava/" class="active">🇪🇸 </a>
-            <span class="divider">|</span>
-            <a href="/en/Casa_blava/">🇬🇧 </a>
-          </div>
-          <button class="mobile-menu-btn" onclick="toggleMobileMenu()">☰</button>
-      </div>
-     </div>
-  </header>
+<!-- ================= RESERVA ================= -->
 
-  <main>
-    <section class="property-hero">
-      <div class="container">
-        <h1 class="property-title">Casa Blava Peñíscola</h1>
-        <div class="property-location">📍 Peñíscola, Costa Azahar</div>
-        <div class="gallery">
-          <div class="gallery-main" style="background-image: url('/images/peniscola/portal.avif')"></div>
-          <div class="gallery-item" style="background-image: url('/images/peniscola/fachada.avif')"></div>
-          <div class="gallery-item" style="background-image: url('/images/peniscola/salon.avif')"></div>
-          <div class="gallery-item" style="background-image: url('/images/peniscola/salon2.avif')"></div>
-          <div class="gallery-item" style="background-image: url('/images/peniscola/salon3.avif')"></div>
-          <div class="gallery-item" style="background-image: url('/images/peniscola/hab1.avif')"></div>
-          <div class="gallery-item" style="background-image: url('/images/peniscola/hab2.avif')"></div>
-          <div class="gallery-item" style="background-image: url('/images/peniscola/hab3.avif')"></div>
-          <div class="gallery-item" style="background-image: url('/images/peniscola/bano.avif')"></div>
-          <div class="gallery-item" style="background-image: url('/images/peniscola/bano2.avif')"></div>
-          <div class="gallery-item" style="background-image: url('/images/peniscola/bano3.avif')"></div>
-          <div class="gallery-item" style="background-image: url('/images/peniscola/kitchen.avif')"></div>
-          <div class="gallery-item" style="background-image: url('/images/peniscola/kitchen2.avif')"></div>
-          <div class="gallery-item" style="background-image: url('/images/peniscola/terraza.avif')"></div>
-          <div class="gallery-item" style="background-image: url('/images/peniscola/terraza2.avif')"></div>
-          <div class="gallery-item" style="background-image: url('/images/peniscola/terraza3.avif')"></div>
-          <div class="gallery-item" style="background-image: url('/images/peniscola/terraza4.avif')"></div>
-          <div class="gallery-item" style="background-image: url('/images/peniscola/terraza5.avif')"></div>
-          <div class="gallery-item" style="background-image: url('/images/peniscola/faro.avif')"></div>
-          <div class="gallery-item" style="background-image: url('/images/peniscola/canon.avif')"></div>
-          <div class="gallery-item" style="background-image: url('/images/peniscola/paisaje1.avif')"></div>
-        </div>
-      </div>
-    </section>
+<section class="reserva">
 
-    <div class="container">
-      <div class="content-wrapper">
+  <h2>Reserva tu estancia</h2>
 
-        <!-- DETALLES -->
-        <div class="property-details">
-          <div class="details-section">
-            <h3>Descripción</h3>
-            <p>Casa con terraza y vistas panorámicas en Peñíscola, una de las joyas de la Costa Azahar. Perfecto para familias que buscan comodidad, playa y el encanto del casco histórico.</p>
-            <p style="margin-top: 1rem;">La casa dispone de tres dormitorios amplios, salón-comedor con salida a terraza, cocina completa equipada y dos baños. Situado en zona tranquila a poca distancia de las playas y del centro histórico con su castillo templario.</p>
-          </div>
+  <!-- ===== CALENDARIO ===== -->
+  <div class="calendar-container">
 
-
-
-          <div class="details-section">
-            <h3>Características</h3>
-            <div class="features">
-              <div class="feature-item">
-                <svg class="feature-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
-                1-6 personas
-              </div>
-              <div class="feature-item">
-                <svg class="feature-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
-                3 dormitorios
-              </div>
-              <div class="feature-item">
-                <svg class="feature-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"></path></svg>
-                2 baños completos
-              </div>
-              <div class="feature-item">
-                <svg class="feature-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
-                WiFi gratis
-              </div>
-              <div class="feature-item">
-                <svg class="feature-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z"></path></svg>
-                Aire acondicionado
-              </div>
-              <div class="feature-item">
-                <svg class="feature-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 10l-2 1m0 0l-2-1m2 1v2.5M20 7l-2 1m2-1l-2-1m2 1v2.5M14 4l-2-1-2 1M4 7l2-1M4 7l2 1M4 7v2.5M12 21l-2-1m2 1l2-1m-2 1v-2.5M6 18l-2-1v-2.5M18 18l2-1v-2.5"></path></svg>
-                Cocina equipada
-              </div>
-              <div class="feature-item">
-                <svg class="feature-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
-                Terraza con vistas
-              </div>
-              <div class="feature-item">
-                <svg class="feature-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path></svg>
-                Parking público cerca
-              </div>
-            </div>
-          </div>
-
-          <div class="details-section">
-            <h3>Información adicional</h3>
-            <ul style="padding-left: 1.5rem; line-height: 2;">
-              <li>Check-in: a partir de las 16:00h</li>
-              <li>Check-out: hasta las 11:00h</li>
-              <li>Estancia mínima: 4 noches en temporada alta</li>
-              <li>No se admiten mascotas</li>
-              <li>No se permite fumar en el interior</li>
-              <li>No se permite aparcar dentro del casco antiguo</li>
-              <li>A 5 min de la playa</li>
-            </ul>
-          </div>
-        </div>
-
-        <!-- PANEL DE RESERVA -->
-        <div class="booking-panel">
-          <h2 class="booking-title">Reservar</h2>
-
-          <div class="calendar">
-            <div class="calendar-header">
-              <button class="calendar-nav" onclick="cambiarMes(-1)">&#8249;</button>
-              <span class="calendar-month" id="mesActual"></span>
-              <button class="calendar-nav" onclick="cambiarMes(1)">&#8250;</button>
-            </div>
-            <div class="sync-status">
-              <div class="sync-dot loading" id="syncDot"></div>
-              <span id="syncText">Cargando disponibilidad...</span>
-            </div>
-            <div class="calendar-grid" id="calendarioGrid"></div>
-            <div class="calendar-legend">
-              <div class="legend-item"><div class="legend-dot available"></div> Disponible</div>
-              <div class="legend-item"><div class="legend-dot booked"></div> Reservado</div>
-              <div class="legend-item"><div class="legend-dot selected"></div> Seleccionado</div>
-            </div>
-            <p class="calendar-note">Selecciona fecha de entrada y salida</p>
-          </div>
-
-          <!-- Después — mismos IDs que busca el JS, sin duplicar nada -->
-<div id="mobilePrice" class="price-highlight" style="display:none;margin-bottom:1rem;">
-  <h4>Importe estimado</h4>
-  <div id="priceAmount" class="price-amount">Selecciona fechas</div>
-  <div id="priceSummary" class="price-summary" style="display:none;margin-top:0.5rem;font-size:0.95rem;background:#fbfbfb;padding:0.5rem;border-radius:6px;">
-    <div><strong>Noches:</strong> <span id="nightsCount">0</span></div>
-    <div><strong>Subtotal:</strong> <span id="subtotalAmount">0 €</span></div>
-    <div><strong>Limpieza:</strong> <span id="cleaningAmount">75 €</span></div>
-    <div><strong>Total:</strong> <span id="totalAmount">0 €</span></div>
-    <div class="breakdown" ...></div>
-  </div>
-</div>
-          
-
-          <form class="booking-form" id="formularioReserva" action="https://api.web3forms.com/submit" method="POST" novalidate>
-            <input type="hidden" name="access_key" value="ba4d4800-cc82-4659-86e0-f10021d29924">
-            <input type="hidden" name="subject" value="Nueva solicitud de reserva - Casa Blava">
-            <input type="hidden" name="from_name" value="Web Casitas de Mar - Casa Blava">
-            <input type="checkbox" name="botcheck" style="display:none;">
-
-            <!-- Mensaje de éxito (único elemento) -->
-            <div class="form-success" id="formSuccess">
-              <div class="success-icon">✅</div>
-              <h4>¡Mensaje enviado correctamente!</h4>
-              <p style="color: var(--gris-oscuro); font-size: 1rem;">Gracias por contactarnos. Te responderemos en breve.</p>
-            </div>
-
-            <!-- Mensaje de error de envío -->
-            <div class="form-error-msg" id="mensajeError">
-              ⚠️ Hubo un problema al enviar la solicitud. Por favor, inténtalo de nuevo.
-            </div>
-
-            <!-- Fechas -->
-            <div class="form-row">
-              <div class="form-group">
-                <label class="form-label">Entrada</label>
-                <input type="date" class="form-input" id="fechaEntrada" name="entrada" required readonly onkeydown="return false" style="cursor:default;pointer-events:none;">
-              </div>
-              <div class="form-group">
-                <label class="form-label">Salida</label>
-                <input type="date" class="form-input" id="fechaSalida" name="salida" required readonly onkeydown="return false" style="cursor:default;pointer-events:none;">
-              </div>
-            </div>
-            <span class="field-error" id="errorFechas">⚠️ Debes seleccionar las fechas de entrada y salida válidas</span>
-
-            <!-- Personas -->
-            <div class="form-row">
-              <div class="form-group">
-                <label class="form-label">Adultos</label>
-                <input type="number" class="form-input" name="adultos" min="1" max="6" value="1" required oninput="validarPersonas()">
-              </div>
-              <div class="form-group">
-                <label class="form-label">Niños</label>
-                <input type="number" class="form-input" name="ninos" min="0" max="7" value="0" oninput="validarPersonas()">
-              </div>
-            </div>
-            <span class="field-error" id="errorPersonas">⚠️ El total de personas no puede superar 8</span>
-
-            <!-- Nombre -->
-            <div class="form-group">
-              <label class="form-label">Nombre completo</label>
-              <input type="text" class="form-input" name="name" required
-                     oninput="validarNombre(this)" onblur="validarNombre(this)">
-              <span class="field-error error-nombre">⚠️ El nombre solo puede contener letras</span>
-            </div>
-
-            <!-- Email -->
-            <div class="form-group">
-              <label class="form-label">Email</label>
-              <input type="email" class="form-input" name="email" required onblur="validarEmail(this)">
-              <span class="field-error error-email">⚠️ Introduce un email válido</span>
-            </div>
-
-            <!-- Teléfono -->
-            <div class="form-group">
-              <label class="form-label">Teléfono</label>
-              <input type="tel" class="form-input" name="telefono" required onblur="validarTelefono(this)">
-              <span class="field-error error-tel">⚠️ Introduce un teléfono válido</span>
-            </div>
-
-            <!-- Comentarios -->
-            <div class="form-group">
-              <label class="form-label">Comentarios (opcional)</label>
-              <textarea class="form-input" name="message" rows="3" placeholder="Hora aproximada de llegada, peticiones especiales..."></textarea>
-            </div>
-
-            <input type="hidden" name="nights" id="hdNights" value="">
-            <input type="hidden" name="subtotal" id="hdSubtotal" value="">
-            <input type="hidden" name="cleaning" id="hdCleaning" value="">
-            <input type="hidden" name="total_price" id="hdTotalPrice" value="">
-            <input type="hidden" name="price_breakdown" id="hdPriceBreakdown" value="">
-
-            <button type="submit" class="submit-btn" id="submitBtnReserva">Solicitar reserva</button>
-          </form>
-        </div>
-
-      </div>
+    <div class="calendar-header">
+      <button type="button" onclick="mesActual--; renderCalendario()">‹</button>
+      <span id="mesActual"></span>
+      <button type="button" onclick="mesActual++; renderCalendario()">›</button>
     </div>
-  </main>
 
-  <footer>
-    <div class="footer-content">
-      <p class="footer-text">© 2026 Casitas de Mar | Alquiler vacacional</p>
-      <p>Email: info@casitasdemar.com | Telf./ Whatsapp
-        <a href="https://wa.me/34613119183" target="_blank" rel="noopener noreferrer" style="color:white;">+34 613 119 183</a>
-      </p>
-    </div>
-  </footer>
+    <div id="calendarioGrid" class="calendar-grid"></div>
 
-  <!-- LIGHTBOX -->
-  <div class="lightbox-overlay" id="lightbox">
-    <button class="lightbox-close" onclick="closeLightbox()">✕</button>
-    <button class="lightbox-arrow lightbox-prev" onclick="changeImage(-1)">&#8249;</button>
-    <img class="lightbox-img" id="lightbox-img" src="" alt="">
-    <button class="lightbox-arrow lightbox-next" onclick="changeImage(1)">&#8250;</button>
-    <div class="lightbox-counter" id="lightbox-counter"></div>
+    <!-- inputs ocultos sincronizados con JS -->
+    <input type="date" id="fechaEntrada" name="fechaEntrada" hidden>
+    <input type="date" id="fechaSalida" name="fechaSalida" hidden>
+
   </div>
 
-  <!-- BOTÓN WHATSAPP FLOTANTE -->
-  <div class="wa-container">
-    <div class="wa-options" id="waOptions">
-      <a href="https://wa.me/34613119183"
-         data-original-href="https://wa.me/34613119183"
-         target="_blank" rel="noopener noreferrer" class="wa-option">
-        <span class="wa-label">Peñíscola</span>
-        <div class="wa-icon-sm">📱</div>
-      </a>      
-    </div>
-    <button class="wa-btn" id="waBtn" onclick="toggleWA()" aria-label="Contactar por WhatsApp">
-      <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="white">
-        <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
-      </svg>
-    </button>
+  <!-- ===== IMPORTE ===== -->
+  <div class="importe-estimado">
+
+    <h3>Importe estimado</h3>
+
+    <p>Noches: <strong><span id="nightsCount">0</span></strong></p>
+    <p>Subtotal: <strong><span id="subtotalAmount">0 €</span></strong></p>
+    <p>Limpieza: <strong><span id="cleaningAmount">75 €</span></strong></p>
+    <p class="total">
+      Total:
+      <strong><span id="totalAmount">Selecciona fechas</span></strong>
+    </p>
+
   </div>
-<script>
-  window.PAGE_CONFIG = {
-    slug: "casa-blava",
-    name: "Casa Blava Peñíscola",
-    lang: "es",
-    maxPersonas: 8,
-    minNoches: 2,
-    cleaning: 75,
-    icalSlugs: [
-      "casa-blava-airbnb",
-      "casa-blava-booking"
-    ],
-    rates: {
-      "5": { weekday: 140, weekend: 190 },
-      "6": { weekday: 160, weekend: 200 },
-      "7": 250,
-      "8": 260,
-      "9": { weekday: 150, weekend: 180 }
-    },
-    holidays: ["11-01","12-06","12-07","12-08","12-24","12-25","12-26","12-31"]
-  };
-</script>
-  <script>
-  window.PAGE_CONFIG = Object.assign(window.PAGE_CONFIG || {}, {
-    icalSlugs: ['casa-blava-airbnb', 'casa-blava-booking'],
-    maxPersonas: 8,
-    minNoches: 2,
-    lang: 'es'
-  });
-</script>
-  <script src="/assets/js/property-page.js"></script>
+
+</section>
+
+<!-- ================= FORMULARIO ================= -->
+
+<section class="formulario">
+
+  <form id="formularioReserva">
+
+    <h3>Solicitar reserva</h3>
+
+    <label>
+      Adultos
+      <input type="number" name="adultos" min="1" value="2" required>
+    </label>
+
+    <label>
+      Niños
+      <input type="number" name="ninos" min="0" value="0">
+    </label>
+
+    <label>
+      Nombre completo
+      <input type="text" name="name" required>
+    </label>
+
+    <label>
+      Email
+      <input type="email" name="email" required>
+    </label>
+
+    <label>
+      Teléfono
+      <input type="tel" name="telefono">
+    </label>
+
+    <label>
+      Comentarios
+      <textarea name="comentarios"></textarea>
+    </label>
+
+    <button type="submit">Solicitar reserva</button>
+
+  </form>
+
+</section>
+
+<!-- ================= WHATSAPP ================= -->
+
+<section class="contacto-wa">
+
+  <a
+    data-wa="https://wa.me/34613119183"
+    target="_blank"
+    rel="noopener"
+    class="btn-whatsapp"
+  >
+    📱 Contactar por WhatsApp
+  </a>
+
+</section>
+
+<!-- ================= SCRIPTS ================= -->
+
+<script src="/js/property-page.js"></script>
+<script src="/js/calendar.js"></script>
+<script src="/js/pricing.js"></script>
+<script src="/js/form.js"></script>
+<script src="/js/whatsapp.js"></script>
+
 </body>
 </html>
