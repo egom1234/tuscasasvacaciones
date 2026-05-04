@@ -130,9 +130,15 @@
             <ul style="padding-left: 1.5rem; line-height: 2;">
               <li>Check-in: a partir de las 15:00h</li>
               <li>Check-out: hasta las 10:00h</li>
-              <li>Estancia mínima: 3 noches</li>
+              <li>Estancia mínima: 2 noches</li>
               <li>No se admiten mascotas</li>
               <li>No se permite fumar en el interior</li>
+              <li>🏷️ <strong>Descuentos por estancia:</strong>
+                <ul style="padding-left:1rem; margin:0.25rem 0 0;">
+                  <li>Temporada media (jun, sep): 4 noches o más → 10%</li>
+                  <li>Temporada baja (oct–may): 3 noches o más → 10%</li>
+                </ul>
+              </li>
             </ul>
           </div>
         </div>
@@ -166,6 +172,7 @@
             <div id="priceSummary" class="price-summary" style="display:none;margin-top:0.5rem;font-size:0.95rem;background:#fbfbfb;padding:0.5rem;border-radius:6px;">
               <div><strong>Noches:</strong> <span id="nightsCount">0</span></div>
               <div><strong>Subtotal:</strong> <span id="subtotalAmount">0 €</span></div>
+              <div id="discountRow" style="display:none;color:green;"><strong>Descuento (<span id="discountLabel"></span>):</strong> <span id="discountAmount">0 €</span></div>
               <div><strong>Limpieza:</strong> <span id="cleaningAmount">60 €</span></div>
               <div style="margin-top:0.5rem;"><strong>Total:</strong> <span id="totalAmount">0 €</span></div>
               <div class="breakdown" style="margin-top:0.5rem;font-size:0.9rem;color:#555;"></div>
@@ -291,18 +298,12 @@
     </button>
   </div>
 
+  <script src="../assets/js/binibeca-prices.js"></script>
   <script>
   window.PAGE_CONFIG = {
-    icalSlugs:   ['loft-binibeca-airbnb', 'loft-binibeca-booking'],
-    maxPersonas: 2,
-    minNoches:   3,
-    lang: 'es',
-    cleaning: 60,
-    rates: {
-      "1": 80, "2": 80, "3": 80, "4": 80,
-      "5": 110, "6": 140, "7": 170, "8": 170,
-      "9": 130, "10": 100, "11": 80, "12": 80
-    }
+    ...window.BINIBECA_PRICES,
+    icalSlugs: ['loft-binibeca-airbnb', 'loft-binibeca-booking'],
+    lang: 'es'
   };
   </script>
   <script src="../assets/js/property-page.js"></script>

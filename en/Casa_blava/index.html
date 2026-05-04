@@ -146,6 +146,12 @@
               <li>No smoking inside</li>
               <li>No parking allowed inside the old town</li>
               <li>5 min walk to the beach</li>
+              <li>🏷️ <strong>Stay discounts:</strong>
+                <ul style="padding-left:1rem; margin:0.25rem 0 0;">
+                  <li>4 nights or more → 5%</li>
+                  <li>7 nights or more → 8%</li>
+                </ul>
+              </li>
             </ul>
           </div>
         </div>
@@ -179,6 +185,7 @@
   <div id="priceSummary" class="price-summary" style="display:none;margin-top:0.5rem;font-size:0.95rem;background:#fbfbfb;padding:0.5rem;border-radius:6px;">
     <div><strong>Nights:</strong> <span id="nightsCount">0</span></div>
     <div><strong>Subtotal:</strong> <span id="subtotalAmount">0 €</span></div>
+    <div id="discountRow" style="display:none;color:green;"><strong>Discount (<span id="discountLabel"></span>):</strong> <span id="discountAmount">0 €</span></div>
     <div><strong>Cleaning:</strong> <span id="cleaningAmount">60 €</span></div>
     <div style="margin-top:0.5rem;"><strong>Total:</strong> <span id="totalAmount">0 €</span></div>
     <div class="breakdown" style="margin-top:0.5rem;font-size:0.9rem;color:#555;"></div>
@@ -303,23 +310,12 @@
       </svg>
     </button>
   </div>
+  <script src="/assets/js/casa-blava-prices.js"></script>
   <script>
   window.PAGE_CONFIG = {
-    icalSlugs:   ['casa-blava-airbnb', 'casa-blava-booking'],
-    maxPersonas: 8,
-    minNoches:   2,
-    lang: 'en',
-    cleaning: 60,
-    rates: {
-      "5":  { weekday: 140, weekend: 190 },
-      "6":  { weekday: 160, weekend: 200 },
-      "7":  250,
-      "8":  250,
-      "9":  { weekday: 150, weekend: 180 },
-      "10": { weekday: 130, weekend: 180 },
-      "11": { weekday: 110, weekend: 180 }
-    },
-    holidays: ['9-24','11-01','12-06','12-07','12-08','12-24','12-25','12-26','12-31']
+    ...window.CASA_BLAVA_PRICES,
+    icalSlugs: ['casa-blava-airbnb', 'casa-blava-booking'],
+    lang: 'en'
   };
 </script>
   <script src="/assets/js/property-page.js"></script>

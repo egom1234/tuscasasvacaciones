@@ -129,6 +129,13 @@
               <li>Minimum stay: 4 nights</li>
               <li>Pets are not allowed</li>
               <li>No smoking indoors</li>
+              <li>🏷️ <strong>Stay discounts:</strong>
+                <ul style="padding-left:1rem; margin:0.25rem 0 0;">
+                  <li>5 nights → 5%</li>
+                  <li>6 nights → 8%</li>
+                  <li>7 nights or more → 11%</li>
+                </ul>
+              </li>
             </ul>
           </div>
         </div>
@@ -162,6 +169,7 @@
             <div id="priceSummary" class="price-summary" style="display:none;margin-top:0.5rem;font-size:0.95rem;background:#fbfbfb;padding:0.5rem;border-radius:6px;">
               <div><strong>Nights:</strong> <span id="nightsCount">0</span></div>
               <div><strong>Subtotal:</strong> <span id="subtotalAmount">0 €</span></div>
+              <div id="discountRow" style="display:none;color:green;"><strong>Discount (<span id="discountLabel"></span>):</strong> <span id="discountAmount">0 €</span></div>
               <div><strong>Cleaning:</strong> <span id="cleaningAmount">50 €</span></div>
               <div style="margin-top:0.5rem;"><strong>Total:</strong> <span id="totalAmount">0 €</span></div>
               <div class="breakdown" style="margin-top:0.5rem;font-size:0.9rem;color:#555;"></div>
@@ -282,18 +290,12 @@
     </button>
   </div>
 
+  <script src="../../assets/js/tarifa-apartamento-prices.js"></script>
   <script>
     window.PAGE_CONFIG = {
+      ...window.TARIFA_APARTAMENTO_PRICES,
       icalSlugs: ['tarifa-apt-airbnb', 'tarifa-apt-booking'],
-      maxPersonas: 4,
-      minNoches:   4,
-      lang: "en",
-      cleaning: 50,
-      rates: {
-        "1": 50, "2": 50, "3": 50, "4": 50,
-        "5": 120, "6": 120, "7": 180, "8": 180,
-        "9": 120, "10": 120, "11": 50, "12": 50
-      }
+      lang: 'en'
     };
   </script>
   <script src="../../assets/js/property-page.js"></script>

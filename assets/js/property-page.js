@@ -225,7 +225,6 @@ function seleccionarFecha(fecha) {
     let cur = new Date(fechaEntrada.getTime() + 86400000);
     while (cur < fecha) {
       if (fechasReservadas.has(toKey(cur))) {
-        alert(t('alertRangeBooked'));
         fechaEntrada = fecha;
         fechaSalida  = null;
         actualizarInputsFecha();
@@ -471,19 +470,38 @@ function calcularPrecio() {
   }
 
   const limpieza = (window.PAGE_CONFIG && window.PAGE_CONFIG.cleaning) || LIMPIEZA;
-  const total = subtotal + limpieza;
+  const discountTiers = (window.PAGE_CONFIG && window.PAGE_CONFIG.discounts) || [];
+  const activeTier = discountTiers
+    .filter(d => noches >= d.minNights)
+    .sort((a, b) => b.minNights - a.minNights)[0] || null;
+  const seasonTiers   = (window.PAGE_CONFIG && window.PAGE_CONFIG.seasonDiscounts) || [];
+  const checkInMonth  = fechaEntrada.getMonth() + 1;
+  const activeSeasonTier = seasonTiers
+    .filter(d => noches >= d.minNights && d.months.includes(checkInMonth))
+    .sort((a, b) => b.minNights - a.minNights)[0] || null;
+  const effectiveTier  = activeTier || activeSeasonTier;
+  const discountPct    = effectiveTier ? effectiveTier.pct : 0;
+  const discountAmount = discountPct > 0 ? Math.round(subtotal * discountPct) : 0;
+  const subtotalFinal  = subtotal - discountAmount;
+  const total          = subtotalFinal + limpieza;
 
   if (pa) pa.textContent = total.toFixed(2) + ' €';
   if (ps) {
     ps.style.display = 'block';
     ps.querySelector('#nightsCount').textContent = noches;
     ps.querySelector('#subtotalAmount').textContent = subtotal.toFixed(2) + ' €';
+    const discountRow   = ps.querySelector('#discountRow');
+    const discountEl    = ps.querySelector('#discountAmount');
+    const discountLabel = ps.querySelector('#discountLabel');
+    if (discountRow) discountRow.style.display = discountAmount > 0 ? '' : 'none';
+    if (discountLabel && effectiveTier) discountLabel.textContent = Math.round(effectiveTier.pct * 100) + '%';
+    if (discountEl)  discountEl.textContent = '-' + discountAmount.toFixed(2) + ' €';
     ps.querySelector('#cleaningAmount').textContent = limpieza.toFixed(2) + ' €';
     ps.querySelector('#totalAmount').textContent = total.toFixed(2) + ' €';
     ps.querySelector('.breakdown').innerHTML = breakdownHTML;
   }
 
-  lastPricing = { nights: noches, subtotal: subtotal, cleaning: limpieza, total: total, breakdown: breakdownText };
+  lastPricing = { nights: noches, subtotal: subtotalFinal, cleaning: limpieza, total: total, breakdown: breakdownText };
 
   const hN = document.getElementById('hdNights');
   const hS = document.getElementById('hdSubtotal');
