@@ -164,6 +164,7 @@
             <div id="priceSummary" class="price-summary" style="display:none;margin-top:0.5rem;font-size:0.95rem;background:#fbfbfb;padding:0.5rem;border-radius:6px;">
               <div><strong>Noches:</strong> <span id="nightsCount">0</span></div>
               <div><strong>Subtotal:</strong> <span id="subtotalAmount">0 €</span></div>
+              <div id="discountRow" style="display:none;color:green;"><strong>Descuento (<span id="discountLabel"></span>):</strong> <span id="discountAmount">0 €</span></div>
               <div><strong>Limpieza:</strong> <span id="cleaningAmount">40 €</span></div>
               <div style="margin-top:0.5rem;"><strong>Total:</strong> <span id="totalAmount">0 €</span></div>
               <div class="breakdown" style="margin-top:0.5rem;font-size:0.9rem;color:#555;"></div>
@@ -290,18 +291,12 @@
     </button>
   </div>
 
+  <script src="../assets/js/tarifa-loft-prices.js"></script>
   <script>
   window.PAGE_CONFIG = {
-    icalSlugs:   ['tarifa-loft-airbnb', 'tarifa-loft-booking'],
-    maxPersonas: 2,
-    minNoches:   4,
-    lang: 'es',
-    cleaning: 40,
-    rates: {
-      "1": 50, "2": 50, "3": 50, "4": 50,
-      "5": 80, "6": 80, "7": 150, "8": 150,
-      "9": 80, "10": 80, "11": 50, "12": 50
-    }
+    ...window.TARIFA_LOFT_PRICES,
+    icalSlugs: ['tarifa-loft-airbnb', 'tarifa-loft-booking'],
+    lang: 'es'
   };
   </script>
   <script src="../assets/js/property-page.js"></script>

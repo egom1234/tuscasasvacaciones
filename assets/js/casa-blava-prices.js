@@ -1,8 +1,11 @@
 window.CASA_BLAVA_PRICES = {
-  maxPersonas:     8,
-  minNoches:       2,
-  cleaning:        60,
-  weeklyDiscount:  0.05,
+  maxPersonas: 8,
+  minNoches:   2,
+  cleaning:    60,
+  discounts: [
+    { minNights: 4, pct: 0.05 },
+    { minNights: 7, pct: 0.08 }
+  ],
   rates: {
     "5":  { weekday: 140, weekend: 190 },
     "6":  { weekday: 160, weekend: 200 },

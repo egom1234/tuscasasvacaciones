@@ -471,8 +471,12 @@ function calcularPrecio() {
   }
 
   const limpieza = (window.PAGE_CONFIG && window.PAGE_CONFIG.cleaning) || LIMPIEZA;
-  const weeklyDiscount = (noches >= 7 && window.PAGE_CONFIG && window.PAGE_CONFIG.weeklyDiscount) ? window.PAGE_CONFIG.weeklyDiscount : 0;
-  const discountAmount = weeklyDiscount > 0 ? Math.round(subtotal * weeklyDiscount) : 0;
+  const discountTiers = (window.PAGE_CONFIG && window.PAGE_CONFIG.discounts) || [];
+  const activeTier = discountTiers
+    .filter(d => noches >= d.minNights)
+    .sort((a, b) => b.minNights - a.minNights)[0] || null;
+  const discountPct    = activeTier ? activeTier.pct : 0;
+  const discountAmount = discountPct > 0 ? Math.round(subtotal * discountPct) : 0;
   const subtotalFinal  = subtotal - discountAmount;
   const total          = subtotalFinal + limpieza;
 
@@ -481,9 +485,11 @@ function calcularPrecio() {
     ps.style.display = 'block';
     ps.querySelector('#nightsCount').textContent = noches;
     ps.querySelector('#subtotalAmount').textContent = subtotal.toFixed(2) + ' €';
-    const discountRow = ps.querySelector('#discountRow');
-    const discountEl  = ps.querySelector('#discountAmount');
+    const discountRow   = ps.querySelector('#discountRow');
+    const discountEl    = ps.querySelector('#discountAmount');
+    const discountLabel = ps.querySelector('#discountLabel');
     if (discountRow) discountRow.style.display = discountAmount > 0 ? '' : 'none';
+    if (discountLabel && activeTier) discountLabel.textContent = Math.round(activeTier.pct * 100) + '%';
     if (discountEl)  discountEl.textContent = '-' + discountAmount.toFixed(2) + ' €';
     ps.querySelector('#cleaningAmount').textContent = limpieza.toFixed(2) + ' €';
     ps.querySelector('#totalAmount').textContent = total.toFixed(2) + ' €';
