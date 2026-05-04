@@ -471,7 +471,7 @@ function calcularPrecio() {
   }
 
   const limpieza = (window.PAGE_CONFIG && window.PAGE_CONFIG.cleaning) || LIMPIEZA;
-  const weeklyDiscount = (noches >= 7 && cfg.weeklyDiscount) ? cfg.weeklyDiscount : 0;
+  const weeklyDiscount = (noches >= 7 && window.PAGE_CONFIG && window.PAGE_CONFIG.weeklyDiscount) ? window.PAGE_CONFIG.weeklyDiscount : 0;
   const discountAmount = weeklyDiscount > 0 ? Math.round(subtotal * weeklyDiscount) : 0;
   const subtotalFinal  = subtotal - discountAmount;
   const total          = subtotalFinal + limpieza;
