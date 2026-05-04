@@ -471,19 +471,26 @@ function calcularPrecio() {
   }
 
   const limpieza = (window.PAGE_CONFIG && window.PAGE_CONFIG.cleaning) || LIMPIEZA;
-  const total = subtotal + limpieza;
+  const weeklyDiscount = (noches >= 7 && cfg.weeklyDiscount) ? cfg.weeklyDiscount : 0;
+  const discountAmount = weeklyDiscount > 0 ? Math.round(subtotal * weeklyDiscount) : 0;
+  const subtotalFinal  = subtotal - discountAmount;
+  const total          = subtotalFinal + limpieza;
 
   if (pa) pa.textContent = total.toFixed(2) + ' €';
   if (ps) {
     ps.style.display = 'block';
     ps.querySelector('#nightsCount').textContent = noches;
     ps.querySelector('#subtotalAmount').textContent = subtotal.toFixed(2) + ' €';
+    const discountRow = ps.querySelector('#discountRow');
+    const discountEl  = ps.querySelector('#discountAmount');
+    if (discountRow) discountRow.style.display = discountAmount > 0 ? '' : 'none';
+    if (discountEl)  discountEl.textContent = '-' + discountAmount.toFixed(2) + ' €';
     ps.querySelector('#cleaningAmount').textContent = limpieza.toFixed(2) + ' €';
     ps.querySelector('#totalAmount').textContent = total.toFixed(2) + ' €';
     ps.querySelector('.breakdown').innerHTML = breakdownHTML;
   }
 
-  lastPricing = { nights: noches, subtotal: subtotal, cleaning: limpieza, total: total, breakdown: breakdownText };
+  lastPricing = { nights: noches, subtotal: subtotalFinal, cleaning: limpieza, total: total, breakdown: breakdownText };
 
   const hN = document.getElementById('hdNights');
   const hS = document.getElementById('hdSubtotal');
