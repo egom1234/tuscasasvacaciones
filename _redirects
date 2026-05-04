@@ -1,12 +1,12 @@
 /assets/* /assets/:splat 200
 / /es/ 301
 /index.html /es/ 301
-/en/index.html /en/ 301
 /loft_binibeca.html /loft_binibeca/ 301
 /Tarifa_apartamento.html /Tarifa_apartamento/ 301
 /Tarifa_loft.html /Tarifa_loft/ 301
 /en/loft_binibeca.html /en/loft_binibeca/ 301
 /en/Tarifa_apartamento.html /en/Tarifa_apartamento/ 301
 /en/Tarifa_loft.html /en/Tarifa_loft/ 301
-/en/* /index.html 200
-/* /index.html 200
+/en/index.html /en/ 301
+/en/* /en/:splat 200
+/* /es/:splat 200
