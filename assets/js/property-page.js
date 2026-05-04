@@ -225,7 +225,6 @@ function seleccionarFecha(fecha) {
     let cur = new Date(fechaEntrada.getTime() + 86400000);
     while (cur < fecha) {
       if (fechasReservadas.has(toKey(cur))) {
-        alert(t('alertRangeBooked'));
         fechaEntrada = fecha;
         fechaSalida  = null;
         actualizarInputsFecha();
