@@ -19,37 +19,37 @@
   <link rel="apple-touch-icon" sizes="180x180" href="/images/logo.png">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="/assets/css/property-page.css">
+  <link rel="stylesheet" href="../../assets/css/property-page.css">
 </head>
 <body>
 
   <header>
     <div class="container">
       <div class="header-content">
-        <a href="/en/index.html" class="logo-link">
+        <a href="/en/" class="logo-link">
           <img src="/images/Logo1.png" alt="Casitas de Mar" class="logo-img"></a>
         <nav id="main-nav">
-          <a href="/en/index.html">Home</a>
-          <a href="/en/Casa_Gonda">Casa Gonda</a>
+          <a href="/en/">Home</a>
+          <a href="/en/Casa_Gonda/">Casa Gonda</a>
           <a href="/en/Casa_blava/">Peñíscola</a>
-          <a href="/en/Tarifa_apartamento.html">Tarifa Apt</a>
-          <a href="/en/Tarifa_loft.html">Tarifa Loft</a>
+          <a href="/en/Tarifa_apartamento/">Tarifa Apt</a>
+          <a href="/en/Tarifa_loft/">Tarifa Loft</a>
           <div class="lang-selector">
-          <a href="/loft_binibeca.html" hreflang="es" title="Español"><img src="https://flagcdn.com/es.svg" alt="Español" width="24" height="16"></a>
+          <a href="/loft_binibeca/" hreflang="es" title="Español"><img src="https://flagcdn.com/es.svg" alt="Español" width="24" height="16"></a>
           <span class="divider">|</span>
-          <a href="/en/loft_binibeca.html" class="active"hreflang="en" title="English">
+          <a href="/en/loft_binibeca/" class="active" hreflang="en" title="English">
           <img src="https://flagcdn.com/gb.svg" alt="English" width="24" height="16"></a>
           </div>
           </nav>
           <!-- Language selector fuera de nav-->
           <div class="lang-selector lang-selector-mobile">
-            <a href="/loft_binibeca.html">🇪🇸 </a>
+            <a href="/loft_binibeca/">🇪🇸 </a>
             <span class="divider">|</span>
-            <a href="/en/loft_binibeca.html" class="active">🇬🇧 </a>
+            <a href="/en/loft_binibeca/" class="active">🇬🇧 </a>
           </div>
           <button class="mobile-menu-btn" onclick="toggleMobileMenu()">☰</button>
       </div>
-     </div>
+    </div>
   </header>
 
   <main>
@@ -57,7 +57,6 @@
       <div class="container">
         <h1 class="property-title">Loft Binibeca</h1>
         <div class="property-location">📍 Binibeca, Menorca</div>
-
         <div class="gallery">
           <div class="gallery-main" style="background-image: url('/images/binibeca/bini_entrada2.avif')"></div>
           <div class="gallery-item" style="background-image: url('/images/binibeca/binibeca_iglesia.avif')"></div>
@@ -87,8 +86,6 @@
             <p>Cosy ground-floor loft located in the heart of Binibeca Vell, one of the most charming areas in Menorca. Ideal for couples looking for peace and proximity to the beach and coves.</p>
             <p style="margin-top: 1rem;">The accommodation features Mediterranean décor, bright open spaces, and all the comforts needed for a perfect stay. It includes a living area, an open-plan bedroom, and a fully equipped kitchen.</p>
           </div>
-
-
 
           <div class="details-section">
             <h3>Features</h3>
@@ -163,15 +160,15 @@
             <p class="calendar-note">Select check-in and check-out dates</p>
           </div>
 
-          <div id="mobilePrice" class="price-highlight" style="display:none;margin-bottom:1rem;">
+          <div id="mobilePrice" class="price-highlight" style="margin-bottom:1rem;">
             <h4>Estimated cost</h4>
-            <div id="priceAmountMobile" class="price-amount">On request</div>
-            <div id="priceSummaryMobile" class="price-summary" style="display:none;margin-top:0.5rem;font-size:0.95rem;background:#fbfbfb;padding:0.5rem;border-radius:6px;">
-              <div><strong>Nights:</strong> <span id="nightsCountMobile">0</span></div>
-              <div><strong>Subtotal:</strong> <span id="subtotalAmountMobile">0 €</span></div>
-              <div><strong>Cleaning:</strong> <span id="cleaningAmountMobile">75 €</span></div>
-              <div style="margin-top:0.5rem;"><strong>Total:</strong> <span id="totalAmountMobile">0 €</span></div>
-              <div class="breakdown-mobile" style="margin-top:0.5rem;font-size:0.9rem;color:#555;"></div>
+            <div id="priceAmount" class="price-amount">Select dates</div>
+            <div id="priceSummary" class="price-summary" style="display:none;margin-top:0.5rem;font-size:0.95rem;background:#fbfbfb;padding:0.5rem;border-radius:6px;">
+              <div><strong>Nights:</strong> <span id="nightsCount">0</span></div>
+              <div><strong>Subtotal:</strong> <span id="subtotalAmount">0 €</span></div>
+              <div><strong>Cleaning:</strong> <span id="cleaningAmount">60 €</span></div>
+              <div style="margin-top:0.5rem;"><strong>Total:</strong> <span id="totalAmount">0 €</span></div>
+              <div class="breakdown" style="margin-top:0.5rem;font-size:0.9rem;color:#555;"></div>
             </div>
           </div>
 
@@ -181,7 +178,7 @@
             <input type="hidden" name="from_name" value="Casitas de Mar Website - Binibeca">
             <input type="checkbox" name="botcheck" style="display:none;">
 
-            <div class="form-success" id="formSuccess"style="display:none;">
+            <div class="form-success" id="formSuccess" style="display:none;">
               <div class="success-icon">✅</div>
               <h4>Message sent successfully!</h4>
               <p style="color: var(--gris-oscuro); font-size: 1rem;">Thank you for contacting us. We will reply shortly.</p>
@@ -239,6 +236,12 @@
               <textarea class="form-input" name="message" rows="3" placeholder="Approximate arrival time, special requests..."></textarea>
             </div>
 
+            <input type="hidden" name="nights" id="hdNights" value="">
+            <input type="hidden" name="subtotal" id="hdSubtotal" value="">
+            <input type="hidden" name="cleaning" id="hdCleaning" value="">
+            <input type="hidden" name="total_price" id="hdTotalPrice" value="">
+            <input type="hidden" name="price_breakdown" id="hdPriceBreakdown" value="">
+
             <button type="submit" class="submit-btn" id="submitBtnReserva">Request booking</button>
           </form>
         </div>
@@ -268,14 +271,13 @@
 
   <!-- FLOATING WHATSAPP BUTTON -->
   <div class="wa-container">
-    <div class="wa-options" id="waOptions">      
+    <div class="wa-options" id="waOptions">
       <a href="https://wa.me/34690288196"
-         data-original-href="https://wa.me/34690288196"
          data-original-href="https://wa.me/34690288196"
          target="_blank" rel="noopener noreferrer" class="wa-option">
         <span class="wa-label">Menorca</span>
         <div class="wa-icon-sm">📱</div>
-      </a>      
+      </a>
     </div>
     <button class="wa-btn" id="waBtn" onclick="toggleWA()" aria-label="Contact via WhatsApp">
       <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="white">
@@ -298,6 +300,6 @@
       }
     };
   </script>
-  <script src="/assets/js/property-page.js"></script>
+  <script src="../../assets/js/property-page.js"></script>
 </body>
 </html>
