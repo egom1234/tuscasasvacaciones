@@ -207,11 +207,19 @@
             <div class="form-row">
               <div class="form-group">
                 <label class="form-label">Adults</label>
-                <input type="number" class="form-input" name="adultos" min="1" max="4" value="1" required oninput="validarPersonas()">
+                <div class="stepper">
+                  <button type="button" class="stepper-btn" data-field="adultos" data-delta="-1">−</button>
+                  <input type="number" class="form-input stepper-input" name="adultos" value="1" min="1" required readonly>
+                  <button type="button" class="stepper-btn" data-field="adultos" data-delta="1">+</button>
+                </div>
               </div>
               <div class="form-group">
                 <label class="form-label">Children</label>
-                <input type="number" class="form-input" name="ninos" min="0" max="3" value="0" oninput="validarPersonas()">
+                <div class="stepper">
+                  <button type="button" class="stepper-btn" data-field="ninos" data-delta="-1">−</button>
+                  <input type="number" class="form-input stepper-input" name="ninos" value="0" min="0" readonly>
+                  <button type="button" class="stepper-btn" data-field="ninos" data-delta="1">+</button>
+                </div>
               </div>
             </div>
             <span class="field-error" id="errorPersonas">⚠️ The total number of guests cannot exceed 4</span>
