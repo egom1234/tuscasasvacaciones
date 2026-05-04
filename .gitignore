@@ -1,7 +1,11 @@
 .github
+.claude
 
 # Ignore Copilot instructions (private)
 .copilot/copilot-instructions.md
+.agents/AGENTS.MD
 
 # Optionally ignore the entire Copilot folder
 .copilot/
+
+
