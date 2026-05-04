@@ -5,3 +5,5 @@
 
 # Optionally ignore the entire Copilot folder
 .copilot/
+.env
+.env
