@@ -98,6 +98,15 @@ main { padding-top: 80px; min-height: calc(100vh - 200px); }
 .form-input:focus { outline: none; border-color: var(--verde-primario); }
 .form-row { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; }
 .field-error { display: none; color: var(--rojo); font-size: 0.82rem; margin-top: 0.3rem; }
+
+/* ── Stepper personas ──────────────────────────────────── */
+.stepper { display: flex; align-items: center; gap: 0.5rem; }
+.stepper-btn { width: 2rem; height: 2rem; border: 1.5px solid var(--verde-primario); background: var(--blanco); color: var(--verde-primario); border-radius: 50%; font-size: 1.2rem; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; line-height: 1; padding: 0; transition: background 0.2s, color 0.2s; }
+.stepper-btn:hover:not(:disabled) { background: var(--verde-primario); color: var(--blanco); }
+.stepper-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+.stepper-input { text-align: center; width: 3.5rem !important; -moz-appearance: textfield; flex: 0 0 auto; }
+.stepper-input::-webkit-outer-spin-button,
+.stepper-input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
 .submit-btn { background: var(--verde-primario); color: var(--blanco); padding: 1rem; border: none; border-radius: 5px; font-size: 1.1rem; font-weight: 600; cursor: pointer; transition: all 0.3s; margin-top: 1rem; }
 .submit-btn:hover { background: var(--verde-oscuro); transform: translateY(-2px); box-shadow: 0 10px 20px rgba(0,121,107,0.3); }
 .form-success { display: none; text-align: center; padding: 2rem 1rem; }

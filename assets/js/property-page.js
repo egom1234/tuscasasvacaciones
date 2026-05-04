@@ -319,9 +319,6 @@ function validarEmail(input) {
   const val = input.value.trim();
   const msg = input.parentElement.querySelector('.error-email');
   if (!val) return setFieldState(input, msg, false, t('emailRequired'));
-  if (input.type === 'email' && typeof input.checkValidity === 'function' && input.checkValidity()) {
-    return setFieldState(input, msg, true);
-  }
   const re = /^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$/;
   if (!re.test(val)) return setFieldState(input, msg, false, t('checkEmail'));
   return setFieldState(input, msg, true);
@@ -355,6 +352,39 @@ function validarPersonas() {
   iN.style.borderColor = ok ? 'var(--verde-ok)' : 'var(--rojo)';
   if (msg) msg.style.display = ok ? 'none' : 'block';
   return ok;
+}
+
+function actualizarBotonesStepper() {
+  const iA  = document.querySelector('input[name="adultos"]');
+  const iN  = document.querySelector('input[name="ninos"]');
+  if (!iA || !iN) return;
+  const max     = (window.PAGE_CONFIG || {}).maxPersonas || 2;
+  const adultos = parseInt(iA.value) || 1;
+  const ninos   = parseInt(iN.value) || 0;
+  const total   = adultos + ninos;
+  document.querySelectorAll('.stepper-btn[data-field="adultos"][data-delta="-1"]')
+    .forEach(b => { b.disabled = adultos <= 1; });
+  document.querySelectorAll('.stepper-btn[data-field="adultos"][data-delta="1"]')
+    .forEach(b => { b.disabled = total >= max; });
+  document.querySelectorAll('.stepper-btn[data-field="ninos"][data-delta="-1"]')
+    .forEach(b => { b.disabled = ninos <= 0; });
+  document.querySelectorAll('.stepper-btn[data-field="ninos"][data-delta="1"]')
+    .forEach(b => { b.disabled = total >= max; });
+}
+
+function stepPersonas(field, delta) {
+  const iA     = document.querySelector('input[name="adultos"]');
+  const iN     = document.querySelector('input[name="ninos"]');
+  const max    = (window.PAGE_CONFIG || {}).maxPersonas || 2;
+  const input  = field === 'adultos' ? iA : iN;
+  const minVal = field === 'adultos' ? 1 : 0;
+  const cur    = parseInt(input.value) || minVal;
+  const total  = (parseInt(iA.value) || 1) + (parseInt(iN.value) || 0);
+  if (delta > 0 && total >= max) return;
+  if (delta < 0 && cur <= minVal) return;
+  input.value = cur + delta;
+  actualizarBotonesStepper();
+  validarPersonas();
 }
 
 function validarFechas() {
@@ -526,9 +556,17 @@ function calcularPrecio() {
   const emailInput  = form.querySelector('input[name="email"]');
   const telInput    = form.querySelector('input[name="telefono"]');
 
-  nombreInput.addEventListener('blur', () => validarNombre(nombreInput));
+  nombreInput.addEventListener('blur',  () => validarNombre(nombreInput));
   emailInput.addEventListener('blur',  () => validarEmail(emailInput));
+  emailInput.addEventListener('input', () => validarEmail(emailInput));
   telInput.addEventListener('blur',    () => validarTelefono(telInput));
+
+  form.addEventListener('click', function(e) {
+    const stepBtn = e.target.closest('.stepper-btn');
+    if (!stepBtn || stepBtn.disabled) return;
+    stepPersonas(stepBtn.dataset.field, parseInt(stepBtn.dataset.delta));
+  });
+  actualizarBotonesStepper();
 
   form.addEventListener('submit', async function (e) {
     e.preventDefault();
