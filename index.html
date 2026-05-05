@@ -23,6 +23,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <link rel="apple-touch-icon" sizes="180x180" href="/images/logo.png">
   <title> Casitas de Mar - Alquiler vacacional</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="canonical" href="https://casitasdemar.com/">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
   <style>
     :root {
@@ -629,7 +630,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     </p>
   </div>
 
-  <form id="contactForm" action="https://api.web3forms.com/submit" method="POST"
+  <form id="contactForm" action="https://casitasdemar-form.eduardgomez-4.workers.dev/contacto" method="POST"
         style="display: flex; flex-direction: column; gap: 1.2rem;">
 
     <input type="hidden" name="access_key" value="ba4d4800-cc82-4659-86e0-f10021d29924">
@@ -743,12 +744,13 @@ function validarNombre(input) {
     errorMsg.style.display  = 'none';
 
     try {
-      const response = await fetch('https://api.web3forms.com/submit', {
+      fetch('https://api.web3forms.com/submit', { method: 'POST', body: new FormData(form) }).catch(() => {});
+      const response = await fetch('https://casitasdemar-form.eduardgomez-4.workers.dev/contacto', {
         method: 'POST',
         body: new FormData(form)
       });
       const data = await response.json();
-      if (data.success) {
+      if (data.ok) {
         form.style.display       = 'none';
         successMsg.style.display = 'block';
       } else {

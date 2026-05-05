@@ -1,0 +1,9 @@
+name = "casitasdemar-form"
+main = "src/index.js"
+compatibility_date = "2025-01-01"
+account_id = "dba134a2aa6a703651d9b77d0098fec6"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "casitasdemar"
+database_id = "e3584915-4f4b-4765-9a96-29f001f4161a"

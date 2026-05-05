@@ -3,6 +3,7 @@
  */
 
 const WORKER          = 'https://tuscasasvacaciones.eduardgomez-4.workers.dev';
+const FORM_WORKER     = 'https://casitasdemar-form.eduardgomez-4.workers.dev';
 const MESES_I18N = {
   es: ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'],
   en: ['January','February','March','April','May','June','July','August','September','October','November','December']
@@ -597,16 +598,21 @@ function calcularPrecio() {
       fd.set('total_price', lastPricing.total.toFixed(2));
       fd.set('price_breakdown', lastPricing.breakdown);
 
-      const res = await fetch('https://api.web3forms.com/submit', { method: 'POST', body: fd });
+      const fdEmail = new FormData(form);
+      fdEmail.set('nights', String(lastPricing.nights));
+      fdEmail.set('total_price', lastPricing.total.toFixed(2));
+      fetch('https://api.web3forms.com/submit', { method: 'POST', body: fdEmail }).catch(() => {});
+
+      const res = await fetch(FORM_WORKER + '/reserva', { method: 'POST', body: fd });
       const text = await res.text();
       let data = {};
-      try { data = text ? JSON.parse(text) : {}; } catch (e) { console.warn('Non-JSON response from web3forms:', text); }
+      try { data = text ? JSON.parse(text) : {}; } catch (e) { console.warn('Non-JSON response:', text); }
 
       if (!res.ok) {
-        throw new Error(`HTTP ${res.status} ${res.statusText} - ${data.message || text.slice(0,200)}`);
+        throw new Error(`HTTP ${res.status} ${res.statusText} - ${data.error || text.slice(0,200)}`);
       }
 
-      if (data && data.success) {
+      if (data && data.ok) {
         form.querySelectorAll('.form-row, .form-group, .submit-btn, .field-error')
             .forEach(el => el.style.display = 'none');
         formExito.style.display = 'block';
@@ -619,7 +625,7 @@ function calcularPrecio() {
       try {
         const fallback = document.createElement('form');
         fallback.method = 'POST';
-        fallback.action = form.action;
+        fallback.action = FORM_WORKER + '/reserva';
         fallback.style.display = 'none';
 
         const fd = new FormData(form);

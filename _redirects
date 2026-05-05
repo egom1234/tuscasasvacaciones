@@ -1,10 +1,19 @@
 /assets/* /assets/:splat 200
-/loft_binibeca.html /loft_binibeca/ 301
-/Tarifa_apartamento.html /Tarifa_apartamento/ 301
-/Tarifa_loft.html /Tarifa_loft/ 301
-/en/loft_binibeca.html /en/loft_binibeca/ 301
-/en/Tarifa_apartamento.html /en/Tarifa_apartamento/ 301
-/en/Tarifa_loft.html /en/Tarifa_loft/ 301
-/en/index.html /en/ 301
+
+# .html → clean URL (301 permanente)
+/Casa_Gonda.html                 /Casa_Gonda/               301
+/Casa_blava.html                 /Casa_blava/               301
+/loft_binibeca.html              /loft_binibeca/            301
+/Tarifa_apartamento.html         /Tarifa_apartamento/       301
+/Tarifa_loft.html                /Tarifa_loft/              301
+/politica-privacidad.html        /politica-privacidad/      301
+
+/en/index.html                   /en/                       301
+/en/Casa_Gonda.html              /en/Casa_Gonda/            301
+/en/Casa_blava.html              /en/Casa_blava/            301
+/en/loft_binibeca.html           /en/loft_binibeca/         301
+/en/Tarifa_apartamento.html      /en/Tarifa_apartamento/    301
+/en/Tarifa_loft.html             /en/Tarifa_loft/           301
+/en/privacy-policy.html          /en/privacy-policy/        301
+
 /en/* /en/:splat 200
-/* /index.html 200
