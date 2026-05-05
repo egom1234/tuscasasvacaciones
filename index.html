@@ -743,7 +743,7 @@ function validarNombre(input) {
     errorMsg.style.display  = 'none';
 
     try {
-      fetch('https://api.web3forms.com/submit', { method: 'POST', body: new FormData(form) });
+      fetch('https://api.web3forms.com/submit', { method: 'POST', body: new FormData(form) }).catch(() => {});
       const response = await fetch('https://casitasdemar-form.eduardgomez-4.workers.dev/contacto', {
         method: 'POST',
         body: new FormData(form)
