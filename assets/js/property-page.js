@@ -591,11 +591,11 @@ function calcularPrecio() {
 
     try {
       const fd = new FormData(form);
-      fd.append('nights', String(lastPricing.nights));
-      fd.append('subtotal', lastPricing.subtotal.toFixed(2));
-      fd.append('cleaning', lastPricing.cleaning.toFixed(2));
-      fd.append('total_price', lastPricing.total.toFixed(2));
-      fd.append('price_breakdown', lastPricing.breakdown);
+      fd.set('nights', String(lastPricing.nights));
+      fd.set('subtotal', lastPricing.subtotal.toFixed(2));
+      fd.set('cleaning', lastPricing.cleaning.toFixed(2));
+      fd.set('total_price', lastPricing.total.toFixed(2));
+      fd.set('price_breakdown', lastPricing.breakdown);
 
       const res = await fetch('https://api.web3forms.com/submit', { method: 'POST', body: fd });
       const text = await res.text();
@@ -623,11 +623,11 @@ function calcularPrecio() {
         fallback.style.display = 'none';
 
         const fd = new FormData(form);
-        fd.append('nights', String(lastPricing.nights));
-        fd.append('subtotal', lastPricing.subtotal.toFixed(2));
-        fd.append('cleaning', lastPricing.cleaning.toFixed(2));
-        fd.append('total_price', lastPricing.total.toFixed(2));
-        fd.append('price_breakdown', lastPricing.breakdown);
+        fd.set('nights', String(lastPricing.nights));
+        fd.set('subtotal', lastPricing.subtotal.toFixed(2));
+        fd.set('cleaning', lastPricing.cleaning.toFixed(2));
+        fd.set('total_price', lastPricing.total.toFixed(2));
+        fd.set('price_breakdown', lastPricing.breakdown);
 
         for (const [k, v] of fd.entries()) {
           const inp = document.createElement('input');
