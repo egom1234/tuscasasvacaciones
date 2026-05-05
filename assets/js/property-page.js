@@ -598,6 +598,11 @@ function calcularPrecio() {
       fd.set('total_price', lastPricing.total.toFixed(2));
       fd.set('price_breakdown', lastPricing.breakdown);
 
+      const fdEmail = new FormData(form);
+      fdEmail.set('nights', String(lastPricing.nights));
+      fdEmail.set('total_price', lastPricing.total.toFixed(2));
+      fetch('https://api.web3forms.com/submit', { method: 'POST', body: fdEmail });
+
       const res = await fetch(FORM_WORKER + '/reserva', { method: 'POST', body: fd });
       const text = await res.text();
       let data = {};

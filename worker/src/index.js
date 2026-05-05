@@ -1,14 +1,6 @@
-const ALLOWED_ORIGINS = [
-  'https://tuscasasvacaciones.com',
-  'https://www.tuscasasvacaciones.com',
-  'https://casitasdemar.com',
-  'https://www.casitasdemar.com',
-];
-
-function corsHeaders(origin) {
-  const allowed = ALLOWED_ORIGINS.includes(origin) ? origin : ALLOWED_ORIGINS[0];
+function corsHeaders() {
   return {
-    'Access-Control-Allow-Origin': allowed,
+    'Access-Control-Allow-Origin': '*',
     'Access-Control-Allow-Methods': 'POST, OPTIONS',
     'Access-Control-Allow-Headers': 'Content-Type',
   };
@@ -16,8 +8,7 @@ function corsHeaders(origin) {
 
 export default {
   async fetch(request, env) {
-    const origin = request.headers.get('Origin') || '';
-    const cors = corsHeaders(origin);
+    const cors = corsHeaders();
 
     if (request.method === 'OPTIONS') {
       return new Response(null, { status: 204, headers: cors });
