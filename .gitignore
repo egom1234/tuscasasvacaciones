@@ -1,5 +1,8 @@
 .github
 .claude
+.env
+worker/node_modules
+worker/.dev.vars
 
 # Ignore Copilot instructions (private)
 .copilot/copilot-instructions.md
