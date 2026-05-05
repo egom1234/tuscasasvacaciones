@@ -4,6 +4,7 @@
 # Ignore Copilot instructions (private)
 .copilot/copilot-instructions.md
 .agents/AGENTS.MD
+.claude/claude-instructions.md
 
 # Optionally ignore the entire Copilot folder
 .copilot/
