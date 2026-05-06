@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://casitasdemar.com/sitemap.xml
