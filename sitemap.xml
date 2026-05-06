@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml">
+
+  <url>
+    <loc>https://casitasdemar.com/</loc>
+    <xhtml:link rel="alternate" hreflang="es" href="https://casitasdemar.com/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://casitasdemar.com/en/"/>
+    <changefreq>monthly</changefreq>
+    <priority>1.0</priority>
+  </url>
+
+  <url>
+    <loc>https://casitasdemar.com/en/</loc>
+    <xhtml:link rel="alternate" hreflang="es" href="https://casitasdemar.com/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://casitasdemar.com/en/"/>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <url>
+    <loc>https://casitasdemar.com/loft_binibeca/</loc>
+    <xhtml:link rel="alternate" hreflang="es" href="https://casitasdemar.com/loft_binibeca/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://casitasdemar.com/en/loft_binibeca/"/>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <url>
+    <loc>https://casitasdemar.com/en/loft_binibeca/</loc>
+    <xhtml:link rel="alternate" hreflang="es" href="https://casitasdemar.com/loft_binibeca/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://casitasdemar.com/en/loft_binibeca/"/>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://casitasdemar.com/Casa_Gonda/</loc>
+    <xhtml:link rel="alternate" hreflang="es" href="https://casitasdemar.com/Casa_Gonda/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://casitasdemar.com/en/Casa_Gonda/"/>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <url>
+    <loc>https://casitasdemar.com/en/Casa_Gonda/</loc>
+    <xhtml:link rel="alternate" hreflang="es" href="https://casitasdemar.com/Casa_Gonda/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://casitasdemar.com/en/Casa_Gonda/"/>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://casitasdemar.com/Casa_blava/</loc>
+    <xhtml:link rel="alternate" hreflang="es" href="https://casitasdemar.com/Casa_blava/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://casitasdemar.com/en/Casa_blava/"/>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <url>
+    <loc>https://casitasdemar.com/en/Casa_blava/</loc>
+    <xhtml:link rel="alternate" hreflang="es" href="https://casitasdemar.com/Casa_blava/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://casitasdemar.com/en/Casa_blava/"/>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://casitasdemar.com/Tarifa_apartamento/</loc>
+    <xhtml:link rel="alternate" hreflang="es" href="https://casitasdemar.com/Tarifa_apartamento/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://casitasdemar.com/en/Tarifa_apartamento/"/>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <url>
+    <loc>https://casitasdemar.com/en/Tarifa_apartamento/</loc>
+    <xhtml:link rel="alternate" hreflang="es" href="https://casitasdemar.com/Tarifa_apartamento/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://casitasdemar.com/en/Tarifa_apartamento/"/>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://casitasdemar.com/Tarifa_loft/</loc>
+    <xhtml:link rel="alternate" hreflang="es" href="https://casitasdemar.com/Tarifa_loft/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://casitasdemar.com/en/Tarifa_loft/"/>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <url>
+    <loc>https://casitasdemar.com/en/Tarifa_loft/</loc>
+    <xhtml:link rel="alternate" hreflang="es" href="https://casitasdemar.com/Tarifa_loft/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://casitasdemar.com/en/Tarifa_loft/"/>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://casitasdemar.com/politica-privacidad/</loc>
+    <xhtml:link rel="alternate" hreflang="es" href="https://casitasdemar.com/politica-privacidad/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://casitasdemar.com/en/privacy-policy/"/>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+  </url>
+
+  <url>
+    <loc>https://casitasdemar.com/en/privacy-policy/</loc>
+    <xhtml:link rel="alternate" hreflang="es" href="https://casitasdemar.com/politica-privacidad/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://casitasdemar.com/en/privacy-policy/"/>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+  </url>
+
+</urlset>
