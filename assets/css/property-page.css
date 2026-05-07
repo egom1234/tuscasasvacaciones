@@ -66,10 +66,12 @@ main { padding-top: 80px; min-height: calc(100vh - 200px); }
 .calendar-day-name { text-align: center; font-size: 0.8rem; font-weight: 600; color: var(--gris); padding: 0.5rem 0; }
 .calendar-day { aspect-ratio: 1; display: flex; align-items: center; justify-content: center; border-radius: 8px; cursor: pointer; transition: all 0.3s; font-size: 0.9rem; }
 .calendar-day:hover:not(.disabled):not(.empty):not(.booked) { background: var(--verde-claro); }
-.calendar-day.disabled { opacity: 0.3; cursor: not-allowed; }
-.calendar-day.empty    { cursor: default; }
-.calendar-day.selected { background: var(--verde-primario); color: var(--blanco); font-weight: 600; }
-.calendar-day.range    { background: var(--verde-claro); }
+.calendar-day.disabled  { opacity: 0.3; cursor: not-allowed; }
+.calendar-day.empty     { cursor: default; }
+.calendar-day.available { background: #e8f5e9; color: #4a7c59; }
+.calendar-day.available:hover { background: #c8e6c9; }
+.calendar-day.selected  { background: var(--verde-primario); color: var(--blanco); font-weight: 600; }
+.calendar-day.range     { background: var(--verde-claro); }
 .calendar-day.booked   { background: #f0e6e6; color: #b07070; cursor: not-allowed; text-decoration: line-through; text-decoration-color: #c09090; opacity: 0.7; }
 .calendar-day.booked:hover { background: #f0e6e6; }
 .calendar-note { font-size: 0.85rem; color: var(--gris); margin-top: 1rem; text-align: center; }
