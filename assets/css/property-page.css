@@ -70,6 +70,8 @@ main { padding-top: 80px; min-height: calc(100vh - 200px); }
 .calendar-day.empty     { cursor: default; }
 .calendar-day.available { background: #e8f5e9; color: #4a7c59; }
 .calendar-day.available:hover { background: #c8e6c9; }
+.calendar-day.gap { background: #fff8e1; color: #7d5700; }
+.calendar-day.gap:hover { background: #ffecb3; }
 .calendar-day.selected  { background: var(--verde-primario); color: var(--blanco); font-weight: 600; }
 .calendar-day.range     { background: var(--verde-claro); }
 .calendar-day.booked   { background: #f0e6e6; color: #b07070; cursor: not-allowed; text-decoration: line-through; text-decoration-color: #c09090; opacity: 0.7; }
@@ -83,6 +85,7 @@ main { padding-top: 80px; min-height: calc(100vh - 200px); }
 .legend-dot.available { background: #e8f5e9; border: 1px solid var(--verde-primario); }
 .legend-dot.booked    { background: #f0e6e6; border: 1px solid #c09090; }
 .legend-dot.selected  { background: var(--verde-primario); }
+.legend-dot.gap       { background: #fff8e1; border: 1px solid #ffb300; }
 
 /* Sincronización */
 .sync-status { display: flex; align-items: center; gap: 0.5rem; font-size: 0.75rem; color: var(--gris); margin-bottom: 0.75rem; }

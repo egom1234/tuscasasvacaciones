@@ -23,6 +23,9 @@ const I18N = {
     alertBookedEntry: 'No puedes seleccionar una fecha de entrada que ya está reservada.',
     alertMinNights: (n) => `La estancia mínima es de ${n} noches.`,
     alertRangeBooked: 'No puedes seleccionar un rango que incluya días ya reservados.',
+    fillGapTooltip: 'Oferta Fill the Gap · -20% · Sin mínimo de noches',
+    fillGapLabel: 'Fill the Gap -20%',
+    fillGapDiscount: 'Fill the Gap -20%',
     selectDates: 'Selecciona fechas',
     sending: 'Enviando...',
     requestBooking: 'Solicitar reserva',
@@ -48,6 +51,9 @@ const I18N = {
     alertBookedEntry: 'You cannot select a check-in date that is already booked.',
     alertMinNights: (n) => `Minimum stay is ${n} nights.`,
     alertRangeBooked: 'You cannot select a range that includes already booked days.',
+    fillGapTooltip: 'Fill the Gap offer · -20% · No minimum nights',
+    fillGapLabel: 'Fill the Gap -20%',
+    fillGapDiscount: 'Fill the Gap -20%',
     selectDates: 'Select dates',
     sending: 'Sending...',
     requestBooking: 'Request booking',
@@ -81,6 +87,7 @@ function t(key, ...args) {
 }
 
 let fechasReservadas = new Set();
+let gapDays          = new Set();
 let mesActual        = new Date().getMonth();
 let anyoActual       = new Date().getFullYear();
 let fechaEntrada     = null;
@@ -101,6 +108,8 @@ async function cargarIcal() {
     text.textContent = t('syncError');
     console.error('iCal error:', e);
   }
+  computarGaps();
+  actualizarLeyendaGap();
   renderCalendario();
 }
 
@@ -130,6 +139,59 @@ function parsearIcal(texto) {
 
 function parseFecha(s) {
   return new Date(+s.slice(0,4), +s.slice(4,6) - 1, +s.slice(6,8));
+}
+
+function computarGaps() {
+  const minNoches = (window.PAGE_CONFIG || {}).minNoches || 1;
+  gapDays = new Set();
+  if (minNoches <= 1) return;
+
+  const hoy = new Date(); hoy.setHours(0,0,0,0);
+  const fin = new Date(hoy.getFullYear(), hoy.getMonth() + MAX_MESES_VISTA + 1, 0);
+
+  let cur = new Date(hoy.getTime());
+  let freeRun = [];
+  let prevBooked = false;
+
+  while (cur <= fin) {
+    const key = toKey(cur);
+    if (fechasReservadas.has(key)) {
+      if (freeRun.length > 0 && prevBooked && freeRun.length < minNoches) {
+        freeRun.forEach(k => gapDays.add(k));
+      }
+      freeRun = [];
+      prevBooked = true;
+    } else {
+      if (freeRun.length > 0 || prevBooked) freeRun.push(key);
+    }
+    cur = new Date(cur.getTime() + 86400000);
+  }
+}
+
+function isGapSelection(entrada, salida) {
+  if (gapDays.size === 0) return false;
+  let cur = new Date(entrada.getTime());
+  while (cur < salida) {
+    if (!gapDays.has(toKey(cur))) return false;
+    cur = new Date(cur.getTime() + 86400000);
+  }
+  return true;
+}
+
+function actualizarLeyendaGap() {
+  const legend = document.querySelector('.calendar-legend');
+  if (!legend) return;
+  const existing = legend.querySelector('.legend-item-gap');
+  if (gapDays.size > 0) {
+    if (!existing) {
+      const item = document.createElement('div');
+      item.className = 'legend-item legend-item-gap';
+      item.innerHTML = `<div class="legend-dot gap"></div> ${t('fillGapLabel')}`;
+      legend.appendChild(item);
+    }
+  } else if (existing) {
+    existing.remove();
+  }
 }
 
 function toKey(d) {
@@ -194,6 +256,10 @@ function renderCalendario() {
         }
       } else {
         el.classList.add('available');
+        if (gapDays.has(key)) {
+          el.classList.add('gap');
+          el.title = t('fillGapTooltip');
+        }
       }
     }
 
@@ -219,7 +285,7 @@ function seleccionarFecha(fecha) {
   } else if (fecha > fechaEntrada) {
     const minNoches = (window.PAGE_CONFIG || {}).minNoches || 1;
     const noches = Math.ceil((fecha - fechaEntrada) / 86400000);
-    if (noches < minNoches) {
+    if (noches < minNoches && !isGapSelection(fechaEntrada, fecha)) {
       alert(t('alertMinNights', minNoches));
       return;
     }
@@ -501,6 +567,7 @@ function calcularPrecio() {
   }
 
   const limpieza = (window.PAGE_CONFIG && window.PAGE_CONFIG.cleaning) || LIMPIEZA;
+  const isGap = isGapSelection(fechaEntrada, fechaSalida);
   const discountTiers = (window.PAGE_CONFIG && window.PAGE_CONFIG.discounts) || [];
   const activeTier = discountTiers
     .filter(d => noches >= d.minNights)
@@ -511,7 +578,8 @@ function calcularPrecio() {
     .filter(d => noches >= d.minNights && d.months.includes(checkInMonth))
     .sort((a, b) => b.minNights - a.minNights)[0] || null;
   const effectiveTier  = activeTier || activeSeasonTier;
-  const discountPct    = effectiveTier ? effectiveTier.pct : 0;
+  const discountPct    = isGap ? 0.20 : (effectiveTier ? effectiveTier.pct : 0);
+  const discountLabelText = isGap ? t('fillGapDiscount') : (effectiveTier ? Math.round(effectiveTier.pct * 100) + '%' : '');
   const discountAmount = discountPct > 0 ? Math.round(subtotal * discountPct) : 0;
   const subtotalFinal  = subtotal - discountAmount;
   const total          = subtotalFinal + limpieza;
@@ -525,7 +593,7 @@ function calcularPrecio() {
     const discountEl    = ps.querySelector('#discountAmount');
     const discountLabel = ps.querySelector('#discountLabel');
     if (discountRow) discountRow.style.display = discountAmount > 0 ? '' : 'none';
-    if (discountLabel && effectiveTier) discountLabel.textContent = Math.round(effectiveTier.pct * 100) + '%';
+    if (discountLabel && discountLabelText) discountLabel.textContent = discountLabelText;
     if (discountEl)  discountEl.textContent = '-' + discountAmount.toFixed(2) + ' €';
     ps.querySelector('#cleaningAmount').textContent = limpieza.toFixed(2) + ' €';
     ps.querySelector('#totalAmount').textContent = total.toFixed(2) + ' €';
