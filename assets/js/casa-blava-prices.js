@@ -1,5 +1,5 @@
 window.CASA_BLAVA_PRICES = {
-  maxPersonas: 8,
+  maxPersonas: 6,
   minNoches:   2,
   cleaning:    60,
   discounts: [
