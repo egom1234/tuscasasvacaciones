@@ -212,7 +212,8 @@
 <div id="login-screen">
   <div class="login-box">
     <h1>Panel de Administración</h1>
-    <input type="password" id="token-input" placeholder="Token de acceso" />
+    <input type="text" id="user-input" placeholder="Usuario" autocomplete="username" />
+    <input type="password" id="token-input" placeholder="Contraseña" autocomplete="current-password" />
     <button onclick="login()">Entrar</button>
     <div id="login-error"></div>
   </div>
@@ -299,23 +300,27 @@
   const WORKER_URL = 'https://casitasdemar-form.eduardgomez-4.workers.dev';
 
   let token = '';
+  let adminUser = '';
   let reservas = [];
   let contactos = [];
   let contactosLoaded = false;
 
   function login() {
+    adminUser = document.getElementById('user-input').value.trim();
     token = document.getElementById('token-input').value.trim();
-    if (!token) return;
+    if (!adminUser || !token) return;
     fetchReservas();
   }
 
   function logout() {
     token = '';
+    adminUser = '';
     reservas = [];
     contactos = [];
     contactosLoaded = false;
     document.getElementById('login-screen').style.display = 'flex';
     document.getElementById('app').style.display = 'none';
+    document.getElementById('user-input').value = '';
     document.getElementById('token-input').value = '';
     document.getElementById('login-error').textContent = '';
   }
@@ -327,7 +332,7 @@
 
     try {
       const res = await fetch(`${WORKER_URL}/admin/reservas`, {
-        headers: { Authorization: `Bearer ${token}` }
+        headers: { Authorization: `Bearer ${token}`, 'X-Admin-User': adminUser }
       });
 
       if (res.status === 401) {
@@ -366,7 +371,7 @@
     document.getElementById('empty-contactos').style.display = 'none';
 
     const res = await fetch(`${WORKER_URL}/admin/contactos`, {
-      headers: { Authorization: `Bearer ${token}` }
+      headers: { Authorization: `Bearer ${token}`, 'X-Admin-User': adminUser }
     });
     const { data } = await res.json();
     contactos = data || [];

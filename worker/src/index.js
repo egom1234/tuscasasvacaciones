@@ -2,7 +2,7 @@ function corsHeaders() {
   return {
     'Access-Control-Allow-Origin': '*',
     'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-    'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+    'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Admin-User',
   };
 }
 
@@ -16,7 +16,8 @@ function json(body, status, cors) {
 function isAuthorized(request, env) {
   const auth = request.headers.get('Authorization') || '';
   const token = auth.replace('Bearer ', '');
-  return token && token === env.ADMIN_TOKEN;
+  const user = request.headers.get('X-Admin-User') || '';
+  return token && token === env.ADMIN_TOKEN && user === env.ADMIN_USER;
 }
 
 export default {
