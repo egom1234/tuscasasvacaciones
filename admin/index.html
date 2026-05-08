@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Admin — Tus Casas Vacaciones</title>
+  <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -140,6 +141,19 @@
       color: #71717a;
     }
 
+    .btn-export {
+      padding: 0.45rem 0.9rem;
+      background: #16a34a;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      cursor: pointer;
+    }
+
+    .btn-export:hover { background: #15803d; }
+
     .table-wrap {
       overflow-x: auto;
     }
@@ -225,6 +239,7 @@
           <option value="">Todas las propiedades</option>
         </select>
         <span class="count" id="count-reservas"></span>
+        <button class="btn-export" onclick="exportReservas()">Descargar Excel</button>
       </div>
       <div class="table-wrap">
         <table>
@@ -257,6 +272,7 @@
       <div class="toolbar">
         <input type="text" id="search-contactos" placeholder="Buscar nombre, email..." oninput="renderContactos()" />
         <span class="count" id="count-contactos"></span>
+        <button class="btn-export" onclick="exportContactos()">Descargar Excel</button>
       </div>
       <div class="table-wrap">
         <table>
@@ -459,6 +475,70 @@
       .replace(/</g, '&lt;')
       .replace(/>/g, '&gt;')
       .replace(/"/g, '&quot;');
+  }
+
+  function exportReservas() {
+    const search = document.getElementById('search-reservas').value.toLowerCase();
+    const propiedad = document.getElementById('filter-propiedad').value;
+
+    const filtered = reservas.filter(r => {
+      const matchSearch = !search ||
+        (r.nombre || '').toLowerCase().includes(search) ||
+        (r.email || '').toLowerCase().includes(search) ||
+        (r.telefono || '').toLowerCase().includes(search);
+      const matchProp = !propiedad || r.propiedad === propiedad;
+      return matchSearch && matchProp;
+    });
+
+    const rows = filtered.map(r => ({
+      'ID': r.id,
+      'Propiedad': r.propiedad,
+      'Nombre': r.nombre,
+      'Email': r.email,
+      'Teléfono': r.telefono,
+      'Entrada': r.entrada,
+      'Salida': r.salida,
+      'Noches': r.noches,
+      'Adultos': r.adultos,
+      'Niños': r.ninos,
+      'Precio total': r.precio_total,
+      'Comentarios': r.comentarios,
+      'Fecha': r.created_at,
+    }));
+
+    const ws = XLSX.utils.json_to_sheet(rows);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Reservas');
+    XLSX.writeFile(wb, `reservas_${today()}.xlsx`);
+  }
+
+  function exportContactos() {
+    const search = document.getElementById('search-contactos').value.toLowerCase();
+
+    const filtered = contactos.filter(c =>
+      !search ||
+      (c.nombre || '').toLowerCase().includes(search) ||
+      (c.email || '').toLowerCase().includes(search) ||
+      (c.telefono || '').toLowerCase().includes(search)
+    );
+
+    const rows = filtered.map(c => ({
+      'ID': c.id,
+      'Nombre': c.nombre,
+      'Email': c.email,
+      'Teléfono': c.telefono,
+      'Mensaje': c.mensaje,
+      'Fecha': c.created_at,
+    }));
+
+    const ws = XLSX.utils.json_to_sheet(rows);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Contactos');
+    XLSX.writeFile(wb, `contactos_${today()}.xlsx`);
+  }
+
+  function today() {
+    return new Date().toISOString().slice(0, 10);
   }
 
   function formatDate(str) {
