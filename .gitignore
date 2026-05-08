@@ -1,6 +1,6 @@
 .github
 .claude
-.env
+.secrets
 worker/node_modules
 worker/.dev.vars
 
