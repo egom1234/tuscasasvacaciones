@@ -1,9 +1,22 @@
 function corsHeaders() {
   return {
     'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Methods': 'POST, OPTIONS',
-    'Access-Control-Allow-Headers': 'Content-Type',
+    'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type, Authorization',
   };
+}
+
+function json(body, status, cors) {
+  return new Response(JSON.stringify(body), {
+    status,
+    headers: { ...cors, 'Content-Type': 'application/json' },
+  });
+}
+
+function isAuthorized(request, env) {
+  const auth = request.headers.get('Authorization') || '';
+  const token = auth.replace('Bearer ', '');
+  return token && token === env.ADMIN_TOKEN;
 }
 
 export default {
@@ -14,13 +27,35 @@ export default {
       return new Response(null, { status: 204, headers: cors });
     }
 
-    if (request.method !== 'POST') {
-      return new Response('Method not allowed', { status: 405, headers: cors });
-    }
-
     const url = new URL(request.url);
 
     try {
+      // Admin endpoints (GET)
+      if (url.pathname === '/admin/reservas') {
+        if (!isAuthorized(request, env)) {
+          return json({ ok: false, error: 'Unauthorized' }, 401, cors);
+        }
+        const { results } = await env.DB.prepare(
+          'SELECT * FROM reservas ORDER BY created_at DESC'
+        ).all();
+        return json({ ok: true, data: results }, 200, cors);
+      }
+
+      if (url.pathname === '/admin/contactos') {
+        if (!isAuthorized(request, env)) {
+          return json({ ok: false, error: 'Unauthorized' }, 401, cors);
+        }
+        const { results } = await env.DB.prepare(
+          'SELECT * FROM contactos ORDER BY created_at DESC'
+        ).all();
+        return json({ ok: true, data: results }, 200, cors);
+      }
+
+      // Public endpoints (POST)
+      if (request.method !== 'POST') {
+        return new Response('Method not allowed', { status: 405, headers: cors });
+      }
+
       if (url.pathname === '/contacto') {
         return await handleContacto(request, env, cors);
       }
@@ -82,11 +117,4 @@ async function handleReserva(request, env, cors) {
   ).bind(propiedad, nombre, email, telefono, entrada, salida, adultos, ninos, noches, precio_total, desglose, comentarios).run();
 
   return json({ ok: true }, 200, cors);
-}
-
-function json(body, status, cors) {
-  return new Response(JSON.stringify(body), {
-    status,
-    headers: { ...cors, 'Content-Type': 'application/json' },
-  });
 }
