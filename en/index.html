@@ -44,16 +44,18 @@
   <link rel="apple-touch-icon" sizes="180x180" href="/images/logo.png">  <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
     :root {
-      --verde-primario: #537e75;
-      --verde-oscuro: #22584e;
-      --verde-claro: #84ada5;
-      --blanco: #ffffff;
-      --gris-claro: #f8f9fa;
-      --gris: #6c757d;
-      --gris-oscuro: #495057;
+      --verde-primario: #e09878;
+      --verde-oscuro: #2a2118;
+      --verde-claro: #e8d5b7;
+      --blanco: #f7f3ee;
+      --gris-claro: #f0e8df;
+      --gris: #7a6d62;
+      --gris-oscuro: #2a2118;
+      --font-display: 'Cormorant Garamond', Georgia, serif;
+      --font-body: 'Jost', system-ui, sans-serif;
     }
 
     * {
@@ -63,10 +65,10 @@
     }
 
     body {
-      font-family: 'Inter', sans-serif;
+      font-family: var(--font-body);
       line-height: 1.6;
       color: var(--gris-oscuro);
-      background: var(--gris-claro);
+      background: var(--blanco);
     }
 
     /* HEADER */
@@ -139,9 +141,10 @@
     .hero h1 {
       font-size: 3.5rem;
       font-weight: 300;
+      font-family: var(--font-display);
       margin-top: 0rem;
       margin-bottom: 0.5rem;
-      letter-spacing: -1px;
+      letter-spacing: 0;
     }
 
     .hero p {
@@ -153,19 +156,22 @@
 
     .cta-btn {
       display: inline-block;
-      background: var(--blanco);
-      color: var(--verde-primario);
-      padding: 0.5rem 2rem;
-      border-radius: 5px;
+      background: var(--verde-primario);
+      color: #f7f3ee;
+      padding: 0.6rem 2.2rem;
+      border-radius: 0;
       text-decoration: none;
       font-weight: 500;
-      font-size: 1.1rem;
-      transition: transform 0.3s, box-shadow 0.3s;
+      font-size: 1rem;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      transition: transform 0.3s, box-shadow 0.3s, background 0.3s;
     }
 
     .cta-btn:hover {
+      background: var(--verde-oscuro);
       transform: translateY(-2px);
-      box-shadow: 0 10px 30px rgba(255,255,255,0.3);
+      box-shadow: 0 10px 30px rgba(42,33,24,0.3);
     }
 /* LOGO HEADER */
 .logo-link {
@@ -205,10 +211,11 @@
     .section-title {
       text-align: center;
       font-size: 2.8rem;
-      font-weight: 300;
+      font-weight: 400;
+      font-family: var(--font-display);
       color: var(--verde-oscuro);
       margin-bottom: 4rem;
-      letter-spacing: -0.5px;
+      letter-spacing: 0;
     }
 
     .grid {
@@ -222,17 +229,18 @@
 
     .card {
       background: var(--blanco);
-      border-radius: 20px;
+      border-radius: 4px;
       overflow: hidden;
-      transition: transform 0.4s, box-shadow 0.4s;
+      transition: transform 0.35s cubic-bezier(0.4,0,0.2,1), box-shadow 0.35s cubic-bezier(0.4,0,0.2,1);
       cursor: pointer;
       height: 100%;
       text-decoration: none;
+      border: 1px solid rgba(224,152,120,0.12);
     }
 
     .card:hover {
-      transform: translateY(-10px);
-      box-shadow: 0 30px 60px rgba(0,0,0,0.15);
+      transform: translateY(-6px);
+      box-shadow: 0 20px 50px rgba(42,33,24,0.12);
     }
 
     .card-image {
@@ -258,7 +266,8 @@
 
     .card-title {
       font-size: 1.6rem;
-      font-weight: 500;
+      font-weight: 400;
+      font-family: var(--font-display);
       color: var(--verde-oscuro);
       margin-bottom: 0.5rem;
     }
@@ -284,11 +293,14 @@
 
     .card-btn {
       background: var(--verde-primario);
-      color: var(--blanco);
+      color: #f7f3ee;
       padding: 0.5rem 1.5rem;
-      border-radius: 5px;
+      border-radius: 0;
       text-decoration: none;
-      font-weight: 500;
+      font-weight: 400;
+      font-size: 0.85rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
       display: inline-block;
       transition: background 0.3s;
     }
@@ -299,10 +311,11 @@
 
     /* FOOTER */
     footer {
-      background: var(--verde-oscuro);
-      color: var(--blanco);
+      background: #ede3d8;
+      color: var(--gris-oscuro);
       padding: 3rem 0 1.5rem;
       text-align: center;
+      border-top: 1px solid rgba(224,152,120,0.25);
     }
 
     .footer-content {
@@ -584,42 +597,49 @@
 
         <!-- CONTACT INFO -->
         <div>
-          <h3 style="font-size:1.8rem; font-weight:500; color:var(--verde-oscuro); margin-bottom:1.5rem;">
+          <h3 style="font-size: 1.8rem; font-weight: 400; font-family: var(--font-display); color: var(--verde-oscuro); margin-bottom: 2rem; letter-spacing: 0.01em;">
             Get in touch directly
           </h3>
 
-          <div style="display:flex; flex-direction:column; gap:1.5rem;">
+          <div style="display: flex; flex-direction: column; gap: 1.5rem;">
 
             <!-- Phone / WhatsApp -->
-            <div style="display:flex; align-items:center; gap:1rem;">
-              <div style="width:50px; height:50px; background:var(--verde-primario); color:white; border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:1.2rem;">📱</div>
-              <div>
-                <div style="font-size:0.9rem; color:var(--gris);">Call us or WhatsApp</div>
-                <span style="color:var(--verde-primario); font-size:0.9rem; font-weight:600;">Peñíscola:</span>
-                <a href="https://wa.me/34613119183?text=Hello,%20I%20am%20interested%20in%20getting%20more%20information,%20thank%20you."
-                   target="_blank" style="color:var(--verde-primario); font-size:0.9rem; font-weight:600; text-decoration:none;">
-                  +34 613 119 183
-                </a><br>
-                <span style="color:var(--verde-primario); font-size:0.9rem; font-weight:600;">Menorca:</span>
-                <a href="https://wa.me/34690288196?text=Hello,%20I%20am%20interested%20in%20getting%20more%20information,%20thank%20you."
-                   target="_blank" style="color:var(--verde-primario); font-size:0.9rem; font-weight:600; text-decoration:none;">
-                  +34 690 288 196
-                </a><br>
-                <span style="color:var(--verde-primario); font-size:0.9rem; font-weight:600;">Tarifa:</span>
-                <a href="https://wa.me/34652306031?text=Hello,%20I%20am%20interested%20in%20getting%20more%20information,%20thank%20you."
-                   target="_blank" style="color:var(--verde-primario); font-size:0.9rem; font-weight:600; text-decoration:none;">
-                  +34 652 306 031
-                </a>
+            <div style="padding-top: 1.2rem; border-top: 1px solid rgba(224,152,120,0.15);">
+              <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.6rem;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(224,152,120,0.65)" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81a19.79 19.79 0 01-3.07-8.67A2 2 0 012 1h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.91 8.91a16 16 0 006.18 6.18l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+                <span style="font-size: 0.75rem; color: var(--gris); letter-spacing: 0.08em; text-transform: uppercase;">Call us or WhatsApp</span>
+              </div>
+              <div style="display: flex; flex-direction: column; gap: 0.35rem;">
+                <div>
+                  <span style="font-size: 0.8rem; color: var(--gris); margin-right: 0.3rem;">Peñíscola</span>
+                  <a href="https://wa.me/34613119183?text=Hello,%20I%20am%20interested%20in%20getting%20more%20information,%20thank%20you."
+                     target="_blank"
+                     style="color: var(--verde-oscuro); font-size: 0.95rem; font-weight: 300; text-decoration: none;">+34 613 119 183</a>
+                </div>
+                <div>
+                  <span style="font-size: 0.8rem; color: var(--gris); margin-right: 0.3rem;">Menorca</span>
+                  <a href="https://wa.me/34690288196?text=Hello,%20I%20am%20interested%20in%20getting%20more%20information,%20thank%20you."
+                     target="_blank"
+                     style="color: var(--verde-oscuro); font-size: 0.95rem; font-weight: 300; text-decoration: none;">+34 690 288 196</a>
+                </div>
+                <div>
+                  <span style="font-size: 0.8rem; color: var(--gris); margin-right: 0.3rem;">Tarifa</span>
+                  <a href="https://wa.me/34652306031?text=Hello,%20I%20am%20interested%20in%20getting%20more%20information,%20thank%20you."
+                     target="_blank"
+                     style="color: var(--verde-oscuro); font-size: 0.95rem; font-weight: 300; text-decoration: none;">+34 652 306 031</a>
+                </div>
               </div>
             </div>
 
             <!-- Email -->
-            <div style="display:flex; align-items:flex-start; gap:1rem;">
-              <div style="width:50px; height:50px; background:var(--verde-primario); color:white; border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:1.2rem; margin-top:2px;">✉️</div>
+            <div style="padding-top: 1.2rem; border-top: 1px solid rgba(224,152,120,0.15);">
+              <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.6rem;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(224,152,120,0.65)" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="0"/><polyline points="2,4 12,13 22,4"/></svg>
+                <span style="font-size: 0.75rem; color: var(--gris); letter-spacing: 0.08em; text-transform: uppercase;">Email</span>
+              </div>
               <div>
-                <div style="font-size:0.9rem; color:var(--gris);">Email</div>
                 <a href="mailto:info@casitasdemar.com"
-                   style="color:var(--verde-primario); font-size:1.1rem; font-weight:500; text-decoration:none;">
+                   style="color: var(--verde-oscuro); font-size: 0.95rem; font-weight: 300; text-decoration: none;">
                   info@casitasdemar.com
                 </a>
               </div>
@@ -629,21 +649,29 @@
         </div>
 
         <!-- CONTACT FORM -->
-        <div style="background:var(--blanco); padding:2.5rem; border-radius:20px; box-shadow:0 10px 40px rgba(0,0,0,0.08);">
-          <h3 style="font-size:1.5rem; font-weight:500; color:var(--verde-oscuro); margin-bottom:1.5rem;">
+        <div style="background: #ffffff; padding: 2.5rem; border: 1px solid rgba(224,152,120,0.18); box-shadow: 0 4px 24px rgba(42,33,24,0.06);">
+          <h3 style="font-size: 1.6rem; font-weight: 400; font-family: var(--font-display); color: var(--verde-oscuro); margin-bottom: 1.8rem; letter-spacing: 0.01em;">
             Send us your enquiry
           </h3>
 
           <!-- Success message -->
-          <div id="form-success" style="display:none; text-align:center; padding:2rem 1rem;">
-            <div style="font-size:3.5rem; margin-bottom:1rem;">✅</div>
-            <h4 style="font-size:1.3rem; font-weight:600; color:var(--verde-oscuro); margin-bottom:0.5rem;">Message sent successfully!</h4>
-            <p style="color:var(--gris-oscuro); font-size:1rem;">Thank you for contacting us. We'll get back to you shortly.</p>
+          <div id="form-success" style="display: none; text-align: center; padding: 2.5rem 1rem;">
+            <div style="width: 44px; height: 44px; border: 1px solid #8a9e7b; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.2rem;">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#8a9e7b" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+            <h4 style="font-size: 1.3rem; font-weight: 400; font-family: var(--font-display); color: var(--verde-oscuro); margin-bottom: 0.5rem;">
+              Message sent
+            </h4>
+            <p style="color: var(--gris); font-size: 0.95rem; letter-spacing: 0.02em;">
+              We'll get back to you shortly.
+            </p>
           </div>
 
           <!-- Error message -->
-          <div id="form-error" style="display:none; text-align:center; padding:1rem; background:#fff0f0; border-radius:12px; margin-bottom:1rem;">
-            <p style="color:#c0392b; font-size:0.95rem;">⚠️ There was a problem sending your message. Please try again.</p>
+          <div id="form-error" style="display: none; padding: 1rem 1.2rem; background: #fdf5f0; border-left: 2px solid #c4724a; margin-bottom: 1rem;">
+            <p style="color: #a85e38; font-size: 0.9rem;">
+              There was a problem sending your message. Please try again.
+            </p>
           </div>
 
           <form id="contactForm" action="https://casitasdemar-form.eduardgomez-4.workers.dev/contacto" method="POST"
@@ -658,9 +686,9 @@
               <div>
                 <label style="display:block; font-size:0.9rem; font-weight:500; color:var(--gris-oscuro); margin-bottom:0.5rem;">Name</label>
                 <input type="text" name="name" required class="contact-form-input"
-                       oninput="validarNombre(this)" 
+                       oninput="validarNombre(this)"
                        onblur="validarNombre(this)"
-                       style="width: 100%; padding: 1rem; border: 1px solid #ddd; border-radius: 12px; font-size: 1rem; transition: border 0.3s;">
+                       style="width: 100%; padding: 1rem; border: 1px solid rgba(224,152,120,0.25); border-radius: 0; font-size: 0.95rem; font-family: var(--font-body); background: #fdfaf7; transition: border 0.3s;">
                       <span id="errorNombre" style="display:none; color:#e74c3c; font-size:0.82rem; margin-top:0.3rem;">
                      ⚠️ Name can only contain letters
                       </span>
@@ -668,10 +696,10 @@
               <div>
                 <label style="display:block; font-size:0.9rem; font-weight:500; color:var(--gris-oscuro); margin-bottom:0.5rem;">Phone</label>
                 <input type="tel" name="telefono" required class="contact-form-input"
-                       oninput="validarTelefono(this)" 
+                       oninput="validarTelefono(this)"
                        onblur="validarTelefono(this)"
                        data-error-id="errorTelefono"
-                       style="width: 100%; padding: 1rem; border: 1px solid #ddd; border-radius: 12px; font-size: 1rem; transition: border 0.3s;">
+                       style="width: 100%; padding: 1rem; border: 1px solid rgba(224,152,120,0.25); border-radius: 0; font-size: 0.95rem; font-family: var(--font-body); background: #fdfaf7; transition: border 0.3s;">
                 <span id="errorTelefono" style="display:none; color:#e74c3c; font-size:0.82rem; margin-top:0.3rem;">
                 ⚠️ Please enter a valid phone number
                </span>
@@ -681,23 +709,23 @@
             <div>
               <label style="display:block; font-size:0.9rem; font-weight:500; color:var(--gris-oscuro); margin-bottom:0.5rem;">Email</label>
               <input type="email" name="email" required class="contact-form-input"
-                     oninput="validarCampo(this)" 
+                     oninput="validarCampo(this)"
                      onblur="validarCampo(this)"
                      data-error-id="errorEmail"
-                     style="width: 100%; padding: 1rem; border: 1px solid #ddd; border-radius: 12px; font-size: 1rem; transition: border 0.3s;">
+                     style="width: 100%; padding: 1rem; border: 1px solid rgba(224,152,120,0.25); border-radius: 0; font-size: 0.95rem; font-family: var(--font-body); background: #fdfaf7; transition: border 0.3s;">
                 <span id="errorEmail" style="display:none; color:#e74c3c; font-size:0.82rem; margin-top:0.3rem;">
                 ⚠️ Please enter a valid email address</span>
                </div>
 
             <div>
               <label style="display:block; font-size:0.9rem; font-weight:500; color:var(--gris-oscuro); margin-bottom:0.5rem;">Message</label>
-              <textarea name="message" rows="4" required 
-              style="width: 100%; padding: 1rem; border: 1px solid #ddd; border-radius: 12px; font-size: 1rem; font-family: inherit; resize: vertical; transition: border 0.3s";
+              <textarea name="message" rows="4" required
+                        style="width: 100%; padding: 1rem; border: 1px solid rgba(224,152,120,0.25); border-radius: 0; font-size: 0.95rem; font-family: var(--font-body); background: #fdfaf7; resize: vertical; transition: border 0.3s;"
                         placeholder="Which property are you interested in? Approximate dates? Number of guests?..."></textarea>
             </div>
 
             <button type="submit" id="submitBtn"
-                    style="background:var(--verde-primario); color:white; padding:1.2rem; border:none; border-radius:50px; font-size:1.1rem; font-weight:600; cursor:pointer; transition:all 0.3s;">
+                    style="background: var(--verde-primario); color: #f7f3ee; padding: 1rem 2rem; border: none; border-radius: 0; font-size: 0.85rem; font-weight: 400; font-family: var(--font-body); letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer; transition: background 0.3s; width: 100%;">
               Send message
             </button>
           </form>
@@ -844,10 +872,10 @@ function validarNombre(input) {
   <footer>
     <div class="footer-content" style="max-width:1200px; margin:0 auto; padding:0 1.5rem;">
       <p class="footer-text">© 2026 Casitas de Mar | Holiday Rentals</p>
-      <p>Email: <a href="mailto:info@casitasdemar.com" style="color:white;">info@casitasdemar.com</a> | Tel. / WhatsApp
-        <a href="https://wa.me/34613119183" target="_blank" rel="noopener noreferrer" style="color:white;">+34 613 119 183</a>
+      <p>Email: <a href="mailto:info@casitasdemar.com" style="color: var(--verde-primario);">info@casitasdemar.com</a> | Tel. / WhatsApp
+        <a href="https://wa.me/34613119183" target="_blank" rel="noopener noreferrer" style="color: var(--verde-primario);">+34 613 119 183</a>
       </p>
-      <p style="margin-top:0.5rem; font-size:0.85rem;"><a href="/en/privacy-policy/" style="color:white; opacity:0.8;">Privacy Policy</a></p>
+      <p style="margin-top:0.5rem; font-size:0.85rem;"><a href="/en/privacy-policy/" style="color: var(--gris); text-decoration: none;">Privacy Policy</a></p>
     </div>
   </footer>
 <script>
@@ -971,9 +999,9 @@ document.addEventListener('click', (e) => {
 }
 
 .wa-container .wa-label {
-  font-family: 'Inter', sans-serif;
-  font-size: 0.95rem;
-  font-weight: 500;
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  font-weight: 400;
   color: #333;
 }
 
