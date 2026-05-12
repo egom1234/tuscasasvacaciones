@@ -696,9 +696,16 @@ function calcularPrecio() {
       fd.set('price_breakdown', lastPricing.breakdown);
 
       const fdEmail = new FormData(form);
-      fdEmail.set('nights', String(lastPricing.nights));
-      fdEmail.set('total_price', lastPricing.total.toFixed(2));
-      fetch('https://api.web3forms.com/submit', { method: 'POST', body: fdEmail }).catch(() => {});
+      fdEmail.set('nights',           String(lastPricing.nights));
+      fdEmail.set('subtotal',         lastPricing.subtotal.toFixed(2));
+      fdEmail.set('cleaning',         lastPricing.cleaning.toFixed(2));
+      fdEmail.set('total_price',      lastPricing.total.toFixed(2));
+      fdEmail.set('price_breakdown',  lastPricing.breakdown);
+      fdEmail.set('replyto',          fdEmail.get('email') || '');
+      fetch('https://api.web3forms.com/submit', { method: 'POST', body: fdEmail })
+        .then(r => r.json())
+        .then(d => { if (!d.success) console.error('Web3Forms error:', d); })
+        .catch(e => console.error('Web3Forms fetch failed:', e));
 
       const res = await fetch(FORM_WORKER + '/reserva', { method: 'POST', body: fd });
       const text = await res.text();
@@ -713,13 +720,6 @@ function calcularPrecio() {
         form.querySelectorAll('.form-row, .form-group, .submit-btn, .field-error')
             .forEach(el => el.style.display = 'none');
         formExito.style.display = 'block';
-        if (!formExito.querySelector('.referral-msg')) {
-          const ref = document.createElement('p');
-          ref.className = 'referral-msg';
-          ref.style.cssText = 'margin-top:1rem;font-size:0.88rem;padding:0.75rem;background:#f5f9f5;border-radius:6px;border-left:3px solid #7a9e7e;color:#2a6049;';
-          ref.textContent = t('referralMsg');
-          formExito.appendChild(ref);
-        }
       } else {
         throw new Error('Respuesta no exitosa: ' + (JSON.stringify(data) || text));
       }
