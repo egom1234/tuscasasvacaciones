@@ -626,7 +626,7 @@ function calcularPrecio() {
       savingsEl.style.cssText = 'margin-top:0.5rem;padding:0.4rem 0.6rem;background:#f0f7f0;border-radius:4px;color:#2a6049;font-size:0.85rem;font-weight:500;';
       ps.appendChild(savingsEl);
     }
-    savingsEl.textContent = t('directSaving', Math.round(total * 0.14));
+    savingsEl.textContent = t('directSaving', Math.round(total * 0.16));
   }
 
   lastPricing = { nights: noches, subtotal: subtotalFinal, cleaning: limpieza, total: total, breakdown: breakdownText };
