@@ -37,6 +37,8 @@ const I18N = {
     nameLetters: '⚠️ El nombre solo puede contener letras',
     emailRequired: '⚠️ El email es obligatorio',
     phoneRequired: '⚠️ El teléfono es obligatorio',
+    directSaving: (amount) => `Precio directo · Ahorras ~${amount} € sin comisiones adicionales`,
+    referralMsg: '¿Te ha gustado? Recomiéndanos a amigos o familia: cuando reserven mencionando tu nombre, ambos obtendréis un 5% de descuento en vuestra próxima reserva directa.',
     waHello: (property) => `Hola, me gustaría reservar ${property}.`,
     waFromTo: (from, to, nights) => ` Del ${from} al ${to} (${nights} noches).`,
     waStarting: (from) => ` A partir del ${from}.`,
@@ -65,6 +67,8 @@ const I18N = {
     nameLetters: '⚠️ Name can only contain letters',
     emailRequired: '⚠️ Email is required',
     phoneRequired: '⚠️ Phone number is required',
+    directSaving: (amount) => `Direct price · Save ~€${amount} with no platform fees`,
+    referralMsg: 'Enjoyed your stay? Recommend us to friends or family — when they book mentioning your name, you both get 5% off your next direct booking.',
     waHello: (property) => `Hello, I would like to book ${property}.`,
     waFromTo: (from, to, nights) => ` From ${from} to ${to} (${nights} nights).`,
     waStarting: (from) => ` Starting from ${from}.`,
@@ -178,6 +182,23 @@ function isGapSelection(entrada, salida) {
   return true;
 }
 
+function showCalendarError(msg) {
+  let el = document.getElementById('calendarError');
+  if (!el) {
+    el = document.createElement('div');
+    el.id = 'calendarError';
+    el.className = 'field-error';
+    el.style.cssText = 'display:block;margin-top:0.5rem;';
+    const legend = document.querySelector('.calendar-legend');
+    if (legend) legend.after(el);
+    else document.querySelector('.calendar')?.appendChild(el);
+  }
+  el.textContent = msg;
+  el.style.display = 'block';
+  clearTimeout(el._timer);
+  el._timer = setTimeout(() => { el.style.display = 'none'; }, 4000);
+}
+
 function actualizarLeyendaGap() {
   const legend = document.querySelector('.calendar-legend');
   if (!legend) return;
@@ -277,7 +298,7 @@ function seleccionarFecha(fecha) {
 
   if (!fechaEntrada || (fechaEntrada && fechaSalida)) {
     if (isBooked) {
-      alert(t('alertBookedEntry'));
+      showCalendarError(t('alertBookedEntry'));
       return;
     }
     fechaEntrada = fecha;
@@ -286,7 +307,7 @@ function seleccionarFecha(fecha) {
     const minNoches = (window.PAGE_CONFIG || {}).minNoches || 1;
     const noches = Math.ceil((fecha - fechaEntrada) / 86400000);
     if (noches < minNoches && !isGapSelection(fechaEntrada, fecha)) {
-      alert(t('alertMinNights', minNoches));
+      showCalendarError(t('alertMinNights', minNoches));
       return;
     }
     let cur = new Date(fechaEntrada.getTime() + 86400000);
@@ -303,7 +324,7 @@ function seleccionarFecha(fecha) {
     fechaSalida = fecha;
   } else {
     if (isBooked) {
-      alert(t('alertBookedEntry'));
+      showCalendarError(t('alertBookedEntry'));
       return;
     }
     fechaEntrada = fecha;
@@ -598,6 +619,14 @@ function calcularPrecio() {
     ps.querySelector('#cleaningAmount').textContent = limpieza.toFixed(2) + ' €';
     ps.querySelector('#totalAmount').textContent = total.toFixed(2) + ' €';
     ps.querySelector('.breakdown').innerHTML = breakdownHTML;
+    let savingsEl = ps.querySelector('#savingsNote');
+    if (!savingsEl) {
+      savingsEl = document.createElement('div');
+      savingsEl.id = 'savingsNote';
+      savingsEl.style.cssText = 'margin-top:0.5rem;padding:0.4rem 0.6rem;background:#f0f7f0;border-radius:4px;color:#2a6049;font-size:0.85rem;font-weight:500;';
+      ps.appendChild(savingsEl);
+    }
+    savingsEl.textContent = t('directSaving', Math.round(total * 0.14));
   }
 
   lastPricing = { nights: noches, subtotal: subtotalFinal, cleaning: limpieza, total: total, breakdown: breakdownText };
@@ -667,9 +696,16 @@ function calcularPrecio() {
       fd.set('price_breakdown', lastPricing.breakdown);
 
       const fdEmail = new FormData(form);
-      fdEmail.set('nights', String(lastPricing.nights));
-      fdEmail.set('total_price', lastPricing.total.toFixed(2));
-      fetch('https://api.web3forms.com/submit', { method: 'POST', body: fdEmail }).catch(() => {});
+      fdEmail.set('nights',           String(lastPricing.nights));
+      fdEmail.set('subtotal',         lastPricing.subtotal.toFixed(2));
+      fdEmail.set('cleaning',         lastPricing.cleaning.toFixed(2));
+      fdEmail.set('total_price',      lastPricing.total.toFixed(2));
+      fdEmail.set('price_breakdown',  lastPricing.breakdown);
+      fdEmail.set('replyto',          fdEmail.get('email') || '');
+      fetch('https://api.web3forms.com/submit', { method: 'POST', body: fdEmail })
+        .then(r => r.json())
+        .then(d => { if (!d.success) console.error('Web3Forms error:', d); })
+        .catch(e => console.error('Web3Forms fetch failed:', e));
 
       const res = await fetch(FORM_WORKER + '/reserva', { method: 'POST', body: fd });
       const text = await res.text();
