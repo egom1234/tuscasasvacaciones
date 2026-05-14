@@ -11,7 +11,7 @@ Sitio web de reservas directas para alquileres vacacionales en el Mediterráneo.
 | Propiedad | Ubicación |
 |---|---|
 | Casa Gonda | Menorca |
-| Casa Blava | Menorca |
+| Casa Blava | Peñíscola |
 | Loft Binibeca | Menorca |
 | Apartamento Tarifa | Tarifa |
 | Loft Tarifa | Tarifa |
