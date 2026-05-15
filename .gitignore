@@ -1,6 +1,7 @@
 .github
 .claude
 .secrets
+CLAUDE.md
 worker/node_modules
 worker/.dev.vars
 
