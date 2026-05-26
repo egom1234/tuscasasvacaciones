@@ -161,7 +161,7 @@ function calcularPrecioW(config, entrada, salida, isGap, promoRow) {
   const subtotalWithPromo = subtotalFinal - promoDiscount;
   const total = subtotalWithPromo + limpieza;
 
-  return { total, subtotal, subtotalFinal: subtotalWithPromo, cleaning: limpieza, nights: noches, breakdown: breakdownText };
+  return { total, subtotal, subtotalFinal: subtotalWithPromo, cleaning: limpieza, nights: noches, breakdown: breakdownText, tierDiscount, tierPct, gapDiscount, promoDiscount };
 }
 
 async function determinarIsGap(config, entrada, salida) {
@@ -328,6 +328,7 @@ async function handleReserva(request, env, cors) {
   // ---- Server-side price recalculation ----
   let precio_calculado   = null;
   let precio_discrepancia = 0;
+  let calc = null;
 
   if (entrada && salida) {
     try {
@@ -353,7 +354,7 @@ async function handleReserva(request, env, cors) {
             ).bind(promo_code).first();
           }
 
-          const calc = calcularPrecioW(config, entradaDate, salidaDate, isGap, promoRow);
+          calc = calcularPrecioW(config, entradaDate, salidaDate, isGap, promoRow);
           precio_calculado = calc.total.toFixed(2);
 
           const submittedTotal  = parseFloat(precio_total) || 0;
@@ -390,6 +391,11 @@ async function handleReserva(request, env, cors) {
     for (const [k, v] of data.entries()) fdEmail.append(k, v);
     if (precio_calculado) fdEmail.set('precio_calculado', precio_calculado);
     if (precio_discrepancia) fdEmail.set('alerta_precio', 'DISCREPANCIA DETECTADA');
+    if (calc) {
+      if (calc.tierDiscount > 0) fdEmail.set('descuento_temporada', `-${calc.tierDiscount} € (${Math.round(calc.tierPct * 100)}%)`);
+      if (calc.gapDiscount  > 0) fdEmail.set('descuento_fill_gap',  `-${calc.gapDiscount} €`);
+      if (calc.promoDiscount > 0) fdEmail.set('descuento_codigo_promo', `-${calc.promoDiscount} € (código: ${promo_code})`);
+    }
     fetch('https://api.web3forms.com/submit', { method: 'POST', body: fdEmail })
       .then(r => r.json()).then(d => { if (!d.success) console.error('Web3Forms error:', d); })
       .catch(e => console.error('Web3Forms fetch failed:', e));
