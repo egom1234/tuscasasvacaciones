@@ -22,7 +22,15 @@ CREATE TABLE IF NOT EXISTS reservas (
   desglose TEXT,
   comentarios TEXT,
   promo_code TEXT,
+  precio_calculado TEXT,
+  precio_discrepancia INTEGER DEFAULT 0,
   created_at TEXT DEFAULT (datetime('now'))
+);
+
+CREATE TABLE IF NOT EXISTS property_config (
+  propiedad TEXT PRIMARY KEY,
+  config_json TEXT NOT NULL,
+  updated_at TEXT DEFAULT (datetime('now'))
 );
 
 CREATE TABLE IF NOT EXISTS discount_codes (

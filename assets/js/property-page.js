@@ -790,6 +790,7 @@ async function aplicarCodigoPromo() {
       fd.set('total_price', lastPricing.total.toFixed(2));
       fd.set('price_breakdown', lastPricing.breakdown);
       fd.set('promo_code', appliedPromo ? appliedPromo.codigo : '');
+      fd.set('propiedad', (window.PAGE_CONFIG && window.PAGE_CONFIG.propiedad) || '');
 
       const fdEmail = new FormData(form);
       fdEmail.set('nights',           String(lastPricing.nights));
