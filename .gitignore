@@ -2,6 +2,7 @@
 .claude
 .secrets
 CLAUDE.md
+caveman/
 worker/node_modules
 worker/.dev.vars
 
