@@ -607,11 +607,21 @@ function calcularPrecio() {
   const activeSeasonTier = seasonTiers
     .filter(d => noches >= d.minNights && d.months.includes(checkInMonth))
     .sort((a, b) => b.minNights - a.minNights)[0] || null;
-  const effectiveTier  = activeTier || activeSeasonTier;
-  const discountPct    = isGap ? 0.20 : (effectiveTier ? effectiveTier.pct : 0);
-  const discountLabelText = isGap ? t('fillGapDiscount') : (effectiveTier ? Math.round(effectiveTier.pct * 100) + '%' : '');
-  const discountAmount = discountPct > 0 ? Math.round(subtotal * discountPct) : 0;
-  const subtotalFinal  = subtotal - discountAmount;
+  const effectiveTier    = activeTier || activeSeasonTier;
+  const tierPct          = effectiveTier ? effectiveTier.pct : 0;
+  const tierDiscount     = tierPct > 0 ? Math.round(subtotal * tierPct) : 0;
+  const subtotalAfterTier = subtotal - tierDiscount;
+  const gapDiscount      = isGap ? Math.round(subtotalAfterTier * 0.20) : 0;
+  const discountAmount   = tierDiscount + gapDiscount;
+  let discountLabelText  = '';
+  if (tierDiscount > 0 && gapDiscount > 0) {
+    discountLabelText = Math.round(tierPct * 100) + '% + ' + t('fillGapDiscount');
+  } else if (gapDiscount > 0) {
+    discountLabelText = t('fillGapDiscount');
+  } else if (tierDiscount > 0) {
+    discountLabelText = Math.round(tierPct * 100) + '%';
+  }
+  const subtotalFinal    = subtotal - discountAmount;
   const promoDiscountAmount = appliedPromo
     ? (appliedPromo.tipo === 'pct'
         ? Math.round(subtotalFinal * appliedPromo.valor / 100)
