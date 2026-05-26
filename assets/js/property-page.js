@@ -39,6 +39,10 @@ const I18N = {
     phoneRequired: '⚠️ El teléfono es obligatorio',
     directSaving: (amount) => `Precio directo · Ahorras ~${amount} € sin comisiones adicionales`,
     referralMsg: '¿Te ha gustado? Recomiéndanos a amigos o familia: cuando reserven mencionando tu nombre, ambos obtendréis un 5% de descuento en vuestra próxima reserva directa.',
+    promoApply: 'Aplicar',
+    promoRemove: 'Quitar',
+    promoApplied: (code) => `Código "${code}" aplicado`,
+    promoInvalid: 'Código no válido o no aplicable a esta propiedad.',
     waHello: (property) => `Hola, me gustaría reservar ${property}.`,
     waFromTo: (from, to, nights) => ` Del ${from} al ${to} (${nights} noches).`,
     waStarting: (from) => ` A partir del ${from}.`,
@@ -69,6 +73,10 @@ const I18N = {
     phoneRequired: '⚠️ Phone number is required',
     directSaving: (amount) => `Direct price · Save ~€${amount} with no platform fees`,
     referralMsg: 'Enjoyed your stay? Recommend us to friends or family — when they book mentioning your name, you both get 5% off your next direct booking.',
+    promoApply: 'Apply',
+    promoRemove: 'Remove',
+    promoApplied: (code) => `Code "${code}" applied`,
+    promoInvalid: 'Invalid code or not applicable to this property.',
     waHello: (property) => `Hello, I would like to book ${property}.`,
     waFromTo: (from, to, nights) => ` From ${from} to ${to} (${nights} nights).`,
     waStarting: (from) => ` Starting from ${from}.`,
@@ -503,6 +511,7 @@ function validarFechas() {
 
 const LIMPIEZA = 50;
 let lastPricing = { nights: 0, subtotal: 0, cleaning: 50, total: 0, breakdown: '' };
+let appliedPromo = null;
 
 function esFinDeSemana(fecha) {
   const d = fecha.getDay();
@@ -598,12 +607,28 @@ function calcularPrecio() {
   const activeSeasonTier = seasonTiers
     .filter(d => noches >= d.minNights && d.months.includes(checkInMonth))
     .sort((a, b) => b.minNights - a.minNights)[0] || null;
-  const effectiveTier  = activeTier || activeSeasonTier;
-  const discountPct    = isGap ? 0.20 : (effectiveTier ? effectiveTier.pct : 0);
-  const discountLabelText = isGap ? t('fillGapDiscount') : (effectiveTier ? Math.round(effectiveTier.pct * 100) + '%' : '');
-  const discountAmount = discountPct > 0 ? Math.round(subtotal * discountPct) : 0;
-  const subtotalFinal  = subtotal - discountAmount;
-  const total          = subtotalFinal + limpieza;
+  const effectiveTier    = activeTier || activeSeasonTier;
+  const tierPct          = effectiveTier ? effectiveTier.pct : 0;
+  const tierDiscount     = tierPct > 0 ? Math.round(subtotal * tierPct) : 0;
+  const subtotalAfterTier = subtotal - tierDiscount;
+  const gapDiscount      = isGap ? Math.round(subtotalAfterTier * 0.20) : 0;
+  const discountAmount   = tierDiscount + gapDiscount;
+  let discountLabelText  = '';
+  if (tierDiscount > 0 && gapDiscount > 0) {
+    discountLabelText = Math.round(tierPct * 100) + '% + ' + t('fillGapDiscount');
+  } else if (gapDiscount > 0) {
+    discountLabelText = t('fillGapDiscount');
+  } else if (tierDiscount > 0) {
+    discountLabelText = Math.round(tierPct * 100) + '%';
+  }
+  const subtotalFinal    = subtotal - discountAmount;
+  const promoDiscountAmount = appliedPromo
+    ? (appliedPromo.tipo === 'pct'
+        ? Math.round(subtotalFinal * appliedPromo.valor / 100)
+        : Math.min(appliedPromo.valor, subtotalFinal))
+    : 0;
+  const subtotalWithPromo = subtotalFinal - promoDiscountAmount;
+  const total             = subtotalWithPromo + limpieza;
 
   if (pa) pa.textContent = total.toFixed(2) + ' €';
   if (ps) {
@@ -616,6 +641,14 @@ function calcularPrecio() {
     if (discountRow) discountRow.style.display = discountAmount > 0 ? '' : 'none';
     if (discountLabel && discountLabelText) discountLabel.textContent = discountLabelText;
     if (discountEl)  discountEl.textContent = '-' + discountAmount.toFixed(2) + ' €';
+    const promoRow = ps.querySelector('#promoDiscountRow');
+    const promoEl  = ps.querySelector('#promoDiscountAmount');
+    const promoLbl = ps.querySelector('#promoDiscountLabel');
+    if (promoRow) promoRow.style.display = promoDiscountAmount > 0 ? '' : 'none';
+    if (promoLbl && appliedPromo) {
+      promoLbl.textContent = appliedPromo.tipo === 'pct' ? `${appliedPromo.valor}%` : `${appliedPromo.valor} €`;
+    }
+    if (promoEl) promoEl.textContent = '-' + promoDiscountAmount.toFixed(2) + ' €';
     ps.querySelector('#cleaningAmount').textContent = limpieza.toFixed(2) + ' €';
     ps.querySelector('#totalAmount').textContent = total.toFixed(2) + ' €';
     ps.querySelector('.breakdown').innerHTML = breakdownHTML;
@@ -629,7 +662,9 @@ function calcularPrecio() {
     savingsEl.textContent = t('directSaving', Math.round(total * 0.16));
   }
 
-  lastPricing = { nights: noches, subtotal: subtotalFinal, cleaning: limpieza, total: total, breakdown: breakdownText };
+  lastPricing = { nights: noches, subtotal: subtotalWithPromo, cleaning: limpieza, total: total, breakdown: breakdownText,
+    tierDiscount: tierDiscount, gapDiscount: gapDiscount, promoDiscount: promoDiscountAmount,
+    discountLabel: discountLabelText, promoCode: appliedPromo ? appliedPromo.codigo : '' };
 
   const hN = document.getElementById('hdNights');
   const hS = document.getElementById('hdSubtotal');
@@ -643,6 +678,68 @@ function calcularPrecio() {
   if (hB) hB.value = lastPricing.breakdown;
 
   actualizarWAMensajes();
+}
+
+async function aplicarCodigoPromo() {
+  const input = document.getElementById('promoCodeInput');
+  const btn   = document.getElementById('promoCodeBtn');
+  const msg   = document.getElementById('promoCodeMsg');
+  if (!input || !btn || !msg) return;
+
+  if (appliedPromo) {
+    appliedPromo = null;
+    input.value = '';
+    input.disabled = false;
+    btn.textContent = t('promoApply');
+    msg.style.display = 'none';
+    const hdPromo = document.getElementById('hdPromoCode');
+    if (hdPromo) hdPromo.value = '';
+    calcularPrecio();
+    return;
+  }
+
+  const code = (input.value || '').trim().toUpperCase();
+  if (!code) return;
+
+  btn.disabled = true;
+  btn.textContent = '...';
+  msg.style.display = 'none';
+
+  const propiedad = (window.PAGE_CONFIG && window.PAGE_CONFIG.propiedad) || '';
+
+  try {
+    const res = await fetch(FORM_WORKER + '/discount-codes/validate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ codigo: code, propiedad })
+    });
+    const data = await res.json();
+
+    if (data.ok) {
+      appliedPromo = data.discount;
+      input.disabled = true;
+      btn.disabled = false;
+      btn.textContent = t('promoRemove');
+      msg.style.color = 'green';
+      msg.textContent = t('promoApplied', code);
+      msg.style.display = 'block';
+      const hdPromo = document.getElementById('hdPromoCode');
+      if (hdPromo) hdPromo.value = code;
+      calcularPrecio();
+    } else {
+      btn.disabled = false;
+      btn.textContent = t('promoApply');
+      msg.style.color = '#dc2626';
+      msg.textContent = t('promoInvalid');
+      msg.style.display = 'block';
+    }
+  } catch {
+    btn.disabled = false;
+    btn.textContent = t('promoApply');
+    msg.style.color = '#dc2626';
+    msg.textContent = t('promoInvalid');
+    msg.style.display = 'block';
+  }
 }
 
 (function initForm() {
@@ -694,6 +791,8 @@ function calcularPrecio() {
       fd.set('cleaning', lastPricing.cleaning.toFixed(2));
       fd.set('total_price', lastPricing.total.toFixed(2));
       fd.set('price_breakdown', lastPricing.breakdown);
+      fd.set('promo_code', appliedPromo ? appliedPromo.codigo : '');
+      fd.set('propiedad', (window.PAGE_CONFIG && window.PAGE_CONFIG.propiedad) || '');
 
       const fdEmail = new FormData(form);
       fdEmail.set('nights',           String(lastPricing.nights));
@@ -702,6 +801,9 @@ function calcularPrecio() {
       fdEmail.set('total_price',      lastPricing.total.toFixed(2));
       fdEmail.set('price_breakdown',  lastPricing.breakdown);
       fdEmail.set('replyto',          fdEmail.get('email') || '');
+      if (lastPricing.tierDiscount > 0) fdEmail.set('descuento_temporada', `-${lastPricing.tierDiscount.toFixed(2)} € (${lastPricing.discountLabel})`);
+      if (lastPricing.gapDiscount  > 0) fdEmail.set('descuento_fill_gap',  `-${lastPricing.gapDiscount.toFixed(2)} €`);
+      if (lastPricing.promoDiscount > 0) fdEmail.set('descuento_codigo_promo', `-${lastPricing.promoDiscount.toFixed(2)} € (código: ${lastPricing.promoCode})`);
       fetch('https://api.web3forms.com/submit', { method: 'POST', body: fdEmail })
         .then(r => r.json())
         .then(d => { if (!d.success) console.error('Web3Forms error:', d); })

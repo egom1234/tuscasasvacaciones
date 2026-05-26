@@ -2,6 +2,7 @@
 .claude
 .secrets
 CLAUDE.md
+caveman/
 worker/node_modules
 worker/.dev.vars
 
@@ -14,3 +15,10 @@ worker/.dev.vars
 .copilot/
 
 
+
+# wrangler files
+.wrangler
+.dev.vars*
+!.dev.vars.example
+.env*
+!.env.example
