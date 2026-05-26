@@ -185,7 +185,7 @@ async function determinarIsGap(config, entrada, salida) {
 // ====== MAIN ROUTER ======
 
 export default {
-  async fetch(request, env) {
+  async fetch(request, env, ctx) {
     const cors = corsHeaders();
 
     if (request.method === 'OPTIONS') {
@@ -284,7 +284,7 @@ export default {
       }
 
       if (url.pathname === '/contacto') return await handleContacto(request, env, cors);
-      if (url.pathname === '/reserva')  return await handleReserva(request, env, cors);
+      if (url.pathname === '/reserva')  return await handleReserva(request, env, cors, ctx);
 
       return new Response('Not found', { status: 404, headers: cors });
 
@@ -312,7 +312,7 @@ async function handleContacto(request, env, cors) {
   return json({ ok: true }, 200, cors);
 }
 
-async function handleReserva(request, env, cors) {
+async function handleReserva(request, env, cors, ctx) {
   const data = await request.formData();
 
   const nombre       = (data.get('name')           || '').trim();
@@ -392,25 +392,25 @@ async function handleReserva(request, env, cors) {
     ).bind(promo_code).run();
   }
 
-  // Send email via web3forms (fire and forget)
-  try {
-    const fdEmail = new FormData();
-    for (const [k, v] of data.entries()) fdEmail.append(k, v);
-    if (precio_calculado) fdEmail.set('precio_calculado', precio_calculado);
-    if (precio_discrepancia) fdEmail.set('alerta_precio', 'DISCREPANCIA DETECTADA');
-    if (calc) {
-      if (calc.tierDiscount > 0) fdEmail.set('descuento_temporada', `-${calc.tierDiscount} € (${Math.round(calc.tierPct * 100)}%)`);
-      if (calc.gapDiscount  > 0) fdEmail.set('descuento_fill_gap',  `-${calc.gapDiscount} €`);
-      if (calc.promoDiscount > 0) fdEmail.set('descuento_codigo_promo', `-${calc.promoDiscount} € (código: ${promo_code})`);
-    }
-    fetch('https://api.web3forms.com/submit', { method: 'POST', body: fdEmail })
-      .then(r => r.json()).then(d => { if (!d.success) console.error('Web3Forms error:', d); })
-      .catch(e => console.error('Web3Forms fetch failed:', e));
-  } catch {}
+  // Admin notification via Web3Forms + guest confirmation via Brevo (keep alive until both complete)
+  ctx.waitUntil((async () => {
+    try {
+      const fdEmail = new FormData();
+      for (const [k, v] of data.entries()) fdEmail.append(k, v);
+      if (precio_calculado) fdEmail.set('precio_calculado', precio_calculado);
+      if (precio_discrepancia) fdEmail.set('alerta_precio', 'DISCREPANCIA DETECTADA');
+      if (calc) {
+        if (calc.tierDiscount > 0) fdEmail.set('descuento_temporada', `-${calc.tierDiscount} € (${Math.round(calc.tierPct * 100)}%)`);
+        if (calc.gapDiscount  > 0) fdEmail.set('descuento_fill_gap',  `-${calc.gapDiscount} €`);
+        if (calc.promoDiscount > 0) fdEmail.set('descuento_codigo_promo', `-${calc.promoDiscount} € (código: ${promo_code})`);
+      }
+      await fetch('https://api.web3forms.com/submit', { method: 'POST', body: fdEmail })
+        .then(r => r.json()).then(d => { if (!d.success) console.error('Web3Forms error:', d); });
+    } catch (e) { console.error('Web3Forms failed:', e); }
 
-  // Guest confirmation email via Brevo (fire and forget)
-  sendGuestConfirmation(env, { nombre, email, propiedad, entrada, salida, adultos, ninos, noches, precio_total, comentarios, promo_code, calc })
-    .catch(e => console.error('Brevo guest email failed:', e));
+    await sendGuestConfirmation(env, { nombre, email, propiedad, entrada, salida, adultos, ninos, noches, precio_total, comentarios, promo_code, calc })
+      .catch(e => console.error('Brevo guest email failed:', e));
+  })());
 
   return json({ ok: true, precio_calculado }, 200, cors);
 }
