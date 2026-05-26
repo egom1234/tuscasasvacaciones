@@ -205,6 +205,47 @@
       padding: 3rem;
       color: #a1a1aa;
     }
+
+    .btn-danger {
+      padding: 0.3rem 0.6rem;
+      background: #fee2e2;
+      color: #dc2626;
+      border: 1px solid #fca5a5;
+      border-radius: 4px;
+      font-size: 0.78rem;
+      cursor: pointer;
+    }
+    .btn-danger:hover { background: #fecaca; }
+
+    .codigos-form {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 0.75rem;
+      padding: 1rem 0;
+      border-bottom: 1px solid #e4e4e7;
+      margin-bottom: 1rem;
+    }
+    .codigos-form label { font-size: 0.8rem; color: #52525b; margin-bottom: 0.25rem; display: block; }
+    .codigos-form input, .codigos-form select {
+      width: 100%;
+      padding: 0.45rem 0.7rem;
+      border: 1px solid #d4d4d8;
+      border-radius: 6px;
+      font-size: 0.875rem;
+    }
+    .codigos-form .btn-create {
+      align-self: end;
+      padding: 0.5rem 1rem;
+      background: #2563eb;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 0.875rem;
+      font-weight: 500;
+      cursor: pointer;
+    }
+    .codigos-form .btn-create:hover { background: #1d4ed8; }
+    #codigos-error { color: #dc2626; font-size: 0.85rem; padding: 0.5rem 0; display: none; }
   </style>
 </head>
 <body>
@@ -230,6 +271,7 @@
   <nav>
     <button class="active" onclick="showTab('reservas', this)">Reservas</button>
     <button onclick="showTab('contactos', this)">Contactos</button>
+    <button onclick="showTab('codigos', this)">Códigos descuento</button>
   </nav>
 
   <main>
@@ -258,6 +300,7 @@
               <th>Adultos</th>
               <th>Niños</th>
               <th>Precio</th>
+              <th>Promo</th>
               <th>Comentarios</th>
               <th>Fecha</th>
             </tr>
@@ -266,6 +309,68 @@
         </table>
         <div id="loading-reservas" class="loading">Cargando...</div>
         <div id="empty-reservas" class="empty" style="display:none">Sin resultados</div>
+      </div>
+    </div>
+
+    <!-- Códigos descuento -->
+    <div id="tab-codigos" style="display:none">
+      <div class="codigos-form">
+        <div>
+          <label>Código *</label>
+          <input type="text" id="new-codigo" placeholder="VERANO10" style="text-transform:uppercase">
+        </div>
+        <div>
+          <label>Descripción</label>
+          <input type="text" id="new-descripcion" placeholder="10% verano 2025">
+        </div>
+        <div>
+          <label>Tipo *</label>
+          <select id="new-tipo">
+            <option value="pct">% Porcentaje</option>
+            <option value="eur">€ Importe fijo</option>
+          </select>
+        </div>
+        <div>
+          <label>Valor *</label>
+          <input type="number" id="new-valor" placeholder="10" min="0" step="0.01">
+        </div>
+        <div>
+          <label>Propiedad</label>
+          <select id="new-propiedad">
+            <option value="">Todas las propiedades</option>
+            <option value="Casa Gonda">Casa Gonda</option>
+            <option value="Casa Blava">Casa Blava</option>
+            <option value="Loft Binibeca">Loft Binibeca</option>
+            <option value="Apartamento Tarifa">Apartamento Tarifa</option>
+            <option value="Loft Tarifa">Loft Tarifa</option>
+          </select>
+        </div>
+        <div>
+          <label>Usos máx. (vacío = ilimitado)</label>
+          <input type="number" id="new-usos-max" placeholder="100" min="1">
+        </div>
+        <button class="btn-create" onclick="crearCodigo()">Crear código</button>
+      </div>
+      <div id="codigos-error"></div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Código</th>
+              <th>Descripción</th>
+              <th>Tipo</th>
+              <th>Valor</th>
+              <th>Propiedad</th>
+              <th>Usos</th>
+              <th>Creado</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="tbody-codigos"></tbody>
+        </table>
+        <div id="loading-codigos" class="loading" style="display:none">Cargando...</div>
+        <div id="empty-codigos" class="empty" style="display:none">Sin códigos creados</div>
       </div>
     </div>
 
@@ -419,6 +524,7 @@
         <td>${esc(r.adultos)}</td>
         <td>${esc(r.ninos)}</td>
         <td>${esc(r.precio_total)}</td>
+        <td>${r.promo_code ? `<span class="badge" style="background:#fef9c3;color:#854d0e">${esc(r.promo_code)}</span>` : ''}</td>
         <td style="max-width:200px;white-space:pre-wrap">${esc(r.comentarios)}</td>
         <td style="white-space:nowrap">${formatDate(r.created_at)}</td>
       `;
@@ -461,13 +567,104 @@
     });
   }
 
+  let codigosLoaded = false;
+
   function showTab(tab, btn) {
     document.getElementById('tab-reservas').style.display = tab === 'reservas' ? '' : 'none';
     document.getElementById('tab-contactos').style.display = tab === 'contactos' ? '' : 'none';
+    document.getElementById('tab-codigos').style.display = tab === 'codigos' ? '' : 'none';
     document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
 
     if (tab === 'contactos' && !contactosLoaded) fetchContactos();
+    if (tab === 'codigos' && !codigosLoaded) fetchCodigos();
+  }
+
+  async function fetchCodigos() {
+    document.getElementById('loading-codigos').style.display = 'block';
+    document.getElementById('tbody-codigos').innerHTML = '';
+    document.getElementById('empty-codigos').style.display = 'none';
+    const res = await fetch(`${WORKER_URL}/admin/discount-codes`, {
+      headers: { Authorization: `Bearer ${token}`, 'X-Admin-User': adminUser }
+    });
+    const { data } = await res.json();
+    codigosLoaded = true;
+    document.getElementById('loading-codigos').style.display = 'none';
+    renderCodigos(data || []);
+  }
+
+  function renderCodigos(list) {
+    const tbody = document.getElementById('tbody-codigos');
+    tbody.innerHTML = '';
+    if (list.length === 0) { document.getElementById('empty-codigos').style.display = 'block'; return; }
+    document.getElementById('empty-codigos').style.display = 'none';
+    list.forEach(c => {
+      const tr = document.createElement('tr');
+      const usosText = c.usos_max != null ? `${c.usos_usados}/${c.usos_max}` : c.usos_usados;
+      const tipoText = c.tipo === 'pct' ? `${c.valor}%` : `${c.valor} €`;
+      tr.innerHTML = `
+        <td>${esc(String(c.id))}</td>
+        <td><strong>${esc(c.codigo)}</strong></td>
+        <td>${esc(c.descripcion || '—')}</td>
+        <td>${c.tipo === 'pct' ? '%' : '€'}</td>
+        <td>${esc(tipoText)}</td>
+        <td>${esc(c.propiedad || 'Todas')}</td>
+        <td>${esc(String(usosText))}</td>
+        <td style="white-space:nowrap">${formatDate(c.created_at)}</td>
+        <td><button class="btn-danger" onclick="eliminarCodigo(${c.id}, this)">Eliminar</button></td>
+      `;
+      tbody.appendChild(tr);
+    });
+  }
+
+  async function crearCodigo() {
+    const errEl = document.getElementById('codigos-error');
+    errEl.style.display = 'none';
+    const codigo = document.getElementById('new-codigo').value.trim().toUpperCase();
+    const descripcion = document.getElementById('new-descripcion').value.trim();
+    const tipo = document.getElementById('new-tipo').value;
+    const valor = parseFloat(document.getElementById('new-valor').value);
+    const propiedad = document.getElementById('new-propiedad').value;
+    const usos_max = document.getElementById('new-usos-max').value;
+
+    if (!codigo || isNaN(valor) || valor <= 0) {
+      errEl.textContent = 'Código y valor son obligatorios.';
+      errEl.style.display = 'block';
+      return;
+    }
+
+    const res = await fetch(`${WORKER_URL}/admin/discount-codes`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'X-Admin-User': adminUser,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ codigo, descripcion, tipo, valor, propiedad, usos_max: usos_max || null })
+    });
+    const data = await res.json();
+    if (!data.ok) {
+      errEl.textContent = data.error || 'Error al crear el código.';
+      errEl.style.display = 'block';
+      return;
+    }
+    document.getElementById('new-codigo').value = '';
+    document.getElementById('new-descripcion').value = '';
+    document.getElementById('new-valor').value = '';
+    document.getElementById('new-usos-max').value = '';
+    codigosLoaded = false;
+    fetchCodigos();
+  }
+
+  async function eliminarCodigo(id, btn) {
+    if (!confirm('¿Eliminar este código de descuento?')) return;
+    btn.disabled = true;
+    await fetch(`${WORKER_URL}/admin/discount-codes/${id}`, {
+      method: 'DELETE',
+      headers: { Authorization: `Bearer ${token}`, 'X-Admin-User': adminUser }
+    });
+    codigosLoaded = false;
+    fetchCodigos();
   }
 
   document.getElementById('token-input').addEventListener('keydown', e => {
@@ -509,6 +706,7 @@
       'Adultos': r.adultos,
       'Niños': r.ninos,
       'Precio total': r.precio_total,
+      'Código promo': r.promo_code || '',
       'Comentarios': r.comentarios,
       'Fecha': r.created_at,
     }));

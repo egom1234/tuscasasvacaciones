@@ -21,5 +21,19 @@ CREATE TABLE IF NOT EXISTS reservas (
   precio_total TEXT,
   desglose TEXT,
   comentarios TEXT,
+  promo_code TEXT,
+  created_at TEXT DEFAULT (datetime('now'))
+);
+
+CREATE TABLE IF NOT EXISTS discount_codes (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  codigo TEXT NOT NULL UNIQUE,
+  descripcion TEXT,
+  tipo TEXT NOT NULL CHECK(tipo IN ('pct', 'eur')),
+  valor REAL NOT NULL,
+  propiedad TEXT,
+  usos_max INTEGER,
+  usos_usados INTEGER NOT NULL DEFAULT 0,
+  activo INTEGER NOT NULL DEFAULT 1,
   created_at TEXT DEFAULT (datetime('now'))
 );

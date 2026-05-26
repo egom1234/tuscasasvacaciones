@@ -245,6 +245,7 @@
     <div><strong>Nights:</strong> <span id="nightsCount">0</span></div>
     <div><strong>Subtotal:</strong> <span id="subtotalAmount">0 €</span></div>
     <div id="discountRow" style="display:none;color:green;"><strong>Discount (<span id="discountLabel"></span>):</strong> <span id="discountAmount">0 €</span></div>
+    <div id="promoDiscountRow" style="display:none;color:green;"><strong>Promo code (<span id="promoDiscountLabel"></span>):</strong> <span id="promoDiscountAmount">0 €</span></div>
     <div><strong>Cleaning:</strong> <span id="cleaningAmount">100 €</span></div>
     <div style="margin-top:0.5rem;"><strong>Total:</strong> <span id="totalAmount">0 €</span></div>
     <div class="breakdown" style="margin-top:0.5rem;font-size:0.9rem;color:#555;"></div>
@@ -326,6 +327,15 @@
             <input type="hidden" name="cleaning" id="hdCleaning" value="">
             <input type="hidden" name="total_price" id="hdTotalPrice" value="">
             <input type="hidden" name="price_breakdown" id="hdPriceBreakdown" value="">
+            <div class="form-group">
+                          <label class="form-label">Discount code (optional)</label>
+                          <div style="display:flex;gap:0.5rem;align-items:center;">
+                            <input type="text" class="form-input" id="promoCodeInput" placeholder="E.g. SUMMER10" style="flex:1;text-transform:uppercase;" autocomplete="off">
+                            <button type="button" id="promoCodeBtn" onclick="aplicarCodigoPromo()" style="padding:0.5rem 1rem;background:#2563eb;color:white;border:none;border-radius:6px;font-size:0.875rem;font-weight:500;cursor:pointer;white-space:nowrap;">Apply</button>
+                          </div>
+                          <span id="promoCodeMsg" style="display:none;font-size:0.85rem;margin-top:0.3rem;"></span>
+                        </div>
+                        <input type="hidden" name="promo_code" id="hdPromoCode" value="">
             <button type="submit" class="submit-btn" id="submitBtnReserva">Request booking</button>
           </form>
         </div>

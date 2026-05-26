@@ -240,6 +240,7 @@
     <div><strong>Noches:</strong> <span id="nightsCount">0</span></div>
     <div><strong>Subtotal:</strong> <span id="subtotalAmount">0 €</span></div>
     <div id="discountRow" style="display:none;color:green;"><strong>Descuento (<span id="discountLabel"></span>):</strong> <span id="discountAmount">0 €</span></div>
+    <div id="promoDiscountRow" style="display:none;color:green;"><strong>Código promo (<span id="promoDiscountLabel"></span>):</strong> <span id="promoDiscountAmount">0 €</span></div>
     <div><strong>Limpieza:</strong> <span id="cleaningAmount">60 €</span></div>
     <div style="margin-top:0.5rem;"><strong>Total:</strong> <span id="totalAmount">0 €</span></div>
     <div class="breakdown" style="margin-top:0.5rem;font-size:0.9rem;color:#555;"></div>
@@ -333,6 +334,15 @@
             <input type="hidden" name="total_price" id="hdTotalPrice" value="">
             <input type="hidden" name="price_breakdown" id="hdPriceBreakdown" value="">
 
+            <div class="form-group">
+                          <label class="form-label">Código de descuento (opcional)</label>
+                          <div style="display:flex;gap:0.5rem;align-items:center;">
+                            <input type="text" class="form-input" id="promoCodeInput" placeholder="Ej: VERANO10" style="flex:1;text-transform:uppercase;" autocomplete="off">
+                            <button type="button" id="promoCodeBtn" onclick="aplicarCodigoPromo()" style="padding:0.5rem 1rem;background:#2563eb;color:white;border:none;border-radius:6px;font-size:0.875rem;font-weight:500;cursor:pointer;white-space:nowrap;">Aplicar</button>
+                          </div>
+                          <span id="promoCodeMsg" style="display:none;font-size:0.85rem;margin-top:0.3rem;"></span>
+                        </div>
+                        <input type="hidden" name="promo_code" id="hdPromoCode" value="">
             <button type="submit" class="submit-btn" id="submitBtnReserva">Solicitar reserva</button>
           </form>
         </div>
