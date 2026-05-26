@@ -693,8 +693,7 @@ async function aplicarCodigoPromo() {
   btn.textContent = '...';
   msg.style.display = 'none';
 
-  const fromName = document.querySelector('input[name="from_name"]')?.value || '';
-  const propiedad = fromName.includes(' - ') ? fromName.split(' - ').slice(1).join(' - ') : fromName;
+  const propiedad = (window.PAGE_CONFIG && window.PAGE_CONFIG.propiedad) || '';
 
   try {
     const res = await fetch(FORM_WORKER + '/discount-codes/validate', {
