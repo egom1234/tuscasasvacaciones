@@ -408,5 +408,121 @@ async function handleReserva(request, env, cors) {
       .catch(e => console.error('Web3Forms fetch failed:', e));
   } catch {}
 
+  // Guest confirmation email via Brevo (fire and forget)
+  sendGuestConfirmation(env, { nombre, email, propiedad, entrada, salida, adultos, ninos, noches, precio_total, comentarios, promo_code, calc })
+    .catch(e => console.error('Brevo guest email failed:', e));
+
   return json({ ok: true, precio_calculado }, 200, cors);
+}
+
+async function sendGuestConfirmation(env, { nombre, email, propiedad, entrada, salida, adultos, ninos, noches, precio_total, comentarios, promo_code, calc }) {
+  if (!env.BREVO_API_KEY || !email) return;
+
+  const esc = s => String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+
+  const fmt = d => {
+    if (!d) return '';
+    const [y, m, day] = d.split('-');
+    const months = ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
+    return `${parseInt(day)} ${months[parseInt(m)-1]} ${y}`;
+  };
+
+  const row = (label, value, style = '') =>
+    `<tr>
+      <td style="padding:7px 0;color:#555;font-family:sans-serif;font-size:0.875rem;border-bottom:1px solid #d4c0a0">${label}</td>
+      <td align="right" style="padding:7px 0;color:#2a2118;font-family:sans-serif;font-size:0.875rem;border-bottom:1px solid #d4c0a0;font-weight:600;${style}">${value}</td>
+    </tr>`;
+
+  const guestRow = (label, value) =>
+    `<tr>
+      <td style="padding:4px 0;color:#7a9e7e;font-family:sans-serif;font-size:0.875rem">${label}</td>
+      <td align="right" style="padding:4px 0;color:#7a9e7e;font-family:sans-serif;font-size:0.875rem">-${value} €</td>
+    </tr>`;
+
+  let priceRows = '';
+  let totalDisplay = precio_total ? `${precio_total} €` : '';
+
+  if (calc) {
+    priceRows += row('Subtotal noches', `${calc.subtotal.toFixed(2)} €`);
+    if (calc.tierDiscount > 0) priceRows += guestRow(`Descuento temporada (${Math.round(calc.tierPct * 100)}%)`, calc.tierDiscount.toFixed(2));
+    if (calc.gapDiscount  > 0) priceRows += guestRow('Descuento Fill the Gap', calc.gapDiscount.toFixed(2));
+    if (calc.promoDiscount > 0) priceRows += guestRow(`Código promo (${esc(promo_code)})`, calc.promoDiscount.toFixed(2));
+    priceRows += row('Limpieza', `${calc.cleaning.toFixed(2)} €`);
+    totalDisplay = `${calc.total.toFixed(2)} €`;
+  }
+
+  const comentariosSection = comentarios ? `
+    <tr><td style="padding:0 40px 8px">
+      <p style="margin:0 0 8px;font-family:sans-serif;font-size:0.7rem;letter-spacing:0.1em;text-transform:uppercase;color:#B5896A;font-weight:600">Tu mensaje</p>
+      <p style="margin:0;background:#f9f6f1;padding:16px;color:#555;line-height:1.6;font-family:sans-serif;font-size:0.875rem">${esc(comentarios)}</p>
+    </td></tr>` : '';
+
+  const html = `<!DOCTYPE html>
+<html lang="es">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Solicitud recibida – Casitas de Mar</title></head>
+<body style="margin:0;padding:0;background:#f5f0e8">
+<table width="100%" cellpadding="0" cellspacing="0" style="background:#f5f0e8;padding:32px 16px">
+<tr><td align="center">
+<table width="100%" cellpadding="0" cellspacing="0" style="max-width:580px;background:#ffffff">
+
+<tr><td style="background:#2a2118;padding:36px 40px;text-align:center">
+  <img src="https://casitasdemar.com/images/logo.png" alt="Casitas de Mar" height="52" style="display:block;margin:0 auto">
+</td></tr>
+
+<tr><td style="padding:40px 40px 28px">
+  <h1 style="margin:0 0 12px;font-size:1.4rem;font-weight:400;color:#2a2118;font-family:Georgia,serif">Hola, ${esc(nombre)}</h1>
+  <p style="margin:0;color:#666;line-height:1.7;font-family:sans-serif;font-size:0.9rem">Hemos recibido tu solicitud de reserva para <strong style="color:#2a2118">${esc(propiedad)}</strong>. Nos pondremos en contacto contigo en breve para confirmar disponibilidad y los detalles finales.</p>
+</td></tr>
+
+<tr><td style="padding:0 40px 32px">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background:#e8d5b7;padding:24px">
+    <tr><td colspan="2" style="font-family:sans-serif;font-size:0.7rem;letter-spacing:0.1em;text-transform:uppercase;color:#B5896A;padding-bottom:14px;font-weight:600">Resumen de tu solicitud</td></tr>
+    ${row('Propiedad', esc(propiedad))}
+    ${row('Entrada', fmt(entrada))}
+    ${row('Salida', fmt(salida))}
+    ${row('Noches', String(noches))}
+    ${row('Huéspedes', `${adultos} adulto${adultos != 1 ? 's' : ''}${ninos > 0 ? ` · ${ninos} niño${ninos != 1 ? 's' : ''}` : ''}`)}
+    ${priceRows}
+    <tr>
+      <td style="padding:12px 0 0;color:#2a2118;font-family:sans-serif;font-size:0.95rem;font-weight:700">Total estimado</td>
+      <td align="right" style="padding:12px 0 0;color:#2a2118;font-family:sans-serif;font-size:1.05rem;font-weight:700">${totalDisplay}</td>
+    </tr>
+    ${promo_code ? `<tr><td colspan="2" style="padding:6px 0 0;font-family:sans-serif;font-size:0.8rem;color:#7a9e7e">✓ Código aplicado: ${esc(promo_code)}</td></tr>` : ''}
+  </table>
+</td></tr>
+
+${comentariosSection}
+
+<tr><td style="padding:${comentarios ? '24px' : '0'} 40px 32px">
+  <p style="margin:0;color:#aaa;font-size:0.8rem;font-family:sans-serif;line-height:1.6">Este correo confirma que hemos recibido tu solicitud. La reserva quedará confirmada una vez que te contactemos directamente.</p>
+</td></tr>
+
+<tr><td style="background:#2a2118;padding:28px 40px;text-align:center">
+  <p style="margin:0 0 6px;font-family:sans-serif;font-size:0.7rem;letter-spacing:0.1em;text-transform:uppercase;color:#B5896A;font-weight:600">Casitas de Mar</p>
+  <p style="margin:0 0 6px;font-family:sans-serif;font-size:0.85rem">
+    <a href="mailto:info@casitasdemar.com" style="color:#e8d5b7;text-decoration:none">info@casitasdemar.com</a>
+  </p>
+  <p style="margin:0;font-family:sans-serif">
+    <a href="https://casitasdemar.com" style="color:#B5896A;font-size:0.85rem;text-decoration:none">casitasdemar.com</a>
+  </p>
+</td></tr>
+
+</table>
+</td></tr>
+</table>
+</body>
+</html>`;
+
+  await fetch('https://api.brevo.com/v3/smtp/email', {
+    method: 'POST',
+    headers: { 'api-key': env.BREVO_API_KEY, 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      sender:  { name: 'Casitas de Mar', email: 'info@casitasdemar.com' },
+      to:      [{ email, name: nombre }],
+      replyTo: { email: 'info@casitasdemar.com', name: 'Casitas de Mar' },
+      subject: `Solicitud de reserva recibida – ${propiedad}`,
+      htmlContent: html,
+    }),
+  });
 }
