@@ -305,6 +305,7 @@
               <th>Promo</th>
               <th>Comentarios</th>
               <th>Fecha</th>
+              <th></th>
             </tr>
           </thead>
           <tbody id="tbody-reservas"></tbody>
@@ -543,6 +544,7 @@
         <td>${r.promo_code ? `<span class="badge" style="background:#fef9c3;color:#854d0e">${esc(r.promo_code)}</span>` : ''}</td>
         <td style="max-width:200px;white-space:pre-wrap">${esc(r.comentarios)}</td>
         <td style="white-space:nowrap">${formatDate(r.created_at)}</td>
+        <td><button onclick="eliminarReserva(${r.id})" style="background:#fee2e2;border:none;border-radius:4px;padding:2px 8px;cursor:pointer;color:#dc2626;font-size:0.8rem">✕</button></td>
       `;
       tbody.appendChild(tr);
     });
@@ -722,6 +724,16 @@
     document.getElementById('new-usos-max').value = '';
     codigosLoaded = false;
     fetchCodigos();
+  }
+
+  async function eliminarReserva(id) {
+    if (!confirm('¿Eliminar esta reserva? Esta acción no se puede deshacer.')) return;
+    await fetch(`${WORKER_URL}/admin/reservas/${id}`, {
+      method: 'DELETE',
+      headers: { Authorization: `Bearer ${token}`, 'X-Admin-User': adminUser }
+    });
+    reservas = reservas.filter(r => r.id !== id);
+    renderReservas();
   }
 
   async function eliminarCodigo(id, btn) {

@@ -231,6 +231,13 @@ export default {
         }
       }
 
+      if (url.pathname.startsWith('/admin/reservas/') && request.method === 'DELETE') {
+        if (!isAuthorized(request, env)) return json({ ok: false, error: 'Unauthorized' }, 401, cors);
+        const id = url.pathname.split('/').pop();
+        await env.DB.prepare('DELETE FROM reservas WHERE id = ?').bind(parseInt(id)).run();
+        return json({ ok: true }, 200, cors);
+      }
+
       if (url.pathname.startsWith('/admin/discount-codes/') && request.method === 'DELETE') {
         if (!isAuthorized(request, env)) return json({ ok: false, error: 'Unauthorized' }, 401, cors);
         const id = url.pathname.split('/').pop();

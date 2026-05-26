@@ -662,7 +662,9 @@ function calcularPrecio() {
     savingsEl.textContent = t('directSaving', Math.round(total * 0.16));
   }
 
-  lastPricing = { nights: noches, subtotal: subtotalWithPromo, cleaning: limpieza, total: total, breakdown: breakdownText };
+  lastPricing = { nights: noches, subtotal: subtotalWithPromo, cleaning: limpieza, total: total, breakdown: breakdownText,
+    tierDiscount: tierDiscount, gapDiscount: gapDiscount, promoDiscount: promoDiscountAmount,
+    discountLabel: discountLabelText, promoCode: appliedPromo ? appliedPromo.codigo : '' };
 
   const hN = document.getElementById('hdNights');
   const hS = document.getElementById('hdSubtotal');
@@ -799,6 +801,9 @@ async function aplicarCodigoPromo() {
       fdEmail.set('total_price',      lastPricing.total.toFixed(2));
       fdEmail.set('price_breakdown',  lastPricing.breakdown);
       fdEmail.set('replyto',          fdEmail.get('email') || '');
+      if (lastPricing.tierDiscount > 0) fdEmail.set('descuento_temporada', `-${lastPricing.tierDiscount.toFixed(2)} € (${lastPricing.discountLabel})`);
+      if (lastPricing.gapDiscount  > 0) fdEmail.set('descuento_fill_gap',  `-${lastPricing.gapDiscount.toFixed(2)} €`);
+      if (lastPricing.promoDiscount > 0) fdEmail.set('descuento_codigo_promo', `-${lastPricing.promoDiscount.toFixed(2)} € (código: ${lastPricing.promoCode})`);
       fetch('https://api.web3forms.com/submit', { method: 'POST', body: fdEmail })
         .then(r => r.json())
         .then(d => { if (!d.success) console.error('Web3Forms error:', d); })
