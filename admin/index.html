@@ -4,246 +4,112 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="robots" content="noindex, nofollow" />
-  <title>Admin — Tus Casas Vacaciones</title>
+  <title>Admin — Casitas de Mar</title>
   <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js" integrity="sha384-EnyY0/GSHQGSxSgMwaIPzSESbqoOLSexfnSMN2AP+39Ckmn92stwABZynq1JyzdT" crossorigin="anonymous"></script>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: system-ui, sans-serif; background: #f4f4f5; color: #18181b; min-height: 100vh; }
 
-    body {
-      font-family: system-ui, sans-serif;
-      background: #f4f4f5;
-      color: #18181b;
-      min-height: 100vh;
-    }
-
-    /* Login */
-    #login-screen {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      min-height: 100vh;
-    }
-
-    .login-box {
-      background: white;
-      border-radius: 12px;
-      padding: 2rem;
-      width: 100%;
-      max-width: 360px;
-      box-shadow: 0 4px 24px rgba(0,0,0,0.08);
-    }
-
-    .login-box h1 {
-      font-size: 1.2rem;
-      font-weight: 600;
-      margin-bottom: 1.5rem;
-      text-align: center;
-    }
-
-    .login-box input {
-      width: 100%;
-      padding: 0.6rem 0.8rem;
-      border: 1px solid #d4d4d8;
-      border-radius: 8px;
-      font-size: 0.95rem;
-      margin-bottom: 1rem;
-    }
-
-    .login-box button {
-      width: 100%;
-      padding: 0.65rem;
-      background: #2563eb;
-      color: white;
-      border: none;
-      border-radius: 8px;
-      font-size: 0.95rem;
-      font-weight: 500;
-      cursor: pointer;
-    }
-
+    /* ---- Login ---- */
+    #login-screen { display: flex; align-items: center; justify-content: center; min-height: 100vh; }
+    .login-box { background: white; border-radius: 12px; padding: 2rem; width: 100%; max-width: 360px; box-shadow: 0 4px 24px rgba(0,0,0,0.08); }
+    .login-box h1 { font-size: 1.2rem; font-weight: 600; margin-bottom: 1.5rem; text-align: center; }
+    .login-box input { width: 100%; padding: 0.6rem 0.8rem; border: 1px solid #d4d4d8; border-radius: 8px; font-size: 0.95rem; margin-bottom: 1rem; }
+    .login-box button { width: 100%; padding: 0.65rem; background: #2563eb; color: white; border: none; border-radius: 8px; font-size: 0.95rem; font-weight: 500; cursor: pointer; }
     .login-box button:hover { background: #1d4ed8; }
     #login-error { color: #dc2626; font-size: 0.85rem; margin-top: 0.5rem; text-align: center; }
 
-    /* App */
+    /* ---- App shell ---- */
     #app { display: none; }
-
-    header {
-      background: white;
-      border-bottom: 1px solid #e4e4e7;
-      padding: 0.9rem 1.5rem;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-
+    header { background: white; border-bottom: 1px solid #e4e4e7; padding: 0.9rem 1.5rem; display: flex; align-items: center; justify-content: space-between; }
     header h1 { font-size: 1.1rem; font-weight: 600; }
+    .header-btns { display: flex; gap: 0.5rem; }
+    header button { padding: 0.4rem 0.9rem; background: #f4f4f5; border: 1px solid #d4d4d8; border-radius: 6px; font-size: 0.85rem; cursor: pointer; }
+    header button:hover { background: #e4e4e7; }
+    nav { display: flex; gap: 0.5rem; padding: 1rem 1.5rem 0; flex-wrap: wrap; }
+    nav button { padding: 0.5rem 1.1rem; border: none; border-radius: 8px 8px 0 0; font-size: 0.9rem; font-weight: 500; cursor: pointer; background: #e4e4e7; color: #52525b; }
+    nav button.active { background: white; color: #2563eb; border-bottom: 2px solid #2563eb; }
+    main { padding: 0 1.5rem 2rem; background: white; margin: 0 1.5rem 1.5rem; border-radius: 0 8px 8px 8px; border: 1px solid #e4e4e7; min-height: 400px; }
 
-    header button {
-      padding: 0.4rem 0.9rem;
-      background: #f4f4f5;
-      border: 1px solid #d4d4d8;
-      border-radius: 6px;
-      font-size: 0.85rem;
-      cursor: pointer;
-    }
-
-    nav {
-      display: flex;
-      gap: 0.5rem;
-      padding: 1rem 1.5rem 0;
-    }
-
-    nav button {
-      padding: 0.5rem 1.1rem;
-      border: none;
-      border-radius: 8px 8px 0 0;
-      font-size: 0.9rem;
-      font-weight: 500;
-      cursor: pointer;
-      background: #e4e4e7;
-      color: #52525b;
-    }
-
-    nav button.active {
-      background: white;
-      color: #2563eb;
-      border-bottom: 2px solid #2563eb;
-    }
-
-    main {
-      padding: 0 1.5rem 2rem;
-      background: white;
-      margin: 0 1.5rem 1.5rem;
-      border-radius: 0 8px 8px 8px;
-      border: 1px solid #e4e4e7;
-      min-height: 400px;
-    }
-
-    .toolbar {
-      display: flex;
-      gap: 0.75rem;
-      padding: 1rem 0;
-      flex-wrap: wrap;
-      align-items: center;
-    }
-
-    .toolbar input, .toolbar select {
-      padding: 0.45rem 0.7rem;
-      border: 1px solid #d4d4d8;
-      border-radius: 6px;
-      font-size: 0.875rem;
-    }
-
-    .toolbar input { width: 220px; }
-
-    .count {
-      margin-left: auto;
-      font-size: 0.85rem;
-      color: #71717a;
-    }
-
-    .btn-export {
-      padding: 0.45rem 0.9rem;
-      background: #16a34a;
-      color: white;
-      border: none;
-      border-radius: 6px;
-      font-size: 0.85rem;
-      font-weight: 500;
-      cursor: pointer;
-    }
-
+    /* ---- Toolbar ---- */
+    .toolbar { display: flex; gap: 0.6rem; padding: 1rem 0; flex-wrap: wrap; align-items: center; }
+    .toolbar input, .toolbar select { padding: 0.45rem 0.7rem; border: 1px solid #d4d4d8; border-radius: 6px; font-size: 0.875rem; }
+    .toolbar input[type="text"] { width: 190px; }
+    .toolbar input[type="date"] { width: 138px; }
+    .count { margin-left: auto; font-size: 0.85rem; color: #71717a; white-space: nowrap; }
+    .btn-export { padding: 0.45rem 0.9rem; background: #16a34a; color: white; border: none; border-radius: 6px; font-size: 0.85rem; font-weight: 500; cursor: pointer; }
     .btn-export:hover { background: #15803d; }
 
-    .table-wrap {
-      overflow-x: auto;
-    }
+    /* ---- Table ---- */
+    .table-wrap { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.875rem; }
+    th { text-align: left; padding: 0.6rem 0.75rem; background: #f4f4f5; font-weight: 600; color: #52525b; border-bottom: 1px solid #e4e4e7; white-space: nowrap; }
+    th.sortable { cursor: pointer; user-select: none; }
+    th.sortable:hover { background: #e9e9ec; }
+    th.sort-asc::after { content: ' ↑'; color: #2563eb; }
+    th.sort-desc::after { content: ' ↓'; color: #2563eb; }
+    td { padding: 0.55rem 0.75rem; border-bottom: 1px solid #f4f4f5; vertical-align: middle; }
+    tr:hover > td { background: #fafafa; }
+    tr.arriving-today > td { background: #fef3c7 !important; }
+    tr.upcoming-soon > td { background: #fffbeb !important; }
+    tr.cancelada-row > td { opacity: 0.5; }
 
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 0.875rem;
-    }
+    /* ---- Badges ---- */
+    .badge { display: inline-block; padding: 0.2rem 0.55rem; border-radius: 99px; font-size: 0.75rem; font-weight: 500; }
+    .badge-prop { background: #dbeafe; color: #1d4ed8; }
+    .badge-promo { background: #fef9c3; color: #854d0e; }
+    .badge-expired { background: #fee2e2; color: #991b1b; }
 
-    th {
-      text-align: left;
-      padding: 0.6rem 0.75rem;
-      background: #f4f4f5;
-      font-weight: 600;
-      color: #52525b;
-      border-bottom: 1px solid #e4e4e7;
-      white-space: nowrap;
+    /* ---- Estado / Pago inline selects ---- */
+    select.est-badge, select.pago-badge {
+      border: none; border-radius: 99px; font-size: 0.75rem; font-weight: 500;
+      padding: 0.2rem 1.4rem 0.2rem 0.55rem; cursor: pointer; outline: none;
+      -webkit-appearance: none; appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='5'%3E%3Cpath d='M0 0l4 5 4-5z' fill='%2371717a'/%3E%3C/svg%3E");
+      background-repeat: no-repeat; background-position: right 5px center;
     }
+    .est-pendiente  { background: #fef9c3; color: #854d0e; }
+    .est-confirmada { background: #dcfce7; color: #166534; }
+    .est-cancelada  { background: #fee2e2; color: #991b1b; }
+    .pago-sin_pagar { background: #f4f4f5; color: #52525b; }
+    .pago-senal     { background: #fef9c3; color: #854d0e; }
+    .pago-completo  { background: #dcfce7; color: #166534; }
 
-    td {
-      padding: 0.6rem 0.75rem;
-      border-bottom: 1px solid #f4f4f5;
-      vertical-align: top;
-    }
+    /* ---- Notas inline edit ---- */
+    .notas-cell { max-width: 180px; min-width: 80px; cursor: pointer; }
+    .notas-cell .notas-text { font-size: 0.8rem; white-space: pre-wrap; word-break: break-word; }
+    .notas-cell .notas-add { font-size: 0.8rem; color: #a1a1aa; }
+    .notas-cell textarea { width: 100%; min-width: 130px; padding: 3px 5px; font-size: 0.8rem; border: 1px solid #93c5fd; border-radius: 4px; resize: vertical; font-family: inherit; outline: none; }
 
-    tr:hover td { background: #fafafa; }
+    /* ---- Dashboard ---- */
+    .stat-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(175px, 1fr)); gap: 1rem; padding: 1.25rem 0 0.75rem; }
+    .stat-card { background: #f8f9fa; border: 1px solid #e4e4e7; border-radius: 10px; padding: 1rem 1.25rem; }
+    .stat-card .val { font-size: 1.75rem; font-weight: 700; color: #18181b; line-height: 1.2; }
+    .stat-card .lbl { font-size: 0.78rem; color: #71717a; margin-top: 0.3rem; }
+    .stat-card.c-green { border-color: #86efac; background: #f0fdf4; }
+    .stat-card.c-green .val { color: #16a34a; }
+    .stat-card.c-amber { border-color: #fcd34d; background: #fffbeb; }
+    .stat-card.c-amber .val { color: #d97706; }
+    .stat-card.c-blue  { border-color: #93c5fd; background: #eff6ff; }
+    .stat-card.c-blue  .val { color: #2563eb; }
+    .dash-section { margin: 1.25rem 0 0.6rem; font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: #71717a; }
+    .prop-bar-row { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.55rem; }
+    .prop-bar-label { min-width: 160px; font-size: 0.8rem; color: #52525b; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .prop-bar-track { flex: 1; background: #f4f4f5; border-radius: 99px; height: 14px; overflow: hidden; }
+    .prop-bar-fill { height: 100%; background: #2563eb; border-radius: 99px; transition: width 0.4s; }
+    .prop-bar-val { min-width: 80px; text-align: right; color: #18181b; font-weight: 600; font-size: 0.82rem; white-space: nowrap; }
 
-    .badge {
-      display: inline-block;
-      padding: 0.2rem 0.55rem;
-      border-radius: 99px;
-      font-size: 0.75rem;
-      font-weight: 500;
-      background: #dbeafe;
-      color: #1d4ed8;
-    }
-
-    .empty {
-      text-align: center;
-      padding: 3rem;
-      color: #a1a1aa;
-      font-size: 0.9rem;
-    }
-
-    .loading {
-      text-align: center;
-      padding: 3rem;
-      color: #a1a1aa;
-    }
-
-    .btn-danger {
-      padding: 0.3rem 0.6rem;
-      background: #fee2e2;
-      color: #dc2626;
-      border: 1px solid #fca5a5;
-      border-radius: 4px;
-      font-size: 0.78rem;
-      cursor: pointer;
-    }
+    /* ---- Misc ---- */
+    .empty { text-align: center; padding: 3rem; color: #a1a1aa; font-size: 0.9rem; }
+    .loading { text-align: center; padding: 3rem; color: #a1a1aa; }
+    .btn-danger { padding: 0.3rem 0.6rem; background: #fee2e2; color: #dc2626; border: 1px solid #fca5a5; border-radius: 4px; font-size: 0.78rem; cursor: pointer; }
     .btn-danger:hover { background: #fecaca; }
 
-    .codigos-form {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-      gap: 0.75rem;
-      padding: 1rem 0;
-      border-bottom: 1px solid #e4e4e7;
-      margin-bottom: 1rem;
-    }
+    /* ---- Códigos form ---- */
+    .codigos-form { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 0.75rem; padding: 1rem 0; border-bottom: 1px solid #e4e4e7; margin-bottom: 1rem; }
     .codigos-form label { font-size: 0.8rem; color: #52525b; margin-bottom: 0.25rem; display: block; }
-    .codigos-form input, .codigos-form select {
-      width: 100%;
-      padding: 0.45rem 0.7rem;
-      border: 1px solid #d4d4d8;
-      border-radius: 6px;
-      font-size: 0.875rem;
-    }
-    .codigos-form .btn-create {
-      align-self: end;
-      padding: 0.5rem 1rem;
-      background: #2563eb;
-      color: white;
-      border: none;
-      border-radius: 6px;
-      font-size: 0.875rem;
-      font-weight: 500;
-      cursor: pointer;
-    }
+    .codigos-form input, .codigos-form select { width: 100%; padding: 0.45rem 0.7rem; border: 1px solid #d4d4d8; border-radius: 6px; font-size: 0.875rem; }
+    .codigos-form .btn-create { align-self: end; padding: 0.5rem 1rem; background: #2563eb; color: white; border: none; border-radius: 6px; font-size: 0.875rem; font-weight: 500; cursor: pointer; }
     .codigos-form .btn-create:hover { background: #1d4ed8; }
     #codigos-error { color: #dc2626; font-size: 0.85rem; padding: 0.5rem 0; display: none; }
   </style>
@@ -264,47 +130,87 @@
 <!-- App -->
 <div id="app">
   <header>
-    <h1>Panel de Administración</h1>
-    <button onclick="logout()">Salir</button>
+    <h1>Casitas de Mar — Admin</h1>
+    <div class="header-btns">
+      <button onclick="refreshAll()" title="Recargar todos los datos">↻ Actualizar</button>
+      <button onclick="logout()">Salir</button>
+    </div>
   </header>
 
   <nav>
-    <button class="active" onclick="showTab('reservas', this)">Reservas</button>
-    <button onclick="showTab('contactos', this)">Contactos</button>
-    <button onclick="showTab('codigos', this)">Códigos descuento</button>
-    <button onclick="showTab('config', this)">Configuración precios</button>
+    <button class="active" data-tab="dashboard" onclick="showTab('dashboard', this)">Dashboard</button>
+    <button data-tab="reservas" onclick="showTab('reservas', this)">Reservas</button>
+    <button data-tab="contactos" onclick="showTab('contactos', this)">Contactos</button>
+    <button data-tab="codigos" onclick="showTab('codigos', this)">Códigos descuento</button>
+    <button data-tab="config" onclick="showTab('config', this)">Configuración precios</button>
   </nav>
 
   <main>
+
+    <!-- Dashboard -->
+    <div id="tab-dashboard">
+      <div class="stat-cards" id="stat-cards"></div>
+      <div class="dash-section">Próximas llegadas — 14 días</div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Propiedad</th>
+              <th>Nombre</th>
+              <th>Teléfono</th>
+              <th>Entrada</th>
+              <th>Salida</th>
+              <th>Noches</th>
+              <th>Pax</th>
+              <th>Precio</th>
+              <th>Estado pago</th>
+            </tr>
+          </thead>
+          <tbody id="tbody-upcoming"></tbody>
+        </table>
+        <div id="empty-upcoming" class="empty" style="display:none">Sin llegadas en los próximos 14 días</div>
+      </div>
+      <div class="dash-section" style="margin-top:1.75rem">Ingresos confirmados por propiedad</div>
+      <div id="prop-bars" style="padding:0.5rem 0 1.5rem"></div>
+    </div>
+
     <!-- Reservas -->
-    <div id="tab-reservas">
+    <div id="tab-reservas" style="display:none">
       <div class="toolbar">
         <input type="text" id="search-reservas" placeholder="Buscar nombre, email..." oninput="renderReservas()" />
         <select id="filter-propiedad" onchange="renderReservas()">
           <option value="">Todas las propiedades</option>
         </select>
+        <select id="filter-estado" onchange="renderReservas()">
+          <option value="">Todos los estados</option>
+          <option value="pendiente">Pendiente</option>
+          <option value="confirmada">Confirmada</option>
+          <option value="cancelada">Cancelada</option>
+        </select>
+        <input type="date" id="filter-desde" onchange="renderReservas()" title="Entrada desde" />
+        <input type="date" id="filter-hasta" onchange="renderReservas()" title="Entrada hasta" />
         <span class="count" id="count-reservas"></span>
-        <button class="btn-export" onclick="exportReservas()">Descargar Excel</button>
+        <button class="btn-export" onclick="exportReservas()">Excel</button>
       </div>
       <div class="table-wrap">
         <table>
           <thead>
             <tr>
               <th>#</th>
+              <th>Estado</th>
+              <th>Pago</th>
               <th>Propiedad</th>
               <th>Nombre</th>
               <th>Email</th>
               <th>Teléfono</th>
-              <th>Entrada</th>
-              <th>Salida</th>
-              <th>Noches</th>
-              <th>Adultos</th>
-              <th>Niños</th>
-              <th>Precio cliente</th>
-              <th>Precio servidor</th>
+              <th class="sortable sort-asc" data-col="entrada" onclick="setSort('entrada')">Entrada</th>
+              <th class="sortable" data-col="salida" onclick="setSort('salida')">Salida</th>
+              <th class="sortable" data-col="noches" onclick="setSort('noches')">Noches</th>
+              <th>Pax</th>
+              <th class="sortable" data-col="precio_calculado" onclick="setSort('precio_calculado')">Precio</th>
               <th>Promo</th>
-              <th>Comentarios</th>
-              <th>Fecha</th>
+              <th>Notas</th>
+              <th class="sortable" data-col="created_at" onclick="setSort('created_at')">Solicitud</th>
               <th></th>
             </tr>
           </thead>
@@ -315,13 +221,30 @@
       </div>
     </div>
 
-    <!-- Configuración precios -->
-    <div id="tab-config" style="display:none">
-      <div style="padding:1rem 0 0.5rem;color:#52525b;font-size:0.875rem;">
-        Edita el JSON de tarifas de cada propiedad. Cambios se aplican a todos los cálculos server-side inmediatamente.
+    <!-- Contactos -->
+    <div id="tab-contactos" style="display:none">
+      <div class="toolbar">
+        <input type="text" id="search-contactos" placeholder="Buscar nombre, email..." oninput="renderContactos()" />
+        <span class="count" id="count-contactos"></span>
+        <button class="btn-export" onclick="exportContactos()">Excel</button>
       </div>
-      <div id="config-list"></div>
-      <div id="loading-config" class="loading" style="display:none">Cargando...</div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Nombre</th>
+              <th>Email</th>
+              <th>Teléfono</th>
+              <th>Mensaje</th>
+              <th>Fecha</th>
+            </tr>
+          </thead>
+          <tbody id="tbody-contactos"></tbody>
+        </table>
+        <div id="loading-contactos" class="loading" style="display:none">Cargando...</div>
+        <div id="empty-contactos" class="empty" style="display:none">Sin resultados</div>
+      </div>
     </div>
 
     <!-- Códigos descuento -->
@@ -329,7 +252,7 @@
       <div class="codigos-form">
         <div>
           <label>Código *</label>
-          <input type="text" id="new-codigo" placeholder="VERANO10" style="text-transform:uppercase">
+          <input type="text" id="new-codigo" placeholder="VERANO25" style="text-transform:uppercase">
         </div>
         <div>
           <label>Descripción</label>
@@ -361,6 +284,10 @@
           <label>Usos máx. (vacío = ilimitado)</label>
           <input type="number" id="new-usos-max" placeholder="100" min="1">
         </div>
+        <div>
+          <label>Caduca el (opcional)</label>
+          <input type="date" id="new-expires-at">
+        </div>
         <button class="btn-create" onclick="crearCodigo()">Crear código</button>
       </div>
       <div id="codigos-error"></div>
@@ -375,6 +302,7 @@
               <th>Valor</th>
               <th>Propiedad</th>
               <th>Usos</th>
+              <th>Caduca</th>
               <th>Creado</th>
               <th></th>
             </tr>
@@ -386,31 +314,15 @@
       </div>
     </div>
 
-    <!-- Contactos -->
-    <div id="tab-contactos" style="display:none">
-      <div class="toolbar">
-        <input type="text" id="search-contactos" placeholder="Buscar nombre, email..." oninput="renderContactos()" />
-        <span class="count" id="count-contactos"></span>
-        <button class="btn-export" onclick="exportContactos()">Descargar Excel</button>
+    <!-- Configuración precios -->
+    <div id="tab-config" style="display:none">
+      <div style="padding:1rem 0 0.5rem;color:#52525b;font-size:0.875rem;">
+        Edita el JSON de tarifas de cada propiedad. Cambios se aplican a todos los cálculos server-side inmediatamente.
       </div>
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th>#</th>
-              <th>Nombre</th>
-              <th>Email</th>
-              <th>Teléfono</th>
-              <th>Mensaje</th>
-              <th>Fecha</th>
-            </tr>
-          </thead>
-          <tbody id="tbody-contactos"></tbody>
-        </table>
-        <div id="loading-contactos" class="loading" style="display:none">Cargando...</div>
-        <div id="empty-contactos" class="empty" style="display:none">Sin resultados</div>
-      </div>
+      <div id="config-list"></div>
+      <div id="loading-config" class="loading" style="display:none">Cargando...</div>
     </div>
+
   </main>
 </div>
 
@@ -422,6 +334,11 @@
   let reservas = [];
   let contactos = [];
   let contactosLoaded = false;
+  let codigosLoaded = false;
+  let configLoaded = false;
+  let sortState = { col: 'entrada', dir: 'asc' };
+
+  // ---- Auth ----
 
   function login() {
     adminUser = document.getElementById('user-input').value.trim();
@@ -431,17 +348,25 @@
   }
 
   function logout() {
-    token = '';
-    adminUser = '';
-    reservas = [];
-    contactos = [];
-    contactosLoaded = false;
+    token = ''; adminUser = ''; reservas = []; contactos = [];
+    contactosLoaded = false; codigosLoaded = false; configLoaded = false;
     document.getElementById('login-screen').style.display = 'flex';
     document.getElementById('app').style.display = 'none';
     document.getElementById('user-input').value = '';
     document.getElementById('token-input').value = '';
     document.getElementById('login-error').textContent = '';
   }
+
+  async function refreshAll() {
+    const activeTab = document.querySelector('nav button.active')?.dataset.tab;
+    contactosLoaded = false; codigosLoaded = false; configLoaded = false;
+    await fetchReservas();
+    if (activeTab === 'contactos') fetchContactos();
+    else if (activeTab === 'codigos') fetchCodigos();
+    else if (activeTab === 'config') fetchConfig();
+  }
+
+  // ---- Fetch ----
 
   async function fetchReservas() {
     document.getElementById('loading-reservas').style.display = 'block';
@@ -452,24 +377,20 @@
       const res = await fetch(`${WORKER_URL}/admin/reservas`, {
         headers: { Authorization: `Bearer ${token}`, 'X-Admin-User': adminUser }
       });
-
       if (res.status === 401) {
-        document.getElementById('login-error').textContent = 'Token incorrecto.';
+        document.getElementById('login-error').textContent = 'Credenciales incorrectas.';
         document.getElementById('loading-reservas').style.display = 'none';
         return;
       }
-
       const { data } = await res.json();
       reservas = data || [];
 
-      // Populate property filter
       const propiedades = [...new Set(reservas.map(r => r.propiedad).filter(Boolean))].sort();
       const sel = document.getElementById('filter-propiedad');
       sel.innerHTML = '<option value="">Todas las propiedades</option>';
       propiedades.forEach(p => {
         const opt = document.createElement('option');
-        opt.value = p;
-        opt.textContent = p;
+        opt.value = p; opt.textContent = p;
         sel.appendChild(opt);
       });
 
@@ -477,6 +398,7 @@
       document.getElementById('app').style.display = 'block';
       document.getElementById('loading-reservas').style.display = 'none';
       renderReservas();
+      renderDashboard();
     } catch (e) {
       document.getElementById('login-error').textContent = 'Error de conexión.';
       document.getElementById('loading-reservas').style.display = 'none';
@@ -487,7 +409,6 @@
     document.getElementById('loading-contactos').style.display = 'block';
     document.getElementById('tbody-contactos').innerHTML = '';
     document.getElementById('empty-contactos').style.display = 'none';
-
     const res = await fetch(`${WORKER_URL}/admin/contactos`, {
       headers: { Authorization: `Bearer ${token}`, 'X-Admin-User': adminUser }
     });
@@ -498,20 +419,72 @@
     renderContactos();
   }
 
-  function renderReservas() {
-    const search = document.getElementById('search-reservas').value.toLowerCase();
-    const propiedad = document.getElementById('filter-propiedad').value;
+  // ---- Tabs ----
 
-    const filtered = reservas.filter(r => {
-      const matchSearch = !search ||
-        (r.nombre || '').toLowerCase().includes(search) ||
-        (r.email || '').toLowerCase().includes(search) ||
-        (r.telefono || '').toLowerCase().includes(search);
-      const matchProp = !propiedad || r.propiedad === propiedad;
-      return matchSearch && matchProp;
+  function showTab(tab, btn) {
+    ['dashboard','reservas','contactos','codigos','config'].forEach(t => {
+      document.getElementById('tab-' + t).style.display = tab === t ? '' : 'none';
+    });
+    document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    if (tab === 'contactos' && !contactosLoaded) fetchContactos();
+    if (tab === 'codigos'   && !codigosLoaded)   fetchCodigos();
+    if (tab === 'config'    && !configLoaded)    fetchConfig();
+    if (tab === 'dashboard') renderDashboard();
+  }
+
+  // ---- Sort ----
+
+  function setSort(col) {
+    if (sortState.col === col) {
+      sortState.dir = sortState.dir === 'asc' ? 'desc' : 'asc';
+    } else {
+      sortState.col = col;
+      sortState.dir = 'asc';
+    }
+    document.querySelectorAll('th.sortable').forEach(th => {
+      th.classList.remove('sort-asc', 'sort-desc');
+      if (th.dataset.col === col) th.classList.add(sortState.dir === 'asc' ? 'sort-asc' : 'sort-desc');
+    });
+    renderReservas();
+  }
+
+  function sortArr(arr) {
+    const { col, dir } = sortState;
+    return [...arr].sort((a, b) => {
+      let va = a[col] ?? '';
+      let vb = b[col] ?? '';
+      if (['noches','adultos','precio_calculado'].includes(col)) {
+        va = parseFloat(va) || 0; vb = parseFloat(vb) || 0;
+      }
+      if (va < vb) return dir === 'asc' ? -1 : 1;
+      if (va > vb) return dir === 'asc' ? 1 : -1;
+      return 0;
+    });
+  }
+
+  // ---- Render reservas ----
+
+  function renderReservas() {
+    const search    = document.getElementById('search-reservas').value.toLowerCase();
+    const propiedad = document.getElementById('filter-propiedad').value;
+    const estado    = document.getElementById('filter-estado').value;
+    const desde     = document.getElementById('filter-desde').value;
+    const hasta     = document.getElementById('filter-hasta').value;
+
+    let filtered = reservas.filter(r => {
+      if (search && ![(r.nombre||''), (r.email||''), (r.telefono||'')].some(s => s.toLowerCase().includes(search))) return false;
+      if (propiedad && r.propiedad !== propiedad) return false;
+      if (estado && (r.estado || 'pendiente') !== estado) return false;
+      if (desde && r.entrada && r.entrada < desde) return false;
+      if (hasta && r.entrada && r.entrada > hasta) return false;
+      return true;
     });
 
-    document.getElementById('count-reservas').textContent = `${filtered.length} reserva${filtered.length !== 1 ? 's' : ''}`;
+    filtered = sortArr(filtered);
+
+    document.getElementById('count-reservas').textContent =
+      `${filtered.length} reserva${filtered.length !== 1 ? 's' : ''}`;
 
     const tbody = document.getElementById('tbody-reservas');
     tbody.innerHTML = '';
@@ -522,83 +495,358 @@
     }
     document.getElementById('empty-reservas').style.display = 'none';
 
+    const today = todayStr();
+
     filtered.forEach(r => {
       const tr = document.createElement('tr');
+      const rowClass = getRowClass(r, today);
+      if (rowClass) tr.className = rowClass;
+
+      const estado     = r.estado      || 'pendiente';
+      const estadoPago = r.estado_pago || 'sin_pagar';
+      const estadoLabels = { pendiente: 'Pendiente', confirmada: 'Confirmada', cancelada: 'Cancelada' };
+      const pagoLabels   = { sin_pagar: 'Sin pagar', senal: 'Señal', completo: 'Pagado' };
+
+      const paxText = `${esc(r.adultos||1)} ad${r.ninos > 0 ? ` · ${esc(r.ninos)} ni` : ''}`;
+
+      const precioCell = r.precio_calculado
+        ? (r.precio_discrepancia
+          ? `<span class="badge" style="background:#fee2e2;color:#dc2626" title="Discrepancia con precio cliente">⚠ ${esc(r.precio_calculado)}€</span>`
+          : `<strong>${esc(r.precio_calculado)}€</strong>`)
+        : `<span style="color:#a1a1aa">${esc(r.precio_total)||'—'}</span>`;
+
       tr.innerHTML = `
-        <td>${esc(String(r.id))}</td>
-        <td><span class="badge">${esc(r.propiedad)}</span></td>
+        <td style="color:#a1a1aa;font-size:0.8rem">${esc(String(r.id))}</td>
+        <td>
+          <select class="est-badge est-${esc(estado)}" data-id="${r.id}" data-field="estado" onchange="handleBadgeChange(this)">
+            <option value="pendiente"${estado==='pendiente'?' selected':''}>Pendiente</option>
+            <option value="confirmada"${estado==='confirmada'?' selected':''}>Confirmada</option>
+            <option value="cancelada"${estado==='cancelada'?' selected':''}>Cancelada</option>
+          </select>
+        </td>
+        <td>
+          <select class="pago-badge pago-${esc(estadoPago)}" data-id="${r.id}" data-field="estado_pago" onchange="handleBadgeChange(this)">
+            <option value="sin_pagar"${estadoPago==='sin_pagar'?' selected':''}>Sin pagar</option>
+            <option value="senal"${estadoPago==='senal'?' selected':''}>Señal</option>
+            <option value="completo"${estadoPago==='completo'?' selected':''}>Pagado</option>
+          </select>
+        </td>
+        <td><span class="badge badge-prop">${esc(r.propiedad)}</span></td>
         <td>${esc(r.nombre)}</td>
-        <td><a href="mailto:${esc(r.email)}">${esc(r.email)}</a></td>
+        <td><a href="mailto:${esc(r.email)}" style="color:#2563eb">${esc(r.email)}</a></td>
         <td>${esc(r.telefono)}</td>
-        <td>${esc(r.entrada)}</td>
-        <td>${esc(r.salida)}</td>
+        <td style="white-space:nowrap;font-weight:600">${esc(r.entrada||'')}</td>
+        <td style="white-space:nowrap">${esc(r.salida||'')}</td>
         <td>${esc(r.noches)}</td>
-        <td>${esc(r.adultos)}</td>
-        <td>${esc(r.ninos)}</td>
-        <td>${esc(r.precio_total)}</td>
-        <td>${r.precio_calculado
-          ? (r.precio_discrepancia
-              ? `<span class="badge" style="background:#fee2e2;color:#dc2626" title="Discrepancia con precio cliente">⚠️ ${esc(r.precio_calculado)} €</span>`
-              : `<span style="color:#16a34a">${esc(r.precio_calculado)} €</span>`)
-          : '<span style="color:#a1a1aa">—</span>'}</td>
-        <td>${r.promo_code ? `<span class="badge" style="background:#fef9c3;color:#854d0e">${esc(r.promo_code)}</span>` : ''}</td>
-        <td style="max-width:200px;white-space:pre-wrap">${esc(r.comentarios)}</td>
-        <td style="white-space:nowrap">${formatDate(r.created_at)}</td>
-        <td><button onclick="eliminarReserva(${r.id})" style="background:#fee2e2;border:none;border-radius:4px;padding:2px 8px;cursor:pointer;color:#dc2626;font-size:0.8rem">✕</button></td>
+        <td style="white-space:nowrap;font-size:0.82rem">${paxText}</td>
+        <td style="white-space:nowrap">${precioCell}</td>
+        <td>${r.promo_code ? `<span class="badge badge-promo">${esc(r.promo_code)}</span>` : ''}</td>
+        <td class="notas-cell" data-id="${r.id}" data-notas="${esc(r.notas||'')}">
+          ${r.notas
+            ? `<span class="notas-text" title="Click para editar">${esc(r.notas)}</span>`
+            : '<span class="notas-add">+ Nota</span>'}
+        </td>
+        <td style="white-space:nowrap;font-size:0.8rem;color:#71717a">${formatDate(r.created_at)}</td>
+        <td><button class="btn-danger" onclick="eliminarReserva(${r.id})">✕</button></td>
       `;
       tbody.appendChild(tr);
     });
   }
 
+  // Notas inline edit via event delegation
+  document.addEventListener('click', e => {
+    const td = e.target.closest('.notas-cell');
+    if (td && !td.querySelector('textarea')) editNotas(td);
+  });
+
+  function editNotas(td) {
+    const id = parseInt(td.dataset.id);
+    const current = td.dataset.notas || '';
+    td.innerHTML = '';
+    const ta = document.createElement('textarea');
+    ta.rows = 2;
+    ta.placeholder = 'Añadir nota...';
+    ta.value = current;
+    td.appendChild(ta);
+    ta.focus();
+    ta.addEventListener('blur',    () => saveNotas(id, td, ta.value));
+    ta.addEventListener('keydown', e  => { if (e.key === 'Escape') ta.blur(); });
+    ta.addEventListener('click',   e  => e.stopPropagation());
+  }
+
+  async function saveNotas(id, td, value) {
+    const ok = await patchReserva(id, { notas: value });
+    td.dataset.notas = value;
+    td.innerHTML = value
+      ? `<span class="notas-text" title="Click para editar">${esc(value)}</span>`
+      : '<span class="notas-add">+ Nota</span>';
+  }
+
+  async function handleBadgeChange(sel) {
+    const id    = parseInt(sel.dataset.id);
+    const field = sel.dataset.field;
+    const val   = sel.value;
+    const ok    = await patchReserva(id, { [field]: val });
+    if (ok) {
+      const isEst = field === 'estado';
+      sel.className = `${isEst ? 'est-badge' : 'pago-badge'} ${isEst ? 'est-' : 'pago-'}${val}`;
+      // Update row class if estado changed
+      if (isEst) {
+        const r = reservas.find(r => r.id === id);
+        if (r) {
+          const tr = sel.closest('tr');
+          tr.className = getRowClass(r, todayStr());
+        }
+      }
+      renderDashboard();
+    } else {
+      const r = reservas.find(r => r.id === id);
+      if (r) sel.value = r[field] || (field === 'estado' ? 'pendiente' : 'sin_pagar');
+    }
+  }
+
+  async function patchReserva(id, fields) {
+    try {
+      const res = await fetch(`${WORKER_URL}/admin/reservas/${id}`, {
+        method: 'PATCH',
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'X-Admin-User': adminUser,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(fields)
+      });
+      const d = await res.json();
+      if (d.ok) {
+        const idx = reservas.findIndex(r => r.id === id);
+        if (idx !== -1) Object.assign(reservas[idx], fields);
+      }
+      return d.ok;
+    } catch { return false; }
+  }
+
+  function getRowClass(r, today) {
+    if ((r.estado || 'pendiente') === 'cancelada') return 'cancelada-row';
+    if (!r.entrada) return '';
+    const diff = Math.round(
+      (new Date(r.entrada + 'T00:00:00') - new Date(today + 'T00:00:00')) / 86400000
+    );
+    if (diff === 0 || diff === 1) return 'arriving-today';
+    if (diff > 1 && diff <= 7) return 'upcoming-soon';
+    return '';
+  }
+
+  // ---- Render contactos ----
+
   function renderContactos() {
     const search = document.getElementById('search-contactos').value.toLowerCase();
-
     const filtered = contactos.filter(c =>
-      !search ||
-      (c.nombre || '').toLowerCase().includes(search) ||
-      (c.email || '').toLowerCase().includes(search) ||
-      (c.telefono || '').toLowerCase().includes(search)
+      !search || [(c.nombre||''), (c.email||''), (c.telefono||'')].some(s => s.toLowerCase().includes(search))
     );
-
-    document.getElementById('count-contactos').textContent = `${filtered.length} contacto${filtered.length !== 1 ? 's' : ''}`;
-
+    document.getElementById('count-contactos').textContent =
+      `${filtered.length} contacto${filtered.length !== 1 ? 's' : ''}`;
     const tbody = document.getElementById('tbody-contactos');
     tbody.innerHTML = '';
-
     if (filtered.length === 0) {
       document.getElementById('empty-contactos').style.display = 'block';
       return;
     }
     document.getElementById('empty-contactos').style.display = 'none';
-
     filtered.forEach(c => {
       const tr = document.createElement('tr');
       tr.innerHTML = `
-        <td>${esc(String(c.id))}</td>
+        <td style="color:#a1a1aa;font-size:0.8rem">${esc(String(c.id))}</td>
         <td>${esc(c.nombre)}</td>
-        <td><a href="mailto:${esc(c.email)}">${esc(c.email)}</a></td>
+        <td><a href="mailto:${esc(c.email)}" style="color:#2563eb">${esc(c.email)}</a></td>
         <td>${esc(c.telefono)}</td>
         <td style="max-width:280px;white-space:pre-wrap">${esc(c.mensaje)}</td>
-        <td style="white-space:nowrap">${formatDate(c.created_at)}</td>
+        <td style="white-space:nowrap;font-size:0.8rem;color:#71717a">${formatDate(c.created_at)}</td>
       `;
       tbody.appendChild(tr);
     });
   }
 
-  let codigosLoaded = false;
+  // ---- Dashboard ----
 
-  let configLoaded = false;
+  function renderDashboard() {
+    const today = todayStr();
+    const in7   = dateAddDays(today, 7);
+    const in14  = dateAddDays(today, 14);
+    const in30  = dateAddDays(today, 30);
 
-  function showTab(tab, btn) {
-    ['reservas','contactos','codigos','config'].forEach(t => {
-      document.getElementById('tab-' + t).style.display = tab === t ? '' : 'none';
+    const activas     = reservas.filter(r => (r.estado || 'pendiente') !== 'cancelada');
+    const confirmadas = reservas.filter(r => r.estado === 'confirmada');
+    const ingresos    = confirmadas.reduce((s, r) =>
+      s + (parseFloat(r.precio_calculado) || parseFloat(r.precio_total) || 0), 0);
+    const llegadas7   = activas.filter(r => r.entrada && r.entrada >= today && r.entrada <= in7);
+    const llegadas30  = activas.filter(r => r.entrada && r.entrada >= today && r.entrada <= in30);
+    const proximas14  = activas
+      .filter(r => r.entrada && r.entrada >= today && r.entrada <= in14)
+      .sort((a, b) => a.entrada < b.entrada ? -1 : 1);
+
+    // Stat cards
+    document.getElementById('stat-cards').innerHTML = `
+      <div class="stat-card">
+        <div class="val">${activas.length}</div>
+        <div class="lbl">Reservas activas</div>
+      </div>
+      <div class="stat-card c-green">
+        <div class="val">${ingresos.toLocaleString('es-ES',{minimumFractionDigits:0,maximumFractionDigits:0})} €</div>
+        <div class="lbl">Ingresos confirmados</div>
+      </div>
+      <div class="stat-card c-amber">
+        <div class="val">${llegadas7.length}</div>
+        <div class="lbl">Llegadas próx. 7 días</div>
+      </div>
+      <div class="stat-card c-blue">
+        <div class="val">${llegadas30.length}</div>
+        <div class="lbl">Llegadas próx. 30 días</div>
+      </div>
+    `;
+
+    // Upcoming table
+    const tbody   = document.getElementById('tbody-upcoming');
+    const emptyEl = document.getElementById('empty-upcoming');
+    tbody.innerHTML = '';
+    if (proximas14.length === 0) {
+      emptyEl.style.display = 'block';
+    } else {
+      emptyEl.style.display = 'none';
+      proximas14.forEach(r => {
+        const tr       = document.createElement('tr');
+        const rowClass = getRowClass(r, today);
+        if (rowClass) tr.className = rowClass;
+        const estadoPago = r.estado_pago || 'sin_pagar';
+        const pagoLabel  = { sin_pagar: 'Sin pagar', senal: 'Señal', completo: 'Pagado' }[estadoPago] || estadoPago;
+        const paxText    = `${r.adultos||1} ad${r.ninos > 0 ? ` · ${r.ninos} ni` : ''}`;
+        tr.innerHTML = `
+          <td><span class="badge badge-prop">${esc(r.propiedad)}</span></td>
+          <td><strong>${esc(r.nombre)}</strong></td>
+          <td>${esc(r.telefono)}</td>
+          <td style="font-weight:700;white-space:nowrap">${esc(r.entrada)}</td>
+          <td style="white-space:nowrap">${esc(r.salida)}</td>
+          <td>${esc(r.noches)}</td>
+          <td style="white-space:nowrap;font-size:0.82rem">${paxText}</td>
+          <td>${r.precio_calculado ? `${esc(r.precio_calculado)}€` : (esc(r.precio_total)||'—')}</td>
+          <td><span class="badge pago-${esc(estadoPago)}">${esc(pagoLabel)}</span></td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    // Revenue by property
+    const byProp = {};
+    confirmadas.forEach(r => {
+      if (!r.propiedad) return;
+      if (!byProp[r.propiedad]) byProp[r.propiedad] = { count: 0, ingresos: 0 };
+      byProp[r.propiedad].count++;
+      byProp[r.propiedad].ingresos += parseFloat(r.precio_calculado) || parseFloat(r.precio_total) || 0;
     });
-    document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    if (tab === 'contactos' && !contactosLoaded) fetchContactos();
-    if (tab === 'codigos'   && !codigosLoaded)   fetchCodigos();
-    if (tab === 'config'    && !configLoaded)    fetchConfig();
+    const barsEl     = document.getElementById('prop-bars');
+    const props      = Object.entries(byProp).sort((a, b) => b[1].ingresos - a[1].ingresos);
+    const maxIngreso = Math.max(1, ...props.map(([, v]) => v.ingresos));
+    if (props.length === 0) {
+      barsEl.innerHTML = '<p style="color:#a1a1aa;font-size:0.85rem">Sin reservas confirmadas aún.</p>';
+    } else {
+      barsEl.innerHTML = props.map(([prop, v]) => `
+        <div class="prop-bar-row">
+          <div class="prop-bar-label">${esc(prop)}</div>
+          <div class="prop-bar-track">
+            <div class="prop-bar-fill" style="width:${Math.round(v.ingresos / maxIngreso * 100)}%"></div>
+          </div>
+          <div class="prop-bar-val">
+            ${v.ingresos.toLocaleString('es-ES',{minimumFractionDigits:0,maximumFractionDigits:0})} €
+            <span style="font-weight:400;color:#71717a;font-size:0.74rem"> (${v.count})</span>
+          </div>
+        </div>
+      `).join('');
+    }
   }
+
+  // ---- Códigos ----
+
+  async function fetchCodigos() {
+    document.getElementById('loading-codigos').style.display = 'block';
+    document.getElementById('tbody-codigos').innerHTML = '';
+    document.getElementById('empty-codigos').style.display = 'none';
+    const res = await fetch(`${WORKER_URL}/admin/discount-codes`, {
+      headers: { Authorization: `Bearer ${token}`, 'X-Admin-User': adminUser }
+    });
+    const { data } = await res.json();
+    codigosLoaded = true;
+    document.getElementById('loading-codigos').style.display = 'none';
+    renderCodigos(data || []);
+  }
+
+  function renderCodigos(list) {
+    const tbody = document.getElementById('tbody-codigos');
+    tbody.innerHTML = '';
+    if (list.length === 0) {
+      document.getElementById('empty-codigos').style.display = 'block';
+      return;
+    }
+    document.getElementById('empty-codigos').style.display = 'none';
+    const today = todayStr();
+    list.forEach(c => {
+      const tr       = document.createElement('tr');
+      const usosText = c.usos_max != null ? `${c.usos_usados}/${c.usos_max}` : String(c.usos_usados);
+      const tipoText = c.tipo === 'pct' ? `${c.valor}%` : `${c.valor} €`;
+      const expired  = c.expires_at && c.expires_at < today;
+      const expiryHTML = c.expires_at
+        ? `${formatDateShort(c.expires_at)}${expired ? ' <span class="badge badge-expired">Expirado</span>' : ''}`
+        : '—';
+      tr.innerHTML = `
+        <td style="color:#a1a1aa;font-size:0.8rem">${esc(String(c.id))}</td>
+        <td><strong>${esc(c.codigo)}</strong></td>
+        <td>${esc(c.descripcion || '—')}</td>
+        <td>${c.tipo === 'pct' ? '%' : '€'}</td>
+        <td>${esc(tipoText)}</td>
+        <td>${esc(c.propiedad || 'Todas')}</td>
+        <td>${esc(usosText)}</td>
+        <td>${expiryHTML}</td>
+        <td style="font-size:0.8rem;color:#71717a;white-space:nowrap">${formatDate(c.created_at)}</td>
+        <td><button class="btn-danger" onclick="eliminarCodigo(${c.id}, this)">Eliminar</button></td>
+      `;
+      tbody.appendChild(tr);
+    });
+  }
+
+  async function crearCodigo() {
+    const errEl      = document.getElementById('codigos-error');
+    errEl.style.display = 'none';
+    const codigo     = document.getElementById('new-codigo').value.trim().toUpperCase();
+    const descripcion = document.getElementById('new-descripcion').value.trim();
+    const tipo       = document.getElementById('new-tipo').value;
+    const valor      = parseFloat(document.getElementById('new-valor').value);
+    const propiedad  = document.getElementById('new-propiedad').value;
+    const usos_max   = document.getElementById('new-usos-max').value;
+    const expires_at = document.getElementById('new-expires-at').value || null;
+
+    if (!codigo || isNaN(valor) || valor <= 0) {
+      errEl.textContent = 'Código y valor son obligatorios.';
+      errEl.style.display = 'block';
+      return;
+    }
+
+    const res = await fetch(`${WORKER_URL}/admin/discount-codes`, {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${token}`, 'X-Admin-User': adminUser, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ codigo, descripcion, tipo, valor, propiedad, usos_max: usos_max || null, expires_at })
+    });
+    const data = await res.json();
+    if (!data.ok) {
+      errEl.textContent = data.error || 'Error al crear el código.';
+      errEl.style.display = 'block';
+      return;
+    }
+    ['new-codigo','new-descripcion','new-valor','new-usos-max','new-expires-at'].forEach(id =>
+      document.getElementById(id).value = ''
+    );
+    codigosLoaded = false;
+    fetchCodigos();
+  }
+
+  // ---- Config ----
 
   async function fetchConfig() {
     document.getElementById('loading-config').style.display = 'block';
@@ -650,81 +898,7 @@
     setTimeout(() => { msg.style.display = 'none'; }, 2500);
   }
 
-  async function fetchCodigos() {
-    document.getElementById('loading-codigos').style.display = 'block';
-    document.getElementById('tbody-codigos').innerHTML = '';
-    document.getElementById('empty-codigos').style.display = 'none';
-    const res = await fetch(`${WORKER_URL}/admin/discount-codes`, {
-      headers: { Authorization: `Bearer ${token}`, 'X-Admin-User': adminUser }
-    });
-    const { data } = await res.json();
-    codigosLoaded = true;
-    document.getElementById('loading-codigos').style.display = 'none';
-    renderCodigos(data || []);
-  }
-
-  function renderCodigos(list) {
-    const tbody = document.getElementById('tbody-codigos');
-    tbody.innerHTML = '';
-    if (list.length === 0) { document.getElementById('empty-codigos').style.display = 'block'; return; }
-    document.getElementById('empty-codigos').style.display = 'none';
-    list.forEach(c => {
-      const tr = document.createElement('tr');
-      const usosText = c.usos_max != null ? `${c.usos_usados}/${c.usos_max}` : c.usos_usados;
-      const tipoText = c.tipo === 'pct' ? `${c.valor}%` : `${c.valor} €`;
-      tr.innerHTML = `
-        <td>${esc(String(c.id))}</td>
-        <td><strong>${esc(c.codigo)}</strong></td>
-        <td>${esc(c.descripcion || '—')}</td>
-        <td>${c.tipo === 'pct' ? '%' : '€'}</td>
-        <td>${esc(tipoText)}</td>
-        <td>${esc(c.propiedad || 'Todas')}</td>
-        <td>${esc(String(usosText))}</td>
-        <td style="white-space:nowrap">${formatDate(c.created_at)}</td>
-        <td><button class="btn-danger" onclick="eliminarCodigo(${c.id}, this)">Eliminar</button></td>
-      `;
-      tbody.appendChild(tr);
-    });
-  }
-
-  async function crearCodigo() {
-    const errEl = document.getElementById('codigos-error');
-    errEl.style.display = 'none';
-    const codigo = document.getElementById('new-codigo').value.trim().toUpperCase();
-    const descripcion = document.getElementById('new-descripcion').value.trim();
-    const tipo = document.getElementById('new-tipo').value;
-    const valor = parseFloat(document.getElementById('new-valor').value);
-    const propiedad = document.getElementById('new-propiedad').value;
-    const usos_max = document.getElementById('new-usos-max').value;
-
-    if (!codigo || isNaN(valor) || valor <= 0) {
-      errEl.textContent = 'Código y valor son obligatorios.';
-      errEl.style.display = 'block';
-      return;
-    }
-
-    const res = await fetch(`${WORKER_URL}/admin/discount-codes`, {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${token}`,
-        'X-Admin-User': adminUser,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ codigo, descripcion, tipo, valor, propiedad, usos_max: usos_max || null })
-    });
-    const data = await res.json();
-    if (!data.ok) {
-      errEl.textContent = data.error || 'Error al crear el código.';
-      errEl.style.display = 'block';
-      return;
-    }
-    document.getElementById('new-codigo').value = '';
-    document.getElementById('new-descripcion').value = '';
-    document.getElementById('new-valor').value = '';
-    document.getElementById('new-usos-max').value = '';
-    codigosLoaded = false;
-    fetchCodigos();
-  }
+  // ---- Delete ----
 
   async function eliminarReserva(id) {
     if (!confirm('¿Eliminar esta reserva? Esta acción no se puede deshacer.')) return;
@@ -734,6 +908,7 @@
     });
     reservas = reservas.filter(r => r.id !== id);
     renderReservas();
+    renderDashboard();
   }
 
   async function eliminarCodigo(id, btn) {
@@ -747,6 +922,68 @@
     fetchCodigos();
   }
 
+  // ---- Export ----
+
+  function exportReservas() {
+    const search    = document.getElementById('search-reservas').value.toLowerCase();
+    const propiedad = document.getElementById('filter-propiedad').value;
+    const estado    = document.getElementById('filter-estado').value;
+    const desde     = document.getElementById('filter-desde').value;
+    const hasta     = document.getElementById('filter-hasta').value;
+
+    let filtered = reservas.filter(r => {
+      if (search && ![(r.nombre||''), (r.email||''), (r.telefono||'')].some(s => s.toLowerCase().includes(search))) return false;
+      if (propiedad && r.propiedad !== propiedad) return false;
+      if (estado && (r.estado || 'pendiente') !== estado) return false;
+      if (desde && r.entrada && r.entrada < desde) return false;
+      if (hasta && r.entrada && r.entrada > hasta) return false;
+      return true;
+    });
+
+    const rows = filtered.map(r => ({
+      'ID':          r.id,
+      'Estado':      r.estado      || 'pendiente',
+      'Pago':        r.estado_pago || 'sin_pagar',
+      'Propiedad':   r.propiedad,
+      'Nombre':      r.nombre,
+      'Email':       r.email,
+      'Teléfono':    r.telefono,
+      'Entrada':     r.entrada,
+      'Salida':      r.salida,
+      'Noches':      r.noches,
+      'Adultos':     r.adultos,
+      'Niños':       r.ninos,
+      'Precio total':   r.precio_total,
+      'Precio calc.':   r.precio_calculado || '',
+      'Código promo':   r.promo_code  || '',
+      'Notas':          r.notas       || '',
+      'Comentarios':    r.comentarios || '',
+      'Solicitud':      r.created_at,
+    }));
+
+    const ws = XLSX.utils.json_to_sheet(rows);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Reservas');
+    XLSX.writeFile(wb, `reservas_${todayStr()}.xlsx`);
+  }
+
+  function exportContactos() {
+    const search = document.getElementById('search-contactos').value.toLowerCase();
+    const filtered = contactos.filter(c =>
+      !search || [(c.nombre||''), (c.email||''), (c.telefono||'')].some(s => s.toLowerCase().includes(search))
+    );
+    const rows = filtered.map(c => ({
+      'ID': c.id, 'Nombre': c.nombre, 'Email': c.email,
+      'Teléfono': c.telefono, 'Mensaje': c.mensaje, 'Fecha': c.created_at,
+    }));
+    const ws = XLSX.utils.json_to_sheet(rows);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Contactos');
+    XLSX.writeFile(wb, `contactos_${todayStr()}.xlsx`);
+  }
+
+  // ---- Utils ----
+
   document.getElementById('token-input').addEventListener('keydown', e => {
     if (e.key === 'Enter') login();
   });
@@ -754,83 +991,34 @@
   function esc(str) {
     if (str == null) return '';
     return String(str)
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;')
-      .replace(/'/g, '&#39;');
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
   }
 
-  function exportReservas() {
-    const search = document.getElementById('search-reservas').value.toLowerCase();
-    const propiedad = document.getElementById('filter-propiedad').value;
-
-    const filtered = reservas.filter(r => {
-      const matchSearch = !search ||
-        (r.nombre || '').toLowerCase().includes(search) ||
-        (r.email || '').toLowerCase().includes(search) ||
-        (r.telefono || '').toLowerCase().includes(search);
-      const matchProp = !propiedad || r.propiedad === propiedad;
-      return matchSearch && matchProp;
-    });
-
-    const rows = filtered.map(r => ({
-      'ID': r.id,
-      'Propiedad': r.propiedad,
-      'Nombre': r.nombre,
-      'Email': r.email,
-      'Teléfono': r.telefono,
-      'Entrada': r.entrada,
-      'Salida': r.salida,
-      'Noches': r.noches,
-      'Adultos': r.adultos,
-      'Niños': r.ninos,
-      'Precio total': r.precio_total,
-      'Código promo': r.promo_code || '',
-      'Comentarios': r.comentarios,
-      'Fecha': r.created_at,
-    }));
-
-    const ws = XLSX.utils.json_to_sheet(rows);
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, 'Reservas');
-    XLSX.writeFile(wb, `reservas_${today()}.xlsx`);
-  }
-
-  function exportContactos() {
-    const search = document.getElementById('search-contactos').value.toLowerCase();
-
-    const filtered = contactos.filter(c =>
-      !search ||
-      (c.nombre || '').toLowerCase().includes(search) ||
-      (c.email || '').toLowerCase().includes(search) ||
-      (c.telefono || '').toLowerCase().includes(search)
-    );
-
-    const rows = filtered.map(c => ({
-      'ID': c.id,
-      'Nombre': c.nombre,
-      'Email': c.email,
-      'Teléfono': c.telefono,
-      'Mensaje': c.mensaje,
-      'Fecha': c.created_at,
-    }));
-
-    const ws = XLSX.utils.json_to_sheet(rows);
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, 'Contactos');
-    XLSX.writeFile(wb, `contactos_${today()}.xlsx`);
-  }
-
-  function today() {
+  function todayStr() {
     return new Date().toISOString().slice(0, 10);
+  }
+
+  function dateAddDays(dateStr, n) {
+    const d = new Date(dateStr + 'T00:00:00');
+    d.setDate(d.getDate() + n);
+    return d.toISOString().slice(0, 10);
   }
 
   function formatDate(str) {
     if (!str) return '';
     const d = new Date(str);
     if (isNaN(d)) return str;
-    return d.toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+    return d.toLocaleDateString('es-ES', {
+      day: '2-digit', month: '2-digit', year: 'numeric',
+      hour: '2-digit', minute: '2-digit'
+    });
+  }
+
+  function formatDateShort(str) {
+    if (!str) return '';
+    const [y, m, day] = str.split('-');
+    return `${day}/${m}/${y}`;
   }
 </script>
 </body>

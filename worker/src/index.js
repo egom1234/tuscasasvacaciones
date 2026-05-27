@@ -218,17 +218,35 @@ export default {
         }
         if (request.method === 'POST') {
           const body = await request.json();
-          const { codigo, descripcion, tipo, valor, propiedad, usos_max } = body;
+          const { codigo, descripcion, tipo, valor, propiedad, usos_max, expires_at } = body;
           if (!codigo || !tipo || valor == null) return json({ ok: false, error: 'Faltan campos' }, 400, cors);
           await env.DB.prepare(
-            `INSERT INTO discount_codes (codigo, descripcion, tipo, valor, propiedad, usos_max)
-             VALUES (?, ?, ?, ?, ?, ?)`
+            `INSERT INTO discount_codes (codigo, descripcion, tipo, valor, propiedad, usos_max, expires_at)
+             VALUES (?, ?, ?, ?, ?, ?, ?)`
           ).bind(
             codigo.toUpperCase().trim(), descripcion || null, tipo,
-            parseFloat(valor), propiedad || null, usos_max ? parseInt(usos_max) : null
+            parseFloat(valor), propiedad || null, usos_max ? parseInt(usos_max) : null,
+            expires_at || null
           ).run();
           return json({ ok: true }, 200, cors);
         }
+      }
+
+      if (url.pathname.startsWith('/admin/reservas/') && request.method === 'PATCH') {
+        if (!isAuthorized(request, env)) return json({ ok: false, error: 'Unauthorized' }, 401, cors);
+        const id = parseInt(url.pathname.split('/').pop());
+        if (!id) return json({ ok: false, error: 'ID inválido' }, 400, cors);
+        const body = await request.json();
+        const allowed = ['estado', 'notas', 'estado_pago'];
+        const fields = [];
+        const values = [];
+        for (const key of allowed) {
+          if (body[key] !== undefined) { fields.push(`${key} = ?`); values.push(body[key]); }
+        }
+        if (fields.length === 0) return json({ ok: false, error: 'Sin campos válidos' }, 400, cors);
+        values.push(id);
+        await env.DB.prepare(`UPDATE reservas SET ${fields.join(', ')} WHERE id = ?`).bind(...values).run();
+        return json({ ok: true }, 200, cors);
       }
 
       if (url.pathname.startsWith('/admin/reservas/') && request.method === 'DELETE') {
@@ -275,6 +293,7 @@ export default {
         ).bind(codigo.trim()).first();
         if (!row) return json({ ok: false, error: 'Código no válido' }, 200, cors);
         if (row.usos_max != null && row.usos_usados >= row.usos_max) return json({ ok: false, error: 'Código agotado' }, 200, cors);
+        if (row.expires_at && row.expires_at < new Date().toISOString().slice(0, 10)) return json({ ok: false, error: 'Código expirado' }, 200, cors);
         if (row.propiedad && propiedad && row.propiedad !== propiedad) return json({ ok: false, error: 'Código no aplicable a esta propiedad' }, 200, cors);
         return json({ ok: true, discount: { codigo: row.codigo, tipo: row.tipo, valor: row.valor, descripcion: row.descripcion } }, 200, cors);
       }
