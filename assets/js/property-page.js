@@ -393,6 +393,24 @@ function cambiarMes(delta) {
   cargarIcal();
 })();
 
+async function fetchAndApplyRemoteConfig() {
+  const propiedad = (window.PAGE_CONFIG || {}).propiedad;
+  if (!propiedad) return;
+  try {
+    const res = await fetch(`${FORM_WORKER}/property-config/${encodeURIComponent(propiedad)}`);
+    if (!res.ok) return;
+    const remote = await res.json();
+    if (!remote || !remote.rates) return;
+    Object.assign(window.PAGE_CONFIG, remote);
+    computarGaps();
+    actualizarLeyendaGap();
+    renderCalendario();
+    actualizarBotonesStepper();
+    if (fechaEntrada && fechaSalida) calcularPrecio();
+  } catch (e) { /* silent fallback to local config */ }
+}
+fetchAndApplyRemoteConfig();
+
 function setFieldState(input, errorEl, valid, msg) {
   input.style.borderColor = valid ? 'var(--verde-ok)' : 'var(--rojo)';
   if (errorEl) {
@@ -522,7 +540,6 @@ function obtenerTarifaNoche(fecha) {
   const cfg = window.PAGE_CONFIG || {};
   const rates = cfg.rates || null;
   const m = fecha.getMonth() + 1;
-  const dia = fecha.getDate();
 
   function isNightBeforeHoliday(d) {
     const holidays = (cfg.holidays || []);
@@ -531,30 +548,14 @@ function obtenerTarifaNoche(fecha) {
     return holidays.includes(mmdd);
   }
 
-  if (rates) {
-    const r = rates[String(m)];
-    if (r === null || r === undefined) return 0;
-    let base = 0;
-    if (typeof r === 'number') base = r;
-    else if (typeof r === 'object') base = (esFinDeSemana(fecha) && r.weekend !== undefined) ? r.weekend : (r.weekday !== undefined ? r.weekday : 0);
-    if (isNightBeforeHoliday(fecha)) return Math.round(base * 1.6);
-    return base;
-  }
-
-  let baseRate;
-  if (m === 7) baseRate = 250;
-  else if (m === 8) baseRate = 260;
-  else if (m === 5) baseRate = esFinDeSemana(fecha) ? 190 : 140;
-  else if (m === 6) baseRate = esFinDeSemana(fecha) ? 200 : 160;
-  else if (m === 9) {
-    if (dia >= 1 && dia <= 6) baseRate = 190;
-    else baseRate = esFinDeSemana(fecha) ? 180 : 150;
-  } else if (m === 10) baseRate = esFinDeSemana(fecha) ? 180 : 130;
-  else if (m === 11) baseRate = esFinDeSemana(fecha) ? 180 : 110;
-  else baseRate = 140;
-
-  if (isNightBeforeHoliday(fecha)) return Math.round(baseRate * 1.6);
-  return baseRate;
+  if (!rates) return 0;
+  const r = rates[String(m)];
+  if (r === null || r === undefined) return 0;
+  let base = 0;
+  if (typeof r === 'number') base = r;
+  else if (typeof r === 'object') base = (esFinDeSemana(fecha) && r.weekend !== undefined) ? r.weekend : (r.weekday !== undefined ? r.weekday : 0);
+  if (isNightBeforeHoliday(fecha)) return Math.round(base * 1.6);
+  return base;
 }
 
 function calcularPrecio() {

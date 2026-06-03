@@ -298,6 +298,19 @@ export default {
         return json({ ok: true, discount: { codigo: row.codigo, tipo: row.tipo, valor: row.valor, descripcion: row.descripcion } }, 200, cors);
       }
 
+      // ---- Public: get property config (frontend rate sync) ----
+      if (url.pathname.startsWith('/property-config/') && request.method === 'GET') {
+        const propiedad = decodeURIComponent(url.pathname.split('/property-config/')[1] || '');
+        if (!propiedad) return json({ ok: false, error: 'Propiedad requerida' }, 400, cors);
+        const row = await env.DB.prepare(
+          'SELECT config_json FROM property_config WHERE propiedad = ?'
+        ).bind(propiedad).first();
+        if (!row) return json({ ok: false, error: 'Not found' }, 404, cors);
+        return new Response(row.config_json, {
+          headers: { ...cors, 'Content-Type': 'application/json', 'Cache-Control': 'public, max-age=300' }
+        });
+      }
+
       if (request.method !== 'POST') {
         return new Response('Method not allowed', { status: 405, headers: cors });
       }

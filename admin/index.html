@@ -848,6 +848,38 @@
 
   // ---- Config ----
 
+  const DEFAULT_CONFIGS = {
+    'Casa Gonda': {
+      maxPersonas: 2, minNoches: 4, cleaning: 100,
+      rates: { "1":100,"2":100,"3":100,"4":130,"5":140,"6":150,"7":170,"8":180,"9":140,"10":120,"11":100,"12":140 }
+    },
+    'Casa Blava': {
+      maxPersonas: 6, minNoches: 2, cleaning: 60,
+      discounts: [{ minNights:4, pct:0.05 },{ minNights:7, pct:0.08 }],
+      rates: { "5":{"weekday":140,"weekend":190},"6":{"weekday":160,"weekend":200},"7":250,"8":250,"9":{"weekday":150,"weekend":180},"10":{"weekday":130,"weekend":180},"11":{"weekday":110,"weekend":180} },
+      holidays: ['9-24','11-01','12-06','12-07','12-08','12-24','12-25','12-26','12-31']
+    },
+    'Loft Binibeca': {
+      maxPersonas: 2, minNoches: 3, cleaning: 60,
+      seasonDiscounts: [{ minNights:4, pct:0.10, months:[6,9] },{ minNights:3, pct:0.10, months:[1,2,3,4,5,10,11,12] }],
+      rates: { "1":80,"2":80,"3":80,"4":80,"5":110,"6":140,"7":170,"8":170,"9":130,"10":100,"11":80,"12":80 }
+    },
+    'Apartamento Tarifa': {
+      maxPersonas: 4, minNoches: 4, cleaning: 50,
+      discounts: [{ minNights:5, pct:0.05 },{ minNights:6, pct:0.08 },{ minNights:7, pct:0.11 }],
+      rates: { "1":50,"2":50,"3":50,"4":60,"5":80,"6":100,"7":140,"8":180,"9":100,"10":80,"11":60,"12":60 }
+    },
+    'Loft Tarifa': {
+      maxPersonas: 2, minNoches: 4, cleaning: 40,
+      discounts: [{ minNights:5, pct:0.05 },{ minNights:6, pct:0.08 },{ minNights:7, pct:0.11 }],
+      rates: { "1":40,"2":40,"3":50,"4":50,"5":70,"6":80,"7":100,"8":120,"9":80,"10":60,"11":50,"12":50 }
+    }
+  };
+
+  const CONFIG_PROPS = ['Casa Gonda','Casa Blava','Loft Binibeca','Apartamento Tarifa','Loft Tarifa'];
+
+  function propSlug(p) { return p.toLowerCase().replace(/\s+/g, '-'); }
+
   async function fetchConfig() {
     document.getElementById('loading-config').style.display = 'block';
     const res = await fetch(`${WORKER_URL}/admin/property-config`, {
@@ -862,27 +894,46 @@
   function renderConfig(list) {
     const el = document.getElementById('config-list');
     el.innerHTML = '';
-    list.forEach(row => {
-      const pretty = JSON.stringify(JSON.parse(row.config_json), null, 2);
+    const dbMap = {};
+    list.forEach(row => { dbMap[row.propiedad] = row; });
+
+    CONFIG_PROPS.forEach(prop => {
+      const row    = dbMap[prop];
+      const slug   = propSlug(prop);
+      const pretty = row
+        ? JSON.stringify(JSON.parse(row.config_json), null, 2)
+        : JSON.stringify(DEFAULT_CONFIGS[prop] || {}, null, 2);
+      const subtitle = row
+        ? `Actualizado: ${formatDate(row.updated_at)}`
+        : '<span style="color:#d97706;font-weight:500">Sin guardar — mostrando defaults</span>';
+
       const div = document.createElement('div');
       div.style.cssText = 'margin-bottom:1.5rem;border:1px solid #e4e4e7;border-radius:8px;overflow:hidden;';
       div.innerHTML = `
         <div style="background:#f4f4f5;padding:0.5rem 0.75rem;font-weight:600;font-size:0.875rem;display:flex;justify-content:space-between;align-items:center;">
-          <span>${esc(row.propiedad)}</span>
-          <small style="color:#71717a;font-weight:400;">Actualizado: ${formatDate(row.updated_at)}</small>
+          <span>${esc(prop)}</span>
+          <small style="font-weight:400;">${subtitle}</small>
         </div>
-        <textarea id="cfg-${esc(row.propiedad)}" style="width:100%;min-height:220px;font-family:monospace;font-size:0.8rem;padding:0.75rem;border:none;border-top:1px solid #e4e4e7;resize:vertical;">${esc(pretty)}</textarea>
+        <textarea id="cfg-${slug}" style="width:100%;min-height:220px;font-family:monospace;font-size:0.8rem;padding:0.75rem;border:none;border-top:1px solid #e4e4e7;resize:vertical;">${esc(pretty)}</textarea>
         <div style="padding:0.5rem 0.75rem;background:#fafafa;border-top:1px solid #e4e4e7;display:flex;gap:0.5rem;align-items:center;">
-          <button class="btn-export" style="font-size:0.8rem;padding:0.35rem 0.75rem;" onclick="guardarConfig('${esc(row.propiedad)}')">Guardar</button>
-          <span id="cfg-msg-${esc(row.propiedad)}" style="font-size:0.8rem;display:none;"></span>
+          <button class="btn-export" style="font-size:0.8rem;padding:0.35rem 0.75rem;" onclick="guardarConfig('${slug}','${esc(prop)}')">Guardar</button>
+          <button onclick="loadDefaults('${slug}','${esc(prop)}')" style="font-size:0.8rem;padding:0.35rem 0.75rem;background:#f4f4f5;border:1px solid #d4d4d8;border-radius:6px;cursor:pointer;">Reset defaults</button>
+          <span id="cfg-msg-${slug}" style="font-size:0.8rem;display:none;"></span>
         </div>`;
       el.appendChild(div);
     });
   }
 
-  async function guardarConfig(propiedad) {
-    const ta  = document.getElementById(`cfg-${propiedad}`);
-    const msg = document.getElementById(`cfg-msg-${propiedad}`);
+  function loadDefaults(slug, propiedad) {
+    const ta = document.getElementById(`cfg-${slug}`);
+    if (ta && DEFAULT_CONFIGS[propiedad]) {
+      ta.value = JSON.stringify(DEFAULT_CONFIGS[propiedad], null, 2);
+    }
+  }
+
+  async function guardarConfig(slug, propiedad) {
+    const ta  = document.getElementById(`cfg-${slug}`);
+    const msg = document.getElementById(`cfg-msg-${slug}`);
     try { JSON.parse(ta.value); } catch {
       msg.style.color = '#dc2626'; msg.textContent = 'JSON inválido'; msg.style.display = 'inline'; return;
     }
@@ -893,9 +944,10 @@
     });
     const d = await res.json();
     msg.style.color = d.ok ? '#16a34a' : '#dc2626';
-    msg.textContent = d.ok ? 'Guardado' : (d.error || 'Error');
+    msg.textContent = d.ok ? 'Guardado ✓' : (d.error || 'Error');
     msg.style.display = 'inline';
-    setTimeout(() => { msg.style.display = 'none'; }, 2500);
+    if (d.ok) { configLoaded = false; setTimeout(() => fetchConfig(), 800); }
+    else setTimeout(() => { msg.style.display = 'none'; }, 3000);
   }
 
   // ---- Delete ----
