@@ -1,5 +1,5 @@
 window.LA_ALMEZA_PRICES = {
-  maxPersonas: 6,
+  maxPersonas: 10,
   minNoches:   2,
   cleaning:    80,
   rates: {
