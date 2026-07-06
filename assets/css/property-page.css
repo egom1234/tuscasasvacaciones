@@ -15,6 +15,7 @@
 
 /* ── Reset & Base ───────────────────────────────────────── */
 * { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
 body { font-family: var(--font-body); line-height: 1.6; color: var(--gris-oscuro); background: var(--blanco); }
 
 /* ── Header ─────────────────────────────────────────────── */
@@ -35,6 +36,9 @@ main { padding-top: 80px; min-height: calc(100vh - 200px); }
 .property-hero { background: var(--blanco); padding: 4rem 0 2rem; }
 .property-title { font-size: 3rem; font-weight: 400; font-family: var(--font-display); color: var(--verde-oscuro); margin-bottom: 0.5rem; letter-spacing: 0; }
 .property-location { font-size: 1rem; color: var(--verde-primario); font-weight: 400; letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 2rem; }
+.cta-reserva { display: inline-block; background: var(--verde-primario); color: #f7f3ee; padding: 0.9rem 2rem; border: none; border-radius: 0; font-size: 0.85rem; font-weight: 400; font-family: var(--font-body); letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer; transition: background 0.3s; text-decoration: none; margin-bottom: 1.5rem; }
+.cta-reserva:hover { background: var(--verde-oscuro); }
+#reserva { scroll-margin-top: 100px; }
 .gallery { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin: 2rem 0; }
 .gallery-main { grid-column: span 2; grid-row: span 2; height: 655px; background-size: cover; background-position: center; border-radius: 0; cursor: pointer; transition: opacity 0.2s; }
 .gallery-item  { height: 320px; background-size: cover; background-position: center; border-radius: 0; cursor: pointer; transition: opacity 0.2s; }
