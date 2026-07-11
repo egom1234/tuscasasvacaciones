@@ -542,6 +542,10 @@ function obtenerTarifaNoche(fecha) {
   const rates = cfg.rates || null;
   const m = fecha.getMonth() + 1;
 
+  const specialDates = cfg.specialDates || {};
+  const dateKey = `${fecha.getFullYear()}-${String(m).padStart(2,'0')}-${String(fecha.getDate()).padStart(2,'0')}`;
+  if (specialDates[dateKey] !== undefined) return specialDates[dateKey];
+
   function isNightBeforeHoliday(d) {
     const holidays = (cfg.holidays || []);
     const next = new Date(d.getTime() + 86400000);
