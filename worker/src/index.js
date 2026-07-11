@@ -102,6 +102,10 @@ function obtenerTarifaNocheW(fecha, config) {
   const holidays = config.holidays || [];
   const m = fecha.getMonth() + 1;
 
+  const specialDates = config.specialDates || {};
+  const dateKey = `${fecha.getFullYear()}-${String(m).padStart(2,'0')}-${String(fecha.getDate()).padStart(2,'0')}`;
+  if (specialDates[dateKey] !== undefined) return specialDates[dateKey];
+
   function isNightBeforeHoliday(d) {
     const next = new Date(d.getTime() + 86400000);
     const mmdd = `${String(next.getMonth()+1).padStart(2,'0')}-${String(next.getDate()).padStart(2,'0')}`;
