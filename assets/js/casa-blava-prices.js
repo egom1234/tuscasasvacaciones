@@ -2,6 +2,7 @@ window.CASA_BLAVA_PRICES = {
   maxPersonas: 6,
   minNoches:   2,
   cleaning:    0,
+  gapCleaning: 60,
   discounts: [
     { minNights: 4, pct: 0.05 },
     { minNights: 7, pct: 0.08 }

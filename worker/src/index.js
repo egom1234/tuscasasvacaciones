@@ -136,7 +136,8 @@ function calcularPrecioW(config, entrada, salida, isGap, promoRow) {
     cur = new Date(cur.getTime() + 86400000);
   }
 
-  const limpieza = config.cleaning != null ? config.cleaning : 50;
+  const gapCleaning = config.gapCleaning != null ? config.gapCleaning : null;
+  const limpieza = (isGap && gapCleaning != null) ? gapCleaning : (config.cleaning != null ? config.cleaning : 50);
 
   const discountTiers = config.discounts || [];
   const activeTier = discountTiers
