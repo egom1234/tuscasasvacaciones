@@ -927,9 +927,9 @@
 
   function loadDefaults(slug, propiedad) {
     const ta = document.getElementById(`cfg-${slug}`);
-    if (ta && DEFAULT_CONFIGS[propiedad]) {
-      ta.value = JSON.stringify(DEFAULT_CONFIGS[propiedad], null, 2);
-    }
+    if (!ta || !DEFAULT_CONFIGS[propiedad]) return;
+    if (!confirm('Esto reemplaza el contenido actual del cuadro por los valores por defecto. Los cambios sin guardar se perderán. ¿Continuar?')) return;
+    ta.value = JSON.stringify(DEFAULT_CONFIGS[propiedad], null, 2);
   }
 
   async function guardarConfig(slug, propiedad) {
