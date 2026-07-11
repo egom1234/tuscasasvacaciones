@@ -48,6 +48,7 @@ const I18N = {
     waFromTo: (from, to, nights) => ` Del ${from} al ${to} (${nights} noches).`,
     waStarting: (from) => ` A partir del ${from}.`,
     waTotal: (total, subtotal, cleaning) => ` Importe: ${total} € (Subtotal: ${subtotal} €, Limpieza: ${cleaning} €).`,
+    waTotalNoCleaning: (total, subtotal) => ` Importe: ${total} € (Subtotal: ${subtotal} €).`,
     waBreakdown: (txt) => ` Desglose:\n${txt}`
   },
   en: {
@@ -82,6 +83,7 @@ const I18N = {
     waFromTo: (from, to, nights) => ` From ${from} to ${to} (${nights} nights).`,
     waStarting: (from) => ` Starting from ${from}.`,
     waTotal: (total, subtotal, cleaning) => ` Total: ${total} € (Subtotal: ${subtotal} €, Cleaning: ${cleaning} €).`,
+    waTotalNoCleaning: (total, subtotal) => ` Total: ${total} € (Subtotal: ${subtotal} €).`,
     waBreakdown: (txt) => ` Breakdown:\n${txt}`
   }
 };
@@ -571,7 +573,7 @@ function calcularPrecio() {
     if (pa) pa.textContent = t('selectDates');
     if (ps) ps.style.display = 'none';
 
-    const limpiezaBase = (window.PAGE_CONFIG && window.PAGE_CONFIG.cleaning) || LIMPIEZA;
+    const limpiezaBase = (window.PAGE_CONFIG && window.PAGE_CONFIG.cleaning != null) ? window.PAGE_CONFIG.cleaning : LIMPIEZA;
     lastPricing = { nights: 0, subtotal: 0, cleaning: limpiezaBase, total: 0, breakdown: '' };
 
     const hN2 = document.getElementById('hdNights');
@@ -602,7 +604,7 @@ function calcularPrecio() {
     cur = new Date(cur.getTime() + 86400000);
   }
 
-  const limpieza = (window.PAGE_CONFIG && window.PAGE_CONFIG.cleaning) || LIMPIEZA;
+  const limpieza = (window.PAGE_CONFIG && window.PAGE_CONFIG.cleaning != null) ? window.PAGE_CONFIG.cleaning : LIMPIEZA;
   const isGap = isGapSelection(fechaEntrada, fechaSalida);
   const discountTiers = (window.PAGE_CONFIG && window.PAGE_CONFIG.discounts) || [];
   const activeTier = discountTiers
@@ -655,6 +657,8 @@ function calcularPrecio() {
       promoLbl.textContent = appliedPromo.tipo === 'pct' ? `${appliedPromo.valor}%` : `${appliedPromo.valor} €`;
     }
     if (promoEl) promoEl.textContent = '-' + promoDiscountAmount.toFixed(2) + ' €';
+    const cleaningRow = ps.querySelector('#cleaningRow');
+    if (cleaningRow) cleaningRow.style.display = limpieza > 0 ? '' : 'none';
     ps.querySelector('#cleaningAmount').textContent = limpieza.toFixed(2) + ' €';
     ps.querySelector('#totalAmount').textContent = total.toFixed(2) + ' €';
     ps.querySelector('.breakdown').innerHTML = breakdownHTML;
@@ -947,7 +951,11 @@ function actualizarWAMensajes() {
   if (fechaEntrada && fechaSalida) {
     const noches = lastPricing && lastPricing.nights ? lastPricing.nights : Math.ceil((fechaSalida - fechaEntrada) / 86400000);
     msg += t('waFromTo', toKey(fechaEntrada), toKey(fechaSalida), noches);
-    if (lastPricing && lastPricing.total) msg += t('waTotal', lastPricing.total.toFixed(2), lastPricing.subtotal.toFixed(2), lastPricing.cleaning.toFixed(2));
+    if (lastPricing && lastPricing.total) {
+      msg += lastPricing.cleaning > 0
+        ? t('waTotal', lastPricing.total.toFixed(2), lastPricing.subtotal.toFixed(2), lastPricing.cleaning.toFixed(2))
+        : t('waTotalNoCleaning', lastPricing.total.toFixed(2), lastPricing.subtotal.toFixed(2));
+    }
     if (lastPricing && lastPricing.breakdown) msg += t('waBreakdown', lastPricing.breakdown);
   } else if (fechaEntrada) {
     msg += t('waStarting', toKey(fechaEntrada));
