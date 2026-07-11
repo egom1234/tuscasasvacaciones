@@ -485,6 +485,7 @@
   "inLanguage": "en"
 }
   </script>
+  <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 </head>
 <body>
   <!-- Google Tag Manager (noscript) -->
@@ -724,7 +725,8 @@
                         placeholder="Which property are you interested in? Approximate dates? Number of guests?..."></textarea>
             </div>
 
-            <button type="submit" id="submitBtn"
+            <div class="cf-turnstile" data-sitekey="0x4AAAAAADz5-D-Hg3DX4Bvj" data-action="turnstile-spin-v1" style="margin-bottom:0.5rem;"></div>
+    <button type="submit" id="submitBtn"
                     style="background: var(--verde-primario); color: #f7f3ee; padding: 1rem 2rem; border: none; border-radius: 0; font-size: 0.85rem; font-weight: 400; font-family: var(--font-body); letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer; transition: background 0.3s; width: 100%;">
               Send message
             </button>
@@ -788,6 +790,22 @@ function validarNombre(input) {
     errorMsg.style.display  = 'none';
 
     try {
+      const turnstileToken = form.querySelector('[name="cf-turnstile-response"]')?.value || '';
+      const verifyRes  = await fetch('https://turnstile-siteverify-casitasdemar.eduardgomez-4.workers.dev', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ token: turnstileToken })
+      });
+      const verifyData = await verifyRes.json();
+      if (!verifyData.success) {
+        errorMsg.style.display  = 'block';
+        submitBtn.disabled      = false;
+        submitBtn.textContent   = 'Enviar mensaje';
+        submitBtn.style.opacity = '1';
+        if (window.turnstile) window.turnstile.reset();
+        return;
+      }
+
       fetch('https://api.web3forms.com/submit', { method: 'POST', body: new FormData(form) }).catch(() => {});
       const response = await fetch('https://casitasdemar-form.eduardgomez-4.workers.dev/contacto', {
         method: 'POST',

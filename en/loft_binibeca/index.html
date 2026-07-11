@@ -72,6 +72,7 @@
   "priceRange": "€80 – €170"
 }
   </script>
+  <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 </head>
 <body>
 
@@ -321,7 +322,8 @@
                           <span id="promoCodeMsg" style="display:none;font-size:0.85rem;margin-top:0.3rem;"></span>
                         </div>
                         <input type="hidden" name="promo_code" id="hdPromoCode" value="">
-            <button type="submit" class="submit-btn" id="submitBtnReserva">Request booking</button>
+                        <div class="cf-turnstile" data-sitekey="0x4AAAAAADz5-D-Hg3DX4Bvj" data-action="turnstile-spin-v1"></div>
+<button type="submit" class="submit-btn" id="submitBtnReserva">Request booking</button>
           </form>
         </div>
 
