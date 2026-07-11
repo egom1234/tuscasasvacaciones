@@ -136,7 +136,7 @@ function calcularPrecioW(config, entrada, salida, isGap, promoRow) {
     cur = new Date(cur.getTime() + 86400000);
   }
 
-  const limpieza = config.cleaning || 50;
+  const limpieza = config.cleaning != null ? config.cleaning : 50;
 
   const discountTiers = config.discounts || [];
   const activeTier = discountTiers
@@ -483,7 +483,7 @@ async function sendGuestConfirmation(env, { nombre, email, propiedad, entrada, s
     if (calc.tierDiscount > 0) priceRows += guestRow(`Descuento temporada (${Math.round(calc.tierPct * 100)}%)`, calc.tierDiscount.toFixed(2));
     if (calc.gapDiscount  > 0) priceRows += guestRow('Descuento Fill the Gap', calc.gapDiscount.toFixed(2));
     if (calc.promoDiscount > 0) priceRows += guestRow(`Código promo (${esc(promo_code)})`, calc.promoDiscount.toFixed(2));
-    priceRows += row('Limpieza', `${calc.cleaning.toFixed(2)} €`);
+    if (calc.cleaning > 0) priceRows += row('Limpieza', `${calc.cleaning.toFixed(2)} €`);
     totalDisplay = `${calc.total.toFixed(2)} €`;
   }
 
