@@ -604,8 +604,10 @@ function calcularPrecio() {
     cur = new Date(cur.getTime() + 86400000);
   }
 
-  const limpieza = (window.PAGE_CONFIG && window.PAGE_CONFIG.cleaning != null) ? window.PAGE_CONFIG.cleaning : LIMPIEZA;
   const isGap = isGapSelection(fechaEntrada, fechaSalida);
+  const cfgCleaning = (window.PAGE_CONFIG && window.PAGE_CONFIG.cleaning != null) ? window.PAGE_CONFIG.cleaning : LIMPIEZA;
+  const gapCleaning = (window.PAGE_CONFIG && window.PAGE_CONFIG.gapCleaning != null) ? window.PAGE_CONFIG.gapCleaning : null;
+  const limpieza = (isGap && gapCleaning != null) ? gapCleaning : cfgCleaning;
   const discountTiers = (window.PAGE_CONFIG && window.PAGE_CONFIG.discounts) || [];
   const activeTier = discountTiers
     .filter(d => noches >= d.minNights)
