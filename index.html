@@ -801,7 +801,9 @@ function validarNombre(input) {
         return;
       }
 
-      fetch('https://api.web3forms.com/submit', { method: 'POST', body: new FormData(form) }).catch(() => {});
+      const fdEmail = new FormData(form);
+      fdEmail.delete('cf-turnstile-response'); // Web3Forms treats this field name as its own (Pro-only) Turnstile integration and rejects the submission
+      fetch('https://api.web3forms.com/submit', { method: 'POST', body: fdEmail }).catch(() => {});
       const response = await fetch('https://casitasdemar-form.eduardgomez-4.workers.dev/contacto', {
         method: 'POST',
         body: new FormData(form)
