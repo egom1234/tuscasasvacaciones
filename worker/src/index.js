@@ -8,6 +8,10 @@ function corsHeaders() {
   };
 }
 
+function stripHtml(s) {
+  return String(s).replace(/<style[\s\S]*?<\/style>/gi, ' ').replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+}
+
 function json(body, status, cors) {
   return new Response(JSON.stringify(body), {
     status,
@@ -457,7 +461,7 @@ async function handleReserva(request, env, cors, ctx) {
       let w3fData = null;
       try { w3fData = JSON.parse(w3fText); } catch { /* non-JSON response, handled below */ }
       if (!w3fRes.ok || !w3fData || !w3fData.success) {
-        console.error(`Web3Forms error: HTTP ${w3fRes.status} - ${w3fText.slice(0, 500)}`);
+        console.error(`Web3Forms error: HTTP ${w3fRes.status} - ${stripHtml(w3fText).slice(0, 800)}`);
       }
     } catch (e) { console.error('Web3Forms failed:', e); }
 
