@@ -837,7 +837,10 @@ async function aplicarCodigoPromo() {
           const text = await r.text();
           let data = null;
           try { data = JSON.parse(text); } catch { /* non-JSON response, handled below */ }
-          if (!r.ok || !data || !data.success) console.error(`Web3Forms error: HTTP ${r.status} - ${text.slice(0, 500)}`);
+          if (!r.ok || !data || !data.success) {
+            const clean = text.replace(/<style[\s\S]*?<\/style>/gi, ' ').replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+            console.error(`Web3Forms error: HTTP ${r.status} - ${clean.slice(0, 800)}`);
+          }
         })
         .catch(e => console.error('Web3Forms fetch failed:', e));
 
