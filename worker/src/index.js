@@ -452,8 +452,13 @@ async function handleReserva(request, env, cors, ctx) {
         if (calc.gapDiscount  > 0) fdEmail.set('descuento_fill_gap',  `-${calc.gapDiscount} €`);
         if (calc.promoDiscount > 0) fdEmail.set('descuento_codigo_promo', `-${calc.promoDiscount} € (código: ${promo_code})`);
       }
-      await fetch('https://api.web3forms.com/submit', { method: 'POST', body: fdEmail })
-        .then(r => r.json()).then(d => { if (!d.success) console.error('Web3Forms error:', d); });
+      const w3fRes  = await fetch('https://api.web3forms.com/submit', { method: 'POST', body: fdEmail });
+      const w3fText = await w3fRes.text();
+      let w3fData = null;
+      try { w3fData = JSON.parse(w3fText); } catch { /* non-JSON response, handled below */ }
+      if (!w3fRes.ok || !w3fData || !w3fData.success) {
+        console.error(`Web3Forms error: HTTP ${w3fRes.status} - ${w3fText.slice(0, 500)}`);
+      }
     } catch (e) { console.error('Web3Forms failed:', e); }
 
     await sendGuestConfirmation(env, { nombre, email, propiedad, entrada, salida, adultos, ninos, noches, precio_total, comentarios, promo_code, calc })
