@@ -169,10 +169,21 @@ function calcularPrecioW(config, entrada, salida, isGap, promoRow) {
   return { total, subtotal, subtotalFinal: subtotalWithPromo, cleaning: limpieza, nights: noches, breakdown: breakdownText, tierDiscount, tierPct, gapDiscount, promoDiscount };
 }
 
-async function determinarIsGap(config, entrada, salida) {
+// Fallback: property_config saved from the admin panel doesn't include icalSlugs
+// (the admin JSON template omits it), so mirror the slugs hardcoded in each
+// property page here to keep server-side gap detection working regardless.
+const ICAL_SLUGS_BY_PROPERTY = {
+  'Casa Gonda':         ['gonda-airbnb', 'gonda-booking'],
+  'Casa Blava':         ['casa-blava-airbnb', 'casa-blava-booking'],
+  'Loft Binibeca':      ['loft-binibeca-airbnb', 'loft-binibeca-booking'],
+  'Apartamento Tarifa': ['tarifa-apt-airbnb', 'tarifa-apt-booking'],
+  'Loft Tarifa':        ['tarifa-loft-airbnb', 'tarifa-loft-booking'],
+};
+
+async function determinarIsGap(config, entrada, salida, propiedad) {
   const minNoches = config.minNoches || 1;
   if (minNoches <= 1) return false;
-  const slugs = config.icalSlugs || [];
+  const slugs = config.icalSlugs || ICAL_SLUGS_BY_PROPERTY[propiedad] || [];
   if (slugs.length === 0) return false;
   try {
     const texts = await Promise.all(
@@ -388,7 +399,7 @@ async function handleReserva(request, env, cors, ctx) {
 
         if (entradaDate >= hoy && salidaDate > entradaDate) {
           // Validate gap via iCal
-          const isGap = await determinarIsGap(config, entradaDate, salidaDate);
+          const isGap = await determinarIsGap(config, entradaDate, salidaDate, propiedad);
 
           // Load promo row for server-side discount
           let promoRow = null;
