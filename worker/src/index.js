@@ -182,18 +182,20 @@ const ICAL_SLUGS_BY_PROPERTY = {
 
 async function determinarIsGap(config, entrada, salida, propiedad) {
   const minNoches = config.minNoches || 1;
-  if (minNoches <= 1) return false;
+  if (minNoches <= 1) { console.log(`isGap check [${propiedad}]: minNoches=${minNoches} <= 1, skipping`); return false; }
   const slugs = config.icalSlugs || ICAL_SLUGS_BY_PROPERTY[propiedad] || [];
-  if (slugs.length === 0) return false;
+  if (slugs.length === 0) { console.log(`isGap check [${propiedad}]: no icalSlugs found (config.icalSlugs=${JSON.stringify(config.icalSlugs)})`); return false; }
   try {
-    const texts = await Promise.all(
-      slugs.map(s => fetch(`${ICAL_WORKER}/ical/${s}`).then(r => r.ok ? r.text() : ''))
-    );
+    const responses = await Promise.all(slugs.map(s => fetch(`${ICAL_WORKER}/ical/${s}`)));
+    const texts = await Promise.all(responses.map(r => r.ok ? r.text() : ''));
+    responses.forEach((r, i) => { if (!r.ok) console.log(`isGap check [${propiedad}]: ical fetch for slug "${slugs[i]}" failed HTTP ${r.status}`); });
     const fechasReservadas = new Set(texts.flatMap(t => [...parsearIcalW(t)]));
     const gapDays = computarGapsW(fechasReservadas, minNoches);
-    return isGapSelectionW(gapDays, entrada, salida);
+    const result = isGapSelectionW(gapDays, entrada, salida);
+    console.log(`isGap check [${propiedad}]: slugs=${JSON.stringify(slugs)} minNoches=${minNoches} fechasReservadas=${fechasReservadas.size} gapDays=${gapDays.size} entrada=${toKeyW(entrada)} salida=${toKeyW(salida)} result=${result}`);
+    return result;
   } catch (e) {
-    console.error('iCal gap check error:', e);
+    console.error(`isGap check [${propiedad}]: error`, e);
     return false;
   }
 }
