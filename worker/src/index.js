@@ -457,7 +457,17 @@ async function handleReserva(request, env, cors, ctx) {
         if (calc.gapDiscount  > 0) fdEmail.set('descuento_fill_gap',  `-${calc.gapDiscount} €`);
         if (calc.promoDiscount > 0) fdEmail.set('descuento_codigo_promo', `-${calc.promoDiscount} € (código: ${promo_code})`);
       }
-      const w3fRes  = await fetch('https://api.web3forms.com/submit', { method: 'POST', body: fdEmail });
+      // Web3Forms' spam filter appears to flag server-to-server requests that lack
+      // real-browser headers, so mimic the site's origin/referer/user-agent here.
+      const w3fRes  = await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        body: fdEmail,
+        headers: {
+          'Origin': 'https://www.casitasdemar.com',
+          'Referer': 'https://www.casitasdemar.com/',
+          'User-Agent': request.headers.get('User-Agent') || 'Mozilla/5.0 (compatible; CasitasDeMarBot/1.0)',
+        },
+      });
       const w3fText = await w3fRes.text();
       let w3fData = null;
       try { w3fData = JSON.parse(w3fText); } catch { /* non-JSON response: Web3Forms also returns an HTML success page, not just JSON */ }
