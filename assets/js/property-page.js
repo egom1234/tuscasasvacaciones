@@ -822,29 +822,8 @@ async function aplicarCodigoPromo() {
       fd.set('promo_code', appliedPromo ? appliedPromo.codigo : '');
       fd.set('propiedad', (window.PAGE_CONFIG && window.PAGE_CONFIG.propiedad) || '');
 
-      const fdEmail = new FormData(form);
-      fdEmail.set('nights',           String(lastPricing.nights));
-      fdEmail.set('subtotal',         lastPricing.subtotal.toFixed(2));
-      fdEmail.set('cleaning',         lastPricing.cleaning.toFixed(2));
-      fdEmail.set('total_price',      lastPricing.total.toFixed(2));
-      fdEmail.set('price_breakdown',  lastPricing.breakdown);
-      fdEmail.set('replyto',          fdEmail.get('email') || '');
-      fdEmail.delete('cf-turnstile-response'); // Web3Forms treats this field name as its own (Pro-only) Turnstile integration and rejects the submission
-      if (lastPricing.tierDiscount > 0) fdEmail.set('descuento_temporada', `-${lastPricing.tierDiscount.toFixed(2)} € (${lastPricing.discountLabel})`);
-      if (lastPricing.gapDiscount  > 0) fdEmail.set('descuento_fill_gap',  `-${lastPricing.gapDiscount.toFixed(2)} €`);
-      if (lastPricing.promoDiscount > 0) fdEmail.set('descuento_codigo_promo', `-${lastPricing.promoDiscount.toFixed(2)} € (código: ${lastPricing.promoCode})`);
-      fetch('https://api.web3forms.com/submit', { method: 'POST', body: fdEmail })
-        .then(async r => {
-          const text = await r.text();
-          let data = null;
-          try { data = JSON.parse(text); } catch { /* non-JSON response: Web3Forms also returns an HTML success page, not just JSON */ }
-          if (!r.ok || (data && data.success === false)) {
-            const clean = text.replace(/<style[\s\S]*?<\/style>/gi, ' ').replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
-            console.error(`Web3Forms error: HTTP ${r.status} - ${clean.slice(0, 800)}`);
-          }
-        })
-        .catch(e => console.error('Web3Forms fetch failed:', e));
-
+      // Admin notification via Web3Forms is sent once, server-side, by the Worker
+      // (sending it here too caused near-duplicate submissions that got flagged as spam).
       const res = await fetch(FORM_WORKER + '/reserva', { method: 'POST', body: fd });
       const text = await res.text();
       let data = {};
