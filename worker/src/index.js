@@ -460,8 +460,8 @@ async function handleReserva(request, env, cors, ctx) {
       const w3fRes  = await fetch('https://api.web3forms.com/submit', { method: 'POST', body: fdEmail });
       const w3fText = await w3fRes.text();
       let w3fData = null;
-      try { w3fData = JSON.parse(w3fText); } catch { /* non-JSON response, handled below */ }
-      if (!w3fRes.ok || !w3fData || !w3fData.success) {
+      try { w3fData = JSON.parse(w3fText); } catch { /* non-JSON response: Web3Forms also returns an HTML success page, not just JSON */ }
+      if (!w3fRes.ok || (w3fData && w3fData.success === false)) {
         console.error(`Web3Forms error: HTTP ${w3fRes.status} - ${stripHtml(w3fText).slice(0, 800)}`);
       }
     } catch (e) { console.error('Web3Forms failed:', e); }
