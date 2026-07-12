@@ -329,6 +329,16 @@ export default {
         });
       }
 
+      // ---- Public: confirmed direct reservations (block dates on the visitor-facing calendar) ----
+      if (url.pathname.startsWith('/blocked-dates/') && request.method === 'GET') {
+        const propiedad = decodeURIComponent(url.pathname.split('/blocked-dates/')[1] || '');
+        if (!propiedad) return json({ ok: false, error: 'Propiedad requerida' }, 400, cors);
+        const { results } = await env.DB.prepare(
+          `SELECT entrada, salida FROM reservas WHERE propiedad = ? AND estado = 'confirmada'`
+        ).bind(propiedad).all();
+        return json({ ok: true, ranges: results }, 200, cors);
+      }
+
       if (request.method !== 'POST') {
         return new Response('Method not allowed', { status: 405, headers: cors });
       }
