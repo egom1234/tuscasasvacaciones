@@ -182,18 +182,20 @@ const ICAL_SLUGS_BY_PROPERTY = {
 
 async function determinarIsGap(config, entrada, salida, propiedad) {
   const minNoches = config.minNoches || 1;
-  if (minNoches <= 1) return false;
+  if (minNoches <= 1) { console.log(`isGap check [${propiedad}]: minNoches=${minNoches} <= 1, skipping`); return false; }
   const slugs = config.icalSlugs || ICAL_SLUGS_BY_PROPERTY[propiedad] || [];
-  if (slugs.length === 0) return false;
+  if (slugs.length === 0) { console.log(`isGap check [${propiedad}]: no icalSlugs found (config.icalSlugs=${JSON.stringify(config.icalSlugs)})`); return false; }
   try {
-    const texts = await Promise.all(
-      slugs.map(s => fetch(`${ICAL_WORKER}/ical/${s}`).then(r => r.ok ? r.text() : ''))
-    );
+    const responses = await Promise.all(slugs.map(s => fetch(`${ICAL_WORKER}/ical/${s}`)));
+    const texts = await Promise.all(responses.map(r => r.ok ? r.text() : ''));
+    responses.forEach((r, i) => { if (!r.ok) console.log(`isGap check [${propiedad}]: ical fetch for slug "${slugs[i]}" failed HTTP ${r.status}`); });
     const fechasReservadas = new Set(texts.flatMap(t => [...parsearIcalW(t)]));
     const gapDays = computarGapsW(fechasReservadas, minNoches);
-    return isGapSelectionW(gapDays, entrada, salida);
+    const result = isGapSelectionW(gapDays, entrada, salida);
+    console.log(`isGap check [${propiedad}]: slugs=${JSON.stringify(slugs)} minNoches=${minNoches} fechasReservadas=${fechasReservadas.size} gapDays=${gapDays.size} entrada=${toKeyW(entrada)} salida=${toKeyW(salida)} result=${result}`);
+    return result;
   } catch (e) {
-    console.error('iCal gap check error:', e);
+    console.error(`isGap check [${propiedad}]: error`, e);
     return false;
   }
 }
@@ -279,6 +281,32 @@ export default {
         return json({ ok: true }, 200, cors);
       }
 
+      // ---- Admin: bloqueos manuales de calendario ----
+      if (url.pathname === '/admin/bloqueos') {
+        if (!isAuthorized(request, env)) return json({ ok: false, error: 'Unauthorized' }, 401, cors);
+        if (request.method === 'GET') {
+          const { results } = await env.DB.prepare('SELECT * FROM bloqueos ORDER BY entrada').all();
+          return json({ ok: true, data: results }, 200, cors);
+        }
+        if (request.method === 'POST') {
+          const body = await request.json();
+          const { propiedad, entrada, salida, motivo } = body;
+          if (!propiedad || !entrada || !salida) return json({ ok: false, error: 'Faltan campos' }, 400, cors);
+          if (salida <= entrada) return json({ ok: false, error: 'Rango de fechas inválido' }, 400, cors);
+          await env.DB.prepare(
+            `INSERT INTO bloqueos (propiedad, entrada, salida, motivo) VALUES (?, ?, ?, ?)`
+          ).bind(propiedad, entrada, salida, motivo || null).run();
+          return json({ ok: true }, 200, cors);
+        }
+      }
+
+      if (url.pathname.startsWith('/admin/bloqueos/') && request.method === 'DELETE') {
+        if (!isAuthorized(request, env)) return json({ ok: false, error: 'Unauthorized' }, 401, cors);
+        const id = url.pathname.split('/').pop();
+        await env.DB.prepare('DELETE FROM bloqueos WHERE id = ?').bind(parseInt(id)).run();
+        return json({ ok: true }, 200, cors);
+      }
+
       // ---- Admin: property-config ----
       if (url.pathname === '/admin/property-config') {
         if (!isAuthorized(request, env)) return json({ ok: false, error: 'Unauthorized' }, 401, cors);
@@ -325,6 +353,17 @@ export default {
         return new Response(row.config_json, {
           headers: { ...cors, 'Content-Type': 'application/json', 'Cache-Control': 'public, max-age=300' }
         });
+      }
+
+      // ---- Public: confirmed direct reservations + manual blocks (block dates on the visitor-facing calendar) ----
+      if (url.pathname.startsWith('/blocked-dates/') && request.method === 'GET') {
+        const propiedad = decodeURIComponent(url.pathname.split('/blocked-dates/')[1] || '');
+        if (!propiedad) return json({ ok: false, error: 'Propiedad requerida' }, 400, cors);
+        const [reservasRes, bloqueosRes] = await Promise.all([
+          env.DB.prepare(`SELECT entrada, salida FROM reservas WHERE propiedad = ? AND estado = 'confirmada'`).bind(propiedad).all(),
+          env.DB.prepare(`SELECT entrada, salida FROM bloqueos WHERE propiedad = ?`).bind(propiedad).all(),
+        ]);
+        return json({ ok: true, ranges: [...reservasRes.results, ...bloqueosRes.results] }, 200, cors);
       }
 
       if (request.method !== 'POST') {

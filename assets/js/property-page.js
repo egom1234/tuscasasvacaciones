@@ -108,6 +108,34 @@ let anyoActual       = new Date().getFullYear();
 let fechaEntrada     = null;
 let fechaSalida      = null;
 
+function expandirRango(entrada, salida) {
+  const fechas = new Set();
+  const hoy    = new Date(); hoy.setHours(0,0,0,0);
+  let cur      = new Date(entrada + 'T00:00:00');
+  const fin    = new Date(salida  + 'T00:00:00');
+  while (cur < fin) {
+    if (cur >= hoy) fechas.add(toKey(cur));
+    cur = new Date(cur.getTime() + 86400000);
+  }
+  return fechas;
+}
+
+async function cargarReservasConfirmadas() {
+  const propiedad = (window.PAGE_CONFIG || {}).propiedad;
+  if (!propiedad) return new Set();
+  try {
+    const res  = await fetch(FORM_WORKER + '/blocked-dates/' + encodeURIComponent(propiedad));
+    const data = await res.json();
+    if (!data.ok) return new Set();
+    const fechas = new Set();
+    (data.ranges || []).forEach(r => expandirRango(r.entrada, r.salida).forEach(k => fechas.add(k)));
+    return fechas;
+  } catch (e) {
+    console.error('Blocked-dates fetch failed:', e);
+    return new Set();
+  }
+}
+
 async function cargarIcal() {
   const dot   = document.getElementById('syncDot');
   const text  = document.getElementById('syncText');
@@ -115,7 +143,8 @@ async function cargarIcal() {
   try {
     const responses = await Promise.all(slugs.map(s => fetch(WORKER + '/ical/' + s)));
     const texts     = await Promise.all(responses.map(r => r.ok ? r.text() : Promise.resolve('')));
-    fechasReservadas = new Set(texts.flatMap(t => [...parsearIcal(t)]));
+    const reservadasConfirmadas = await cargarReservasConfirmadas();
+    fechasReservadas = new Set([...texts.flatMap(t => [...parsearIcal(t)]), ...reservadasConfirmadas]);
     dot.className    = 'sync-dot ok';
     text.textContent = t('syncOk');
   } catch (e) {
