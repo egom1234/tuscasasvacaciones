@@ -822,8 +822,7 @@ async function aplicarCodigoPromo() {
       fd.set('promo_code', appliedPromo ? appliedPromo.codigo : '');
       fd.set('propiedad', (window.PAGE_CONFIG && window.PAGE_CONFIG.propiedad) || '');
 
-      // Admin notification via Web3Forms is sent once, server-side, by the Worker
-      // (sending it here too caused near-duplicate submissions that got flagged as spam).
+      // Admin notification is sent server-side by the Worker (Brevo).
       const res = await fetch(FORM_WORKER + '/reserva', { method: 'POST', body: fd });
       const text = await res.text();
       let data = {};
