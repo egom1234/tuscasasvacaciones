@@ -281,6 +281,32 @@ export default {
         return json({ ok: true }, 200, cors);
       }
 
+      // ---- Admin: bloqueos manuales de calendario ----
+      if (url.pathname === '/admin/bloqueos') {
+        if (!isAuthorized(request, env)) return json({ ok: false, error: 'Unauthorized' }, 401, cors);
+        if (request.method === 'GET') {
+          const { results } = await env.DB.prepare('SELECT * FROM bloqueos ORDER BY entrada').all();
+          return json({ ok: true, data: results }, 200, cors);
+        }
+        if (request.method === 'POST') {
+          const body = await request.json();
+          const { propiedad, entrada, salida, motivo } = body;
+          if (!propiedad || !entrada || !salida) return json({ ok: false, error: 'Faltan campos' }, 400, cors);
+          if (salida <= entrada) return json({ ok: false, error: 'Rango de fechas inválido' }, 400, cors);
+          await env.DB.prepare(
+            `INSERT INTO bloqueos (propiedad, entrada, salida, motivo) VALUES (?, ?, ?, ?)`
+          ).bind(propiedad, entrada, salida, motivo || null).run();
+          return json({ ok: true }, 200, cors);
+        }
+      }
+
+      if (url.pathname.startsWith('/admin/bloqueos/') && request.method === 'DELETE') {
+        if (!isAuthorized(request, env)) return json({ ok: false, error: 'Unauthorized' }, 401, cors);
+        const id = url.pathname.split('/').pop();
+        await env.DB.prepare('DELETE FROM bloqueos WHERE id = ?').bind(parseInt(id)).run();
+        return json({ ok: true }, 200, cors);
+      }
+
       // ---- Admin: property-config ----
       if (url.pathname === '/admin/property-config') {
         if (!isAuthorized(request, env)) return json({ ok: false, error: 'Unauthorized' }, 401, cors);
@@ -329,14 +355,15 @@ export default {
         });
       }
 
-      // ---- Public: confirmed direct reservations (block dates on the visitor-facing calendar) ----
+      // ---- Public: confirmed direct reservations + manual blocks (block dates on the visitor-facing calendar) ----
       if (url.pathname.startsWith('/blocked-dates/') && request.method === 'GET') {
         const propiedad = decodeURIComponent(url.pathname.split('/blocked-dates/')[1] || '');
         if (!propiedad) return json({ ok: false, error: 'Propiedad requerida' }, 400, cors);
-        const { results } = await env.DB.prepare(
-          `SELECT entrada, salida FROM reservas WHERE propiedad = ? AND estado = 'confirmada'`
-        ).bind(propiedad).all();
-        return json({ ok: true, ranges: results }, 200, cors);
+        const [reservasRes, bloqueosRes] = await Promise.all([
+          env.DB.prepare(`SELECT entrada, salida FROM reservas WHERE propiedad = ? AND estado = 'confirmada'`).bind(propiedad).all(),
+          env.DB.prepare(`SELECT entrada, salida FROM bloqueos WHERE propiedad = ?`).bind(propiedad).all(),
+        ]);
+        return json({ ok: true, ranges: [...reservasRes.results, ...bloqueosRes.results] }, 200, cors);
       }
 
       if (request.method !== 'POST') {
