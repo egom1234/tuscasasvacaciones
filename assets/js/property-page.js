@@ -833,8 +833,12 @@ async function aplicarCodigoPromo() {
       if (lastPricing.gapDiscount  > 0) fdEmail.set('descuento_fill_gap',  `-${lastPricing.gapDiscount.toFixed(2)} €`);
       if (lastPricing.promoDiscount > 0) fdEmail.set('descuento_codigo_promo', `-${lastPricing.promoDiscount.toFixed(2)} € (código: ${lastPricing.promoCode})`);
       fetch('https://api.web3forms.com/submit', { method: 'POST', body: fdEmail })
-        .then(r => r.json())
-        .then(d => { if (!d.success) console.error('Web3Forms error:', d); })
+        .then(async r => {
+          const text = await r.text();
+          let data = null;
+          try { data = JSON.parse(text); } catch { /* non-JSON response, handled below */ }
+          if (!r.ok || !data || !data.success) console.error(`Web3Forms error: HTTP ${r.status} - ${text.slice(0, 500)}`);
+        })
         .catch(e => console.error('Web3Forms fetch failed:', e));
 
       const res = await fetch(FORM_WORKER + '/reserva', { method: 'POST', body: fd });
