@@ -449,6 +449,7 @@ async function handleReserva(request, env, cors, ctx) {
     try {
       const fdEmail = new FormData();
       for (const [k, v] of data.entries()) fdEmail.append(k, v);
+      fdEmail.delete('cf-turnstile-response'); // Web3Forms treats this field name as its own (Pro-only) Turnstile integration and rejects the submission
       if (precio_calculado) fdEmail.set('precio_calculado', precio_calculado);
       if (precio_discrepancia) fdEmail.set('alerta_precio', 'DISCREPANCIA DETECTADA');
       if (calc) {
