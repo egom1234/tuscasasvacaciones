@@ -8,10 +8,6 @@ function corsHeaders() {
   };
 }
 
-function stripHtml(s) {
-  return String(s).replace(/<style[\s\S]*?<\/style>/gi, ' ').replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
-}
-
 function json(body, status, cors) {
   return new Response(JSON.stringify(body), {
     status,
@@ -335,7 +331,7 @@ export default {
         return new Response('Method not allowed', { status: 405, headers: cors });
       }
 
-      if (url.pathname === '/contacto') return await handleContacto(request, env, cors);
+      if (url.pathname === '/contacto') return await handleContacto(request, env, cors, ctx);
       if (url.pathname === '/reserva')  return await handleReserva(request, env, cors, ctx);
 
       return new Response('Not found', { status: 404, headers: cors });
@@ -351,7 +347,7 @@ export default {
 
 // ====== HANDLERS ======
 
-async function handleContacto(request, env, cors) {
+async function handleContacto(request, env, cors, ctx) {
   const data = await request.formData();
   const nombre   = (data.get('name')     || '').trim();
   const email    = (data.get('email')    || '').trim();
@@ -361,6 +357,12 @@ async function handleContacto(request, env, cors) {
   await env.DB.prepare(
     `INSERT INTO contactos (nombre, email, telefono, mensaje) VALUES (?, ?, ?, ?)`
   ).bind(nombre, email, telefono, mensaje).run();
+
+  ctx.waitUntil(
+    sendAdminContactNotification(env, { nombre, email, telefono, mensaje })
+      .catch(e => console.error('Admin contact email failed:', e))
+  );
+
   return json({ ok: true }, 200, cors);
 }
 
@@ -444,43 +446,125 @@ async function handleReserva(request, env, cors, ctx) {
     ).bind(promo_code).run();
   }
 
-  // Admin notification via Web3Forms + guest confirmation via Brevo (keep alive until both complete)
+  // Admin notification + guest confirmation, both via Brevo (keep alive until both complete)
   ctx.waitUntil((async () => {
-    try {
-      const fdEmail = new FormData();
-      for (const [k, v] of data.entries()) fdEmail.append(k, v);
-      fdEmail.delete('cf-turnstile-response'); // Web3Forms treats this field name as its own (Pro-only) Turnstile integration and rejects the submission
-      if (precio_calculado) fdEmail.set('precio_calculado', precio_calculado);
-      if (precio_discrepancia) fdEmail.set('alerta_precio', 'DISCREPANCIA DETECTADA');
-      if (calc) {
-        if (calc.tierDiscount > 0) fdEmail.set('descuento_temporada', `-${calc.tierDiscount} € (${Math.round(calc.tierPct * 100)}%)`);
-        if (calc.gapDiscount  > 0) fdEmail.set('descuento_fill_gap',  `-${calc.gapDiscount} €`);
-        if (calc.promoDiscount > 0) fdEmail.set('descuento_codigo_promo', `-${calc.promoDiscount} € (código: ${promo_code})`);
-      }
-      // Web3Forms' spam filter appears to flag server-to-server requests that lack
-      // real-browser headers, so mimic the site's origin/referer/user-agent here.
-      const w3fRes  = await fetch('https://api.web3forms.com/submit', {
-        method: 'POST',
-        body: fdEmail,
-        headers: {
-          'Origin': 'https://www.casitasdemar.com',
-          'Referer': 'https://www.casitasdemar.com/',
-          'User-Agent': request.headers.get('User-Agent') || 'Mozilla/5.0 (compatible; CasitasDeMarBot/1.0)',
-        },
-      });
-      const w3fText = await w3fRes.text();
-      let w3fData = null;
-      try { w3fData = JSON.parse(w3fText); } catch { /* non-JSON response: Web3Forms also returns an HTML success page, not just JSON */ }
-      if (!w3fRes.ok || (w3fData && w3fData.success === false)) {
-        console.error(`Web3Forms error: HTTP ${w3fRes.status} - ${stripHtml(w3fText).slice(0, 800)}`);
-      }
-    } catch (e) { console.error('Web3Forms failed:', e); }
+    await sendAdminReservationNotification(env, { nombre, email, telefono, propiedad, entrada, salida, adultos, ninos, noches, precio_total, comentarios, promo_code, precio_calculado, precio_discrepancia, calc })
+      .catch(e => console.error('Admin reservation email failed:', e));
 
     await sendGuestConfirmation(env, { nombre, email, propiedad, entrada, salida, adultos, ninos, noches, precio_total, comentarios, promo_code, calc })
       .catch(e => console.error('Brevo guest email failed:', e));
   })());
 
   return json({ ok: true, precio_calculado }, 200, cors);
+}
+
+const ADMIN_NOTIFICATION_EMAIL = 'casablavapeniscola@gmail.com';
+
+function escHtml(s) {
+  return String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+function adminRow(label, value) {
+  return `<tr>
+    <td style="padding:6px 10px;color:#555;font-family:sans-serif;font-size:0.85rem;border-bottom:1px solid #eee">${label}</td>
+    <td style="padding:6px 10px;color:#111;font-family:sans-serif;font-size:0.85rem;border-bottom:1px solid #eee;font-weight:600">${value}</td>
+  </tr>`;
+}
+
+async function sendAdminEmail(env, { subject, html, replyToEmail, replyToName }) {
+  if (!env.BREVO_API_KEY) { console.error('Admin email skipped: BREVO_API_KEY not set'); return; }
+
+  const res = await fetch('https://api.brevo.com/v3/smtp/email', {
+    method: 'POST',
+    headers: { 'api-key': env.BREVO_API_KEY, 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      sender:  { name: 'Casitas de Mar', email: 'info@casitasdemar.com' },
+      to:      [{ email: ADMIN_NOTIFICATION_EMAIL }],
+      replyTo: { email: replyToEmail || 'info@casitasdemar.com', name: replyToName || 'Casitas de Mar' },
+      subject,
+      htmlContent: html,
+    }),
+  });
+
+  if (!res.ok) {
+    const body = await res.text().catch(() => '');
+    console.error(`Admin email failed: HTTP ${res.status} - ${body.slice(0, 500)}`);
+  }
+}
+
+async function sendAdminReservationNotification(env, { nombre, email, telefono, propiedad, entrada, salida, adultos, ninos, noches, precio_total, comentarios, promo_code, precio_calculado, precio_discrepancia, calc }) {
+  const totalDisplay = calc ? `${calc.total.toFixed(2)} €` : (precio_total ? `${precio_total} €` : '—');
+
+  const alertaHtml = precio_discrepancia
+    ? `<p style="margin:0 0 16px;padding:10px 14px;background:#fdecea;color:#c0392b;font-family:sans-serif;font-size:0.85rem;font-weight:600">
+        ⚠️ Discrepancia de precio: el cliente envió ${escHtml(precio_total)} €, el servidor calculó ${escHtml(precio_calculado)} €
+      </p>`
+    : '';
+
+  const descuentosHtml = calc
+    ? [
+        calc.tierDiscount  > 0 ? adminRow('Descuento temporada', `-${calc.tierDiscount.toFixed(2)} € (${Math.round(calc.tierPct * 100)}%)`) : '',
+        calc.gapDiscount   > 0 ? adminRow('Descuento Fill the Gap', `-${calc.gapDiscount.toFixed(2)} €`) : '',
+        calc.promoDiscount > 0 ? adminRow('Descuento código promo', `-${calc.promoDiscount.toFixed(2)} € (${escHtml(promo_code)})`) : '',
+      ].join('')
+    : '';
+
+  const html = `<!DOCTYPE html>
+<html lang="es"><body style="margin:0;padding:24px 16px;background:#f5f0e8">
+<table width="100%" cellpadding="0" cellspacing="0" style="max-width:560px;margin:0 auto;background:#ffffff">
+<tr><td style="padding:28px 32px 4px">
+  <h2 style="margin:0 0 4px;font-family:Georgia,serif;color:#2a2118;font-weight:400">Nueva solicitud de reserva</h2>
+  <p style="margin:0 0 16px;color:#888;font-family:sans-serif;font-size:0.85rem">${escHtml(propiedad)}</p>
+</td></tr>
+<tr><td style="padding:0 32px 28px">
+  ${alertaHtml}
+  <table width="100%" cellpadding="0" cellspacing="0">
+    ${adminRow('Nombre', escHtml(nombre))}
+    ${adminRow('Email', `<a href="mailto:${escHtml(email)}" style="color:#2a2118">${escHtml(email)}</a>`)}
+    ${adminRow('Teléfono', escHtml(telefono) || '—')}
+    ${adminRow('Entrada', escHtml(entrada))}
+    ${adminRow('Salida', escHtml(salida))}
+    ${adminRow('Noches', String(noches))}
+    ${adminRow('Huéspedes', `${adultos} adulto${adultos != 1 ? 's' : ''}${ninos > 0 ? ` · ${ninos} niño${ninos != 1 ? 's' : ''}` : ''}`)}
+    ${descuentosHtml}
+    ${adminRow('Total', totalDisplay)}
+    ${promo_code ? adminRow('Código promo', escHtml(promo_code)) : ''}
+  </table>
+  ${comentarios ? `<p style="margin:16px 0 0;padding:14px;background:#f9f6f1;color:#555;font-family:sans-serif;font-size:0.85rem;line-height:1.6">${escHtml(comentarios)}</p>` : ''}
+</td></tr>
+</table>
+</body></html>`;
+
+  await sendAdminEmail(env, {
+    subject: `Nueva solicitud de reserva - ${propiedad}`,
+    html,
+    replyToEmail: email,
+    replyToName: nombre,
+  });
+}
+
+async function sendAdminContactNotification(env, { nombre, email, telefono, mensaje }) {
+  const html = `<!DOCTYPE html>
+<html lang="es"><body style="margin:0;padding:24px 16px;background:#f5f0e8">
+<table width="100%" cellpadding="0" cellspacing="0" style="max-width:560px;margin:0 auto;background:#ffffff">
+<tr><td style="padding:28px 32px">
+  <h2 style="margin:0 0 16px;font-family:Georgia,serif;color:#2a2118;font-weight:400">Nuevo mensaje de contacto</h2>
+  <table width="100%" cellpadding="0" cellspacing="0">
+    ${adminRow('Nombre', escHtml(nombre))}
+    ${adminRow('Email', `<a href="mailto:${escHtml(email)}" style="color:#2a2118">${escHtml(email)}</a>`)}
+    ${adminRow('Teléfono', escHtml(telefono) || '—')}
+  </table>
+  ${mensaje ? `<p style="margin:16px 0 0;padding:14px;background:#f9f6f1;color:#555;font-family:sans-serif;font-size:0.85rem;line-height:1.6">${escHtml(mensaje)}</p>` : ''}
+</td></tr>
+</table>
+</body></html>`;
+
+  await sendAdminEmail(env, {
+    subject: `Nuevo mensaje de contacto de ${nombre}`,
+    html,
+    replyToEmail: email,
+    replyToName: nombre,
+  });
 }
 
 async function sendGuestConfirmation(env, { nombre, email, propiedad, entrada, salida, adultos, ninos, noches, precio_total, comentarios, promo_code, calc }) {
