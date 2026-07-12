@@ -453,7 +453,8 @@ async function handleReserva(request, env, cors, ctx) {
 }
 
 async function sendGuestConfirmation(env, { nombre, email, propiedad, entrada, salida, adultos, ninos, noches, precio_total, comentarios, promo_code, calc }) {
-  if (!env.BREVO_API_KEY || !email) return;
+  if (!env.BREVO_API_KEY) { console.error('Brevo guest email skipped: BREVO_API_KEY not set'); return; }
+  if (!email) { console.error('Brevo guest email skipped: no recipient email'); return; }
 
   const esc = s => String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
@@ -551,7 +552,7 @@ ${comentariosSection}
 </body>
 </html>`;
 
-  await fetch('https://api.brevo.com/v3/smtp/email', {
+  const res = await fetch('https://api.brevo.com/v3/smtp/email', {
     method: 'POST',
     headers: { 'api-key': env.BREVO_API_KEY, 'Content-Type': 'application/json' },
     body: JSON.stringify({
@@ -562,4 +563,9 @@ ${comentariosSection}
       htmlContent: html,
     }),
   });
+
+  if (!res.ok) {
+    const body = await res.text().catch(() => '');
+    console.error(`Brevo guest email failed: HTTP ${res.status} - ${body.slice(0, 500)}`);
+  }
 }
