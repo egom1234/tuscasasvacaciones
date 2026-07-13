@@ -112,6 +112,15 @@
     .codigos-form .btn-create { align-self: end; padding: 0.5rem 1rem; background: #2563eb; color: white; border: none; border-radius: 6px; font-size: 0.875rem; font-weight: 500; cursor: pointer; }
     .codigos-form .btn-create:hover { background: #1d4ed8; }
     #codigos-error { color: #dc2626; font-size: 0.85rem; padding: 0.5rem 0; display: none; }
+
+    /* ---- Bloqueos calendar ---- */
+    .bq-day { aspect-ratio: 1; display: flex; align-items: center; justify-content: center; border-radius: 6px; font-size: 0.8rem; cursor: pointer; background: #fff; border: 1px solid #e4e4e7; }
+    .bq-day.empty { visibility: hidden; cursor: default; }
+    .bq-day.past { color: #d4d4d8; cursor: default; background: #fafafa; }
+    .bq-day.ocupado { background: #e4e4e7; color: #a1a1aa; cursor: not-allowed; }
+    .bq-day.bloqueado { background: #bfdbfe; color: #1d4ed8; font-weight: 600; }
+    .bq-day.seleccionado { background: #dcfce7; color: #166534; font-weight: 600; }
+    .bq-day.libre:hover { background: #f4f4f5; }
   </style>
 </head>
 <body>
@@ -143,6 +152,7 @@
     <button data-tab="contactos" onclick="showTab('contactos', this)">Contactos</button>
     <button data-tab="codigos" onclick="showTab('codigos', this)">Códigos descuento</button>
     <button data-tab="config" onclick="showTab('config', this)">Configuración precios</button>
+    <button data-tab="bloqueos" onclick="showTab('bloqueos', this)">Bloqueos calendario</button>
   </nav>
 
   <main>
@@ -323,11 +333,46 @@
       <div id="loading-config" class="loading" style="display:none">Cargando...</div>
     </div>
 
+    <!-- Bloqueos -->
+    <div id="tab-bloqueos" style="display:none">
+      <div style="padding:1rem 0 0.5rem;color:#52525b;font-size:0.875rem;">
+        Bloquea fechas manualmente (mantenimiento, uso propio, etc.). Los días en gris ya están ocupados por iCal (Airbnb/Booking) o una reserva confirmada y no se pueden tocar. Click en un día libre para marcar el inicio y click en otro día para confirmar el rango; click en un bloqueo existente (azul) para eliminarlo.
+      </div>
+      <div class="toolbar">
+        <select id="bloqueos-propiedad" onchange="cambiarPropiedadBloqueos()"></select>
+        <span id="bloqueos-seleccion-info" style="display:none;font-size:0.85rem;color:#2563eb;">
+          Selecciona la fecha de fin del bloqueo… <a href="#" onclick="cancelarSeleccionBloqueo();return false;" style="color:#dc2626;">cancelar</a>
+        </span>
+      </div>
+      <div id="bloqueos-calendar-wrap" style="max-width:420px">
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:0.5rem 0;">
+          <button onclick="cambiarMesBloqueos(-1)" style="padding:0.3rem 0.7rem;border:1px solid #d4d4d8;border-radius:6px;background:#f4f4f5;cursor:pointer;">←</button>
+          <strong id="bloqueos-mes-label" style="font-size:0.9rem;"></strong>
+          <button onclick="cambiarMesBloqueos(1)" style="padding:0.3rem 0.7rem;border:1px solid #d4d4d8;border-radius:6px;background:#f4f4f5;cursor:pointer;">→</button>
+        </div>
+        <div id="bloqueos-grid" style="display:grid;grid-template-columns:repeat(7,1fr);gap:3px;"></div>
+        <div style="display:flex;gap:1rem;padding:0.75rem 0;font-size:0.75rem;color:#52525b;flex-wrap:wrap;">
+          <span><span style="display:inline-block;width:10px;height:10px;background:#e4e4e7;border-radius:3px;margin-right:4px;"></span>Ocupado</span>
+          <span><span style="display:inline-block;width:10px;height:10px;background:#bfdbfe;border-radius:3px;margin-right:4px;"></span>Bloqueado (click para quitar)</span>
+          <span><span style="display:inline-block;width:10px;height:10px;background:#dcfce7;border-radius:3px;margin-right:4px;"></span>Inicio seleccionado</span>
+        </div>
+      </div>
+      <div id="bloqueos-loading" class="loading" style="display:none">Cargando...</div>
+    </div>
+
   </main>
 </div>
 
 <script>
   const WORKER_URL = 'https://casitasdemar-form.eduardgomez-4.workers.dev';
+  const ICAL_WORKER_URL = 'https://tuscasasvacaciones.eduardgomez-4.workers.dev';
+  const ICAL_SLUGS_BY_PROPERTY = {
+    'Casa Gonda':         ['gonda-airbnb', 'gonda-booking'],
+    'Casa Blava':         ['casa-blava-airbnb', 'casa-blava-booking'],
+    'Loft Binibeca':      ['loft-binibeca-airbnb', 'loft-binibeca-booking'],
+    'Apartamento Tarifa': ['tarifa-apt-airbnb', 'tarifa-apt-booking'],
+    'Loft Tarifa':        ['tarifa-loft-airbnb', 'tarifa-loft-booking'],
+  };
 
   let token = '';
   let adminUser = '';
@@ -337,6 +382,13 @@
   let codigosLoaded = false;
   let configLoaded = false;
   let sortState = { col: 'entrada', dir: 'asc' };
+
+  let bloqueos = [];
+  let bloqueosLoaded = false;
+  let bloqueosOcupadas = new Set();
+  let bloqueosMes = new Date().getMonth();
+  let bloqueosAnyo = new Date().getFullYear();
+  let bloqueoInicio = null;
 
   // ---- Auth ----
 
@@ -348,8 +400,8 @@
   }
 
   function logout() {
-    token = ''; adminUser = ''; reservas = []; contactos = [];
-    contactosLoaded = false; codigosLoaded = false; configLoaded = false;
+    token = ''; adminUser = ''; reservas = []; contactos = []; bloqueos = [];
+    contactosLoaded = false; codigosLoaded = false; configLoaded = false; bloqueosLoaded = false;
     document.getElementById('login-screen').style.display = 'flex';
     document.getElementById('app').style.display = 'none';
     document.getElementById('user-input').value = '';
@@ -359,11 +411,12 @@
 
   async function refreshAll() {
     const activeTab = document.querySelector('nav button.active')?.dataset.tab;
-    contactosLoaded = false; codigosLoaded = false; configLoaded = false;
+    contactosLoaded = false; codigosLoaded = false; configLoaded = false; bloqueosLoaded = false;
     await fetchReservas();
     if (activeTab === 'contactos') fetchContactos();
     else if (activeTab === 'codigos') fetchCodigos();
     else if (activeTab === 'config') fetchConfig();
+    else if (activeTab === 'bloqueos') { initBloqueosPropiedadSelect(); fetchBloqueos(); }
   }
 
   // ---- Fetch ----
@@ -422,7 +475,7 @@
   // ---- Tabs ----
 
   function showTab(tab, btn) {
-    ['dashboard','reservas','contactos','codigos','config'].forEach(t => {
+    ['dashboard','reservas','contactos','codigos','config','bloqueos'].forEach(t => {
       document.getElementById('tab-' + t).style.display = tab === t ? '' : 'none';
     });
     document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
@@ -430,6 +483,7 @@
     if (tab === 'contactos' && !contactosLoaded) fetchContactos();
     if (tab === 'codigos'   && !codigosLoaded)   fetchCodigos();
     if (tab === 'config'    && !configLoaded)    fetchConfig();
+    if (tab === 'bloqueos'  && !bloqueosLoaded)  { initBloqueosPropiedadSelect(); fetchBloqueos(); }
     if (tab === 'dashboard') renderDashboard();
   }
 
@@ -1033,6 +1087,208 @@
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, 'Contactos');
     XLSX.writeFile(wb, `contactos_${todayStr()}.xlsx`);
+  }
+
+  // ---- Bloqueos calendario ----
+
+  function initBloqueosPropiedadSelect() {
+    const sel = document.getElementById('bloqueos-propiedad');
+    if (sel.options.length) return;
+    sel.innerHTML = CONFIG_PROPS.map(p => `<option value="${esc(p)}">${esc(p)}</option>`).join('');
+  }
+
+  async function fetchBloqueos() {
+    document.getElementById('bloqueos-loading').style.display = 'block';
+    const res = await fetch(`${WORKER_URL}/admin/bloqueos`, {
+      headers: { Authorization: `Bearer ${token}`, 'X-Admin-User': adminUser }
+    });
+    const { data } = await res.json();
+    bloqueos = data || [];
+    bloqueosLoaded = true;
+    document.getElementById('bloqueos-loading').style.display = 'none';
+    await cargarOcupacionBloqueos();
+    renderBloqueosCalendar();
+  }
+
+  function toKeyBloqueos(d) {
+    return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+  }
+
+  function parseFechaIcalBloqueos(s) {
+    return new Date(+s.slice(0,4), +s.slice(4,6) - 1, +s.slice(6,8));
+  }
+
+  function parsearIcalBloqueos(texto) {
+    const fechas    = new Set();
+    const textoNorm = texto.replace(/\r\n|\r/g, '\n');
+    const eventos   = textoNorm.split('BEGIN:VEVENT');
+    for (let i = 1; i < eventos.length; i++) {
+      const bloque  = eventos[i];
+      const dtStart = bloque.match(/DTSTART[^:\n]*:(\d{8})/);
+      const dtEnd   = bloque.match(/DTEND[^:\n]*:(\d{8})/);
+      if (!dtStart || !dtEnd) continue;
+      let cur   = parseFechaIcalBloqueos(dtStart[1]);
+      const fin = parseFechaIcalBloqueos(dtEnd[1]);
+      if (cur.getTime() === fin.getTime()) {
+        fechas.add(toKeyBloqueos(cur));
+      } else {
+        while (cur < fin) { fechas.add(toKeyBloqueos(cur)); cur = new Date(cur.getTime() + 86400000); }
+      }
+    }
+    return fechas;
+  }
+
+  function expandirRangoBloqueos(entrada, salida) {
+    const fechas = new Set();
+    let cur      = new Date(entrada + 'T00:00:00');
+    const fin    = new Date(salida  + 'T00:00:00');
+    while (cur < fin) { fechas.add(toKeyBloqueos(cur)); cur = new Date(cur.getTime() + 86400000); }
+    return fechas;
+  }
+
+  async function cargarOcupacionBloqueos() {
+    const propiedad = document.getElementById('bloqueos-propiedad').value;
+    bloqueosOcupadas = new Set();
+
+    const slugs = ICAL_SLUGS_BY_PROPERTY[propiedad] || [];
+    try {
+      const responses = await Promise.all(slugs.map(s => fetch(`${ICAL_WORKER_URL}/ical/${s}`)));
+      const texts      = await Promise.all(responses.map(r => r.ok ? r.text() : ''));
+      texts.forEach(t => parsearIcalBloqueos(t).forEach(k => bloqueosOcupadas.add(k)));
+    } catch (e) { console.error('iCal fetch failed:', e); }
+
+    reservas
+      .filter(r => r.propiedad === propiedad && r.estado === 'confirmada' && r.entrada && r.salida)
+      .forEach(r => expandirRangoBloqueos(r.entrada, r.salida).forEach(k => bloqueosOcupadas.add(k)));
+  }
+
+  function cambiarPropiedadBloqueos() {
+    bloqueoInicio = null;
+    cargarOcupacionBloqueos().then(renderBloqueosCalendar);
+  }
+
+  function cambiarMesBloqueos(delta) {
+    bloqueosMes += delta;
+    if (bloqueosMes < 0)  { bloqueosMes = 11; bloqueosAnyo--; }
+    if (bloqueosMes > 11) { bloqueosMes = 0;  bloqueosAnyo++; }
+    renderBloqueosCalendar();
+  }
+
+  function bloqueoEnFecha(propiedad, key) {
+    return bloqueos.find(b => b.propiedad === propiedad && key >= b.entrada && key < b.salida);
+  }
+
+  function cancelarSeleccionBloqueo() {
+    bloqueoInicio = null;
+    renderBloqueosCalendar();
+  }
+
+  function renderBloqueosCalendar() {
+    const propiedad = document.getElementById('bloqueos-propiedad').value;
+    const grid       = document.getElementById('bloqueos-grid');
+    const label      = document.getElementById('bloqueos-mes-label');
+    const infoSel    = document.getElementById('bloqueos-seleccion-info');
+    const MESES = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+    const DIAS  = ['L','M','X','J','V','S','D'];
+
+    infoSel.style.display = bloqueoInicio ? 'inline' : 'none';
+    label.textContent = `${MESES[bloqueosMes]} ${bloqueosAnyo}`;
+    grid.innerHTML = '';
+
+    DIAS.forEach(d => {
+      const el = document.createElement('div');
+      el.style.cssText = 'text-align:center;font-size:0.7rem;color:#a1a1aa;font-weight:600;';
+      el.textContent = d;
+      grid.appendChild(el);
+    });
+
+    const hoy       = new Date(); hoy.setHours(0,0,0,0);
+    const primerDia = new Date(bloqueosAnyo, bloqueosMes, 1).getDay();
+    const ultimoDia = new Date(bloqueosAnyo, bloqueosMes + 1, 0).getDate();
+    const offset    = primerDia === 0 ? 6 : primerDia - 1;
+
+    for (let i = 0; i < offset; i++) {
+      const el = document.createElement('div');
+      el.className = 'bq-day empty';
+      grid.appendChild(el);
+    }
+
+    for (let dia = 1; dia <= ultimoDia; dia++) {
+      const fecha = new Date(bloqueosAnyo, bloqueosMes, dia);
+      const key   = toKeyBloqueos(fecha);
+      const el    = document.createElement('div');
+      el.className   = 'bq-day';
+      el.textContent = dia;
+
+      const bloqueo = bloqueoEnFecha(propiedad, key);
+
+      if (fecha < hoy) {
+        el.classList.add('past');
+      } else if (bloqueosOcupadas.has(key)) {
+        el.classList.add('ocupado');
+        el.title = 'Ocupado (iCal o reserva confirmada)';
+      } else if (bloqueo) {
+        el.classList.add('bloqueado');
+        el.title = bloqueo.motivo || 'Bloqueado (click para quitar)';
+        el.onclick = () => eliminarBloqueo(bloqueo);
+      } else {
+        el.classList.add('libre');
+        if (bloqueoInicio && key === toKeyBloqueos(bloqueoInicio)) el.classList.add('seleccionado');
+        el.onclick = () => clickDiaBloqueos(fecha);
+      }
+
+      grid.appendChild(el);
+    }
+  }
+
+  function clickDiaBloqueos(fecha) {
+    const propiedad = document.getElementById('bloqueos-propiedad').value;
+
+    if (!bloqueoInicio) {
+      bloqueoInicio = fecha;
+      renderBloqueosCalendar();
+      return;
+    }
+
+    let entrada = bloqueoInicio, salida = fecha;
+    if (salida < entrada) { const tmp = entrada; entrada = salida; salida = tmp; }
+    if (toKeyBloqueos(entrada) === toKeyBloqueos(salida)) {
+      salida = new Date(salida.getTime() + 86400000);
+    }
+
+    let cur = new Date(entrada.getTime());
+    while (cur < salida) {
+      const key = toKeyBloqueos(cur);
+      if (bloqueosOcupadas.has(key) || bloqueoEnFecha(propiedad, key)) {
+        alert('El rango seleccionado incluye días ya ocupados o bloqueados.');
+        bloqueoInicio = null;
+        renderBloqueosCalendar();
+        return;
+      }
+      cur = new Date(cur.getTime() + 86400000);
+    }
+
+    const motivo = prompt('Motivo del bloqueo (opcional):') || '';
+    bloqueoInicio = null;
+    crearBloqueo(propiedad, toKeyBloqueos(entrada), toKeyBloqueos(salida), motivo);
+  }
+
+  async function crearBloqueo(propiedad, entrada, salida, motivo) {
+    await fetch(`${WORKER_URL}/admin/bloqueos`, {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${token}`, 'X-Admin-User': adminUser, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ propiedad, entrada, salida, motivo })
+    });
+    await fetchBloqueos();
+  }
+
+  async function eliminarBloqueo(bloqueo) {
+    if (!confirm(`¿Eliminar el bloqueo del ${formatDateShort(bloqueo.entrada)} al ${formatDateShort(bloqueo.salida)}?`)) return;
+    await fetch(`${WORKER_URL}/admin/bloqueos/${bloqueo.id}`, {
+      method: 'DELETE',
+      headers: { Authorization: `Bearer ${token}`, 'X-Admin-User': adminUser }
+    });
+    await fetchBloqueos();
   }
 
   // ---- Utils ----

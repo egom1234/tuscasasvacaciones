@@ -107,6 +107,34 @@ let anyoActual       = new Date().getFullYear();
 let fechaEntrada     = null;
 let fechaSalida      = null;
 
+function expandirRango(entrada, salida) {
+  const fechas = new Set();
+  const hoy    = new Date(); hoy.setHours(0,0,0,0);
+  let cur      = new Date(entrada + 'T00:00:00');
+  const fin    = new Date(salida  + 'T00:00:00');
+  while (cur < fin) {
+    if (cur >= hoy) fechas.add(toKey(cur));
+    cur = new Date(cur.getTime() + 86400000);
+  }
+  return fechas;
+}
+
+async function cargarReservasConfirmadas() {
+  const propiedad = (window.PAGE_CONFIG || {}).propiedad;
+  if (!propiedad) return new Set();
+  try {
+    const res  = await fetch(FORM_WORKER + '/blocked-dates/' + encodeURIComponent(propiedad));
+    const data = await res.json();
+    if (!data.ok) return new Set();
+    const fechas = new Set();
+    (data.ranges || []).forEach(r => expandirRango(r.entrada, r.salida).forEach(k => fechas.add(k)));
+    return fechas;
+  } catch (e) {
+    console.error('Blocked-dates fetch failed:', e);
+    return new Set();
+  }
+}
+
 async function cargarIcal() {
   const dot   = document.getElementById('syncDot');
   const text  = document.getElementById('syncText');
@@ -114,7 +142,8 @@ async function cargarIcal() {
   try {
     const responses = await Promise.all(slugs.map(s => fetch(WORKER + '/ical/' + s)));
     const texts     = await Promise.all(responses.map(r => r.ok ? r.text() : Promise.resolve('')));
-    fechasReservadas = new Set(texts.flatMap(t => [...parsearIcal(t)]));
+    const reservadasConfirmadas = await cargarReservasConfirmadas();
+    fechasReservadas = new Set([...texts.flatMap(t => [...parsearIcal(t)]), ...reservadasConfirmadas]);
     dot.className    = 'sync-dot ok';
     text.textContent = t('syncOk');
   } catch (e) {
@@ -817,21 +846,7 @@ async function aplicarCodigoPromo() {
       fd.set('promo_code', appliedPromo ? appliedPromo.codigo : '');
       fd.set('propiedad', (window.PAGE_CONFIG && window.PAGE_CONFIG.propiedad) || '');
 
-      const fdEmail = new FormData(form);
-      fdEmail.set('nights',           String(lastPricing.nights));
-      fdEmail.set('subtotal',         lastPricing.subtotal.toFixed(2));
-      fdEmail.set('cleaning',         lastPricing.cleaning.toFixed(2));
-      fdEmail.set('total_price',      lastPricing.total.toFixed(2));
-      fdEmail.set('price_breakdown',  lastPricing.breakdown);
-      fdEmail.set('replyto',          fdEmail.get('email') || '');
-      if (lastPricing.tierDiscount > 0) fdEmail.set('descuento_temporada', `-${lastPricing.tierDiscount.toFixed(2)} € (${lastPricing.discountLabel})`);
-      if (lastPricing.gapDiscount  > 0) fdEmail.set('descuento_fill_gap',  `-${lastPricing.gapDiscount.toFixed(2)} €`);
-      if (lastPricing.promoDiscount > 0) fdEmail.set('descuento_codigo_promo', `-${lastPricing.promoDiscount.toFixed(2)} € (código: ${lastPricing.promoCode})`);
-      fetch('https://api.web3forms.com/submit', { method: 'POST', body: fdEmail })
-        .then(r => r.json())
-        .then(d => { if (!d.success) console.error('Web3Forms error:', d); })
-        .catch(e => console.error('Web3Forms fetch failed:', e));
-
+      // Admin notification is sent server-side by the Worker (Brevo).
       const res = await fetch(FORM_WORKER + '/reserva', { method: 'POST', body: fd });
       const text = await res.text();
       let data = {};
