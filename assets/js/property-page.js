@@ -819,6 +819,9 @@ async function aplicarCodigoPromo() {
       return;
     }
 
+    await cargarIcal();
+    calcularPrecio();
+
     btn.disabled      = true;
     btn.textContent   = t('sending');
     btn.style.opacity = '0.7';
