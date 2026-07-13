@@ -55,7 +55,8 @@ const I18N = {
     waBreakdown: (txt) => ` Desglose:\n${txt}`,
     guestsLabel: (n) => `${n} Huésped${n !== 1 ? 'es' : ''}`,
     summaryPlaceholder: 'Elige tus fechas →',
-    summaryEnterGuests: 'Indica huéspedes →'
+    summaryEnterGuests: 'Indica huéspedes →',
+    summaryCta: 'Reservar →'
   },
   en: {
     syncOk: 'Synchronized',
@@ -93,7 +94,8 @@ const I18N = {
     waBreakdown: (txt) => ` Breakdown:\n${txt}`,
     guestsLabel: (n) => `${n} Guest${n !== 1 ? 's' : ''}`,
     summaryPlaceholder: 'Pick your dates →',
-    summaryEnterGuests: 'Enter guests →'
+    summaryEnterGuests: 'Enter guests →',
+    summaryCta: 'Book now →'
   }
 };
 
@@ -748,6 +750,7 @@ function pintarResumenEn(container) {
   const sepEl    = container.querySelector('.summary-sep');
   const priceEl  = container.querySelector('.summary-price');
   const sep2El   = container.querySelector('.summary-sep2');
+  const ctaEl    = container.querySelector('.summary-cta');
 
   if (!fechaEntrada || !fechaSalida) {
     dateEl.textContent = t('summaryPlaceholder');
@@ -755,6 +758,7 @@ function pintarResumenEn(container) {
     sepEl.style.display = 'none';
     priceEl.textContent = '';
     sep2El.style.display = 'none';
+    if (ctaEl) ctaEl.style.display = 'none';
     container.dataset.state = 'no-dates';
     container.classList.add('visible');
     return;
@@ -774,6 +778,7 @@ function pintarResumenEn(container) {
     sepEl.style.display = '';
     priceEl.textContent = '';
     sep2El.style.display = 'none';
+    if (ctaEl) ctaEl.style.display = 'none';
     container.dataset.state = 'need-guests';
     container.classList.add('visible');
     return;
@@ -789,6 +794,10 @@ function pintarResumenEn(container) {
   sepEl.style.display = '';
   priceEl.textContent = lastPricing && lastPricing.total ? lastPricing.total.toFixed(2) + ' €' : '';
   sep2El.style.display = priceEl.textContent ? '' : 'none';
+  if (ctaEl) {
+    ctaEl.textContent = t('summaryCta');
+    ctaEl.style.display = priceEl.textContent ? 'inline-block' : 'none';
+  }
   container.dataset.state = 'complete';
   container.classList.add('visible');
 }
@@ -872,6 +881,15 @@ function wireResumenClicks(container, reservaEl) {
       (iA ? iA.closest('.form-row') || iA : reservaEl).scrollIntoView({ behavior: 'smooth', block: 'center' });
     });
   }
+  const ctaEl = container.querySelector('.summary-cta');
+  if (ctaEl) {
+    ctaEl.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const nameInput = document.querySelector('input[name="name"]');
+      (nameInput || reservaEl).scrollIntoView({ behavior: 'smooth', block: 'center' });
+      if (nameInput) nameInput.focus({ preventScroll: true });
+    });
+  }
 }
 
 function initBarraResumen() {
@@ -885,6 +903,7 @@ function initBarraResumen() {
     <span class="summary-guests"></span>
     <span class="summary-sep2"> | </span>
     <span class="summary-price"></span>
+    <button type="button" class="summary-cta"></button>
   `;
 
   const bar = document.createElement('div');
