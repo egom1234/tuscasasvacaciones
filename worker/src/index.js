@@ -197,14 +197,14 @@ function calcularPrecioW(config, entrada, salida, isGap, promoRow) {
   return { total, subtotal, subtotalFinal: subtotalWithPromo, cleaning: limpieza, nights: noches, breakdown: breakdownText, tierDiscount, tierPct, gapDiscount, promoDiscount };
 }
 
-async function determinarIsGap(config, entrada, salida) {
+async function determinarIsGap(config, entrada, salida, env) {
   const minNoches = config.minNoches || 1;
   if (minNoches <= 1) return false;
   const slugs = config.icalSlugs || [];
   if (slugs.length === 0) return false;
   try {
     const texts = await Promise.all(
-      slugs.map(s => fetch(`${ICAL_WORKER}/ical/${s}`).then(r => r.ok ? r.text() : ''))
+      slugs.map(s => env.ICAL_SERVICE.fetch(`${ICAL_WORKER}/ical/${s}`).then(r => r.ok ? r.text() : ''))
     );
     const fechasReservadas = new Set(texts.flatMap(t => [...parsearIcalW(t)]));
     const gapDays = computarGapsW(fechasReservadas, minNoches);
@@ -418,7 +418,7 @@ async function handleReserva(request, env, cors, ctx) {
 
         if (entradaDate >= hoy && salidaDate > entradaDate) {
           // Validate gap via iCal
-          const isGap = await determinarIsGap(config, entradaDate, salidaDate);
+          const isGap = await determinarIsGap(config, entradaDate, salidaDate, env);
 
           // Load promo row for server-side discount
           let promoRow = null;
