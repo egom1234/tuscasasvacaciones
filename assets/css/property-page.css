@@ -226,14 +226,35 @@ footer { background: #ede3d8; color: var(--gris-oscuro); padding: 3rem 0 1.5rem;
 }
 
 @media (max-width: 768px) {
-  .cta-reserva {
-    position: fixed; bottom: 0; left: 0; right: 0;
-    width: 100%; margin: 0; padding: 1rem;
-    text-align: center; z-index: 998;
-    box-shadow: 0 -4px 20px rgba(42,33,24,0.15);
-  }
+  /* Replaced by .booking-summary-bar, which stays live-updated and
+     hides itself once the booking panel is in view. */
+  .cta-reserva { display: none; }
   body { padding-bottom: 64px; }
   .wa-container { bottom: 4.5rem; }
+}
+
+/* ── Barra fija resumen fechas/huéspedes (mobile) ────────── */
+.booking-summary-bar {
+  display: none;
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  z-index: 998;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  background: var(--verde-primario);
+  color: #f7f3ee;
+  padding: 1rem;
+  padding-bottom: calc(1rem + env(safe-area-inset-bottom));
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  box-shadow: 0 -4px 20px rgba(42,33,24,0.15);
+}
+.booking-summary-bar.visible { display: flex; }
+@media (min-width: 769px) {
+  .booking-summary-bar { display: none !important; }
 }
 
 /* ── Selector de idioma ──────────────────────────────────── */

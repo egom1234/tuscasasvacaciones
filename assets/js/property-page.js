@@ -12,6 +12,10 @@ const DIAS_I18N = {
   es: ['L','M','X','J','V','S','D'],
   en: ['M','T','W','T','F','S','S']
 };
+const MESES_ABREV_I18N = {
+  es: ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'],
+  en: ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']
+};
 const MAX_MESES_VISTA = 9;
 
 const I18N = {
@@ -48,7 +52,9 @@ const I18N = {
     waStarting: (from) => ` A partir del ${from}.`,
     waTotal: (total, subtotal, cleaning) => ` Importe: ${total} € (Subtotal: ${subtotal} €, Limpieza: ${cleaning} €).`,
     waTotalNoCleaning: (total, subtotal) => ` Importe: ${total} € (Subtotal: ${subtotal} €).`,
-    waBreakdown: (txt) => ` Desglose:\n${txt}`
+    waBreakdown: (txt) => ` Desglose:\n${txt}`,
+    guestsLabel: (n) => `${n} Huésped${n !== 1 ? 'es' : ''}`,
+    summaryPlaceholder: 'Elige tus fechas →'
   },
   en: {
     syncOk: 'Synchronized',
@@ -83,7 +89,9 @@ const I18N = {
     waStarting: (from) => ` Starting from ${from}.`,
     waTotal: (total, subtotal, cleaning) => ` Total: ${total} € (Subtotal: ${subtotal} €, Cleaning: ${cleaning} €).`,
     waTotalNoCleaning: (total, subtotal) => ` Total: ${total} € (Subtotal: ${subtotal} €).`,
-    waBreakdown: (txt) => ` Breakdown:\n${txt}`
+    waBreakdown: (txt) => ` Breakdown:\n${txt}`,
+    guestsLabel: (n) => `${n} Guest${n !== 1 ? 's' : ''}`,
+    summaryPlaceholder: 'Pick your dates →'
   }
 };
 
@@ -615,6 +623,7 @@ function calcularPrecio() {
     if (hT2) hT2.value = '';
     if (hB2) hB2.value = '';
     actualizarWAMensajes();
+    actualizarBarraResumen();
     return;
   }
 
@@ -718,7 +727,85 @@ function calcularPrecio() {
   if (hB) hB.value = lastPricing.breakdown;
 
   actualizarWAMensajes();
+  actualizarBarraResumen();
 }
+
+let reservaEnPantalla = false;
+
+function actualizarBarraResumen() {
+  const bar = document.getElementById('bookingSummaryBar');
+  if (!bar) return;
+
+  if (reservaEnPantalla) {
+    bar.classList.remove('visible');
+    return;
+  }
+
+  const dateEl   = bar.querySelector('.summary-dates');
+  const guestsEl = bar.querySelector('.summary-guests');
+  const sepEl    = bar.querySelector('.summary-sep');
+
+  if (!fechaEntrada || !fechaSalida) {
+    dateEl.textContent = t('summaryPlaceholder');
+    guestsEl.textContent = '';
+    sepEl.style.display = 'none';
+    bar.classList.add('visible');
+    return;
+  }
+
+  const lang   = getLang();
+  const MESES  = MESES_ABREV_I18N[lang] || MESES_ABREV_I18N.es;
+  const iA     = document.querySelector('input[name="adultos"]');
+  const iN     = document.querySelector('input[name="ninos"]');
+  const adultos = parseInt(iA && iA.value) || 1;
+  const ninos   = parseInt(iN && iN.value) || 0;
+  const total   = adultos + ninos;
+
+  const mismoMes = fechaEntrada.getMonth() === fechaSalida.getMonth();
+  const rangoFechas = mismoMes
+    ? `${fechaEntrada.getDate()} - ${fechaSalida.getDate()} ${MESES[fechaSalida.getMonth()]}`
+    : `${fechaEntrada.getDate()} ${MESES[fechaEntrada.getMonth()]} - ${fechaSalida.getDate()} ${MESES[fechaSalida.getMonth()]}`;
+
+  dateEl.textContent = rangoFechas;
+  guestsEl.textContent = t('guestsLabel', total);
+  sepEl.style.display = '';
+  bar.classList.add('visible');
+}
+
+function initBarraResumen() {
+  const reservaEl = document.getElementById('reserva');
+  if (!reservaEl || document.getElementById('bookingSummaryBar')) return;
+
+  const bar = document.createElement('div');
+  bar.id = 'bookingSummaryBar';
+  bar.className = 'booking-summary-bar';
+  bar.innerHTML = `
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+    <span class="summary-dates"></span>
+    <span class="summary-sep"> | </span>
+    <span class="summary-guests"></span>
+  `;
+  bar.addEventListener('click', () => {
+    reservaEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+  bar.querySelector('.summary-guests').addEventListener('click', (e) => {
+    e.stopPropagation();
+    const iA = document.querySelector('input[name="adultos"]');
+    (iA ? iA.closest('.form-row') || iA : reservaEl).scrollIntoView({ behavior: 'smooth', block: 'center' });
+  });
+  document.body.appendChild(bar);
+
+  if ('IntersectionObserver' in window) {
+    const observer = new IntersectionObserver((entries) => {
+      reservaEnPantalla = entries[0].isIntersecting;
+      actualizarBarraResumen();
+    }, { threshold: 0.1 });
+    observer.observe(reservaEl);
+  }
+
+  actualizarBarraResumen();
+}
+initBarraResumen();
 
 async function aplicarCodigoPromo() {
   const input = document.getElementById('promoCodeInput');
