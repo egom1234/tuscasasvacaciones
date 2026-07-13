@@ -299,15 +299,20 @@ footer { background: #ede3d8; color: var(--gris-oscuro); padding: 3rem 0 1.5rem;
 .booking-summary-widget .widget-close:hover { color: #333; }
 .booking-summary-widget .widget-collapse {
   position: absolute;
-  top: 0.5rem; left: 0.6rem;
-  background: none; border: none;
-  font-size: 1rem;
-  color: #999;
+  top: 50%; left: -14px;
+  transform: translateY(-50%);
+  background: var(--verde-primario, #B5896A);
+  border: none;
+  font-size: 1.1rem;
+  color: #fff;
   cursor: pointer;
   line-height: 1;
-  padding: 0.25rem;
+  width: 28px; height: 40px;
+  border-radius: 6px 0 0 6px;
+  box-shadow: -2px 0 8px rgba(0,0,0,0.15);
+  display: flex; align-items: center; justify-content: center;
 }
-.booking-summary-widget .widget-collapse:hover { color: #333; }
+.booking-summary-widget .widget-collapse:hover { filter: brightness(0.9); }
 .booking-summary-tab {
   display: none;
   position: fixed;
