@@ -56,7 +56,8 @@ const I18N = {
     guestsLabel: (n) => `${n} Huésped${n !== 1 ? 'es' : ''}`,
     summaryPlaceholder: 'Elige tus fechas →',
     summaryEnterGuests: 'Indica huéspedes →',
-    summaryCta: 'Reservar →'
+    summaryCta: 'Reservar →',
+    summaryWaTooltip: 'Escríbenos'
   },
   en: {
     syncOk: 'Synchronized',
@@ -95,7 +96,8 @@ const I18N = {
     guestsLabel: (n) => `${n} Guest${n !== 1 ? 's' : ''}`,
     summaryPlaceholder: 'Pick your dates →',
     summaryEnterGuests: 'Enter guests →',
-    summaryCta: 'Book now →'
+    summaryCta: 'Book now →',
+    summaryWaTooltip: 'Message us'
   }
 };
 
@@ -970,7 +972,10 @@ function initBarraResumen() {
 
   const waLink = document.querySelector('.wa-container a.wa-option');
   if (waLink) {
-    document.querySelectorAll('.summary-wa').forEach(a => { a.href = waLink.href; });
+    document.querySelectorAll('.summary-wa').forEach(a => {
+      a.href = waLink.href;
+      a.setAttribute('data-tooltip', t('summaryWaTooltip'));
+    });
   }
 
   actualizarBarraResumen();
