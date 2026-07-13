@@ -834,6 +834,8 @@ function wireResumenClicks(container, reservaEl) {
       const priceEl = document.getElementById('mobilePrice');
       (priceEl || reservaEl).scrollIntoView({ behavior: 'smooth', block: 'center' });
     } else if (container.dataset.state === 'need-guests') {
+      guestsConfirmed = true;
+      actualizarBarraResumen();
       const iA = document.querySelector('input[name="adultos"]');
       (iA ? iA.closest('.form-row') || iA : reservaEl).scrollIntoView({ behavior: 'smooth', block: 'center' });
     } else {
@@ -844,6 +846,8 @@ function wireResumenClicks(container, reservaEl) {
   if (guestsEl) {
     guestsEl.addEventListener('click', (e) => {
       e.stopPropagation();
+      guestsConfirmed = true;
+      actualizarBarraResumen();
       const iA = document.querySelector('input[name="adultos"]');
       (iA ? iA.closest('.form-row') || iA : reservaEl).scrollIntoView({ behavior: 'smooth', block: 'center' });
     });
