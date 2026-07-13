@@ -853,7 +853,13 @@ async function aplicarCodigoPromo() {
       try { data = text ? JSON.parse(text) : {}; } catch (e) { console.warn('Non-JSON response:', text); }
 
       if (!res.ok) {
-        throw new Error(`HTTP ${res.status} ${res.statusText} - ${data.error || text.slice(0,200)}`);
+        errorMsg.style.display = 'block';
+        errorMsg.textContent = data.error || t('submitError');
+        btn.disabled      = false;
+        btn.textContent   = t('requestBooking');
+        btn.style.opacity = '1';
+        if (window.turnstile) window.turnstile.reset();
+        return;
       }
 
       if (data && data.ok) {
@@ -894,6 +900,7 @@ async function aplicarCodigoPromo() {
         btn.disabled      = false;
         btn.textContent   = t('requestBooking');
         btn.style.opacity = '1';
+        if (window.turnstile) window.turnstile.reset();
       }
     }
   });

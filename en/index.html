@@ -816,6 +816,7 @@ function validarNombre(input) {
       submitBtn.disabled      = false;
       submitBtn.textContent   = 'Enviar mensaje';
       submitBtn.style.opacity = '1';
+      if (window.turnstile) window.turnstile.reset();
     }
   });
 </script>
