@@ -751,7 +751,6 @@ function pintarResumenEn(container) {
   const priceEl  = container.querySelector('.summary-price');
   const sep2El   = container.querySelector('.summary-sep2');
   const ctaEl    = container.querySelector('.summary-cta');
-  const waEl     = container.querySelector('.summary-wa');
 
   if (!fechaEntrada || !fechaSalida) {
     dateEl.textContent = t('summaryPlaceholder');
@@ -760,7 +759,6 @@ function pintarResumenEn(container) {
     priceEl.textContent = '';
     sep2El.style.display = 'none';
     if (ctaEl) ctaEl.style.display = 'none';
-    if (waEl) waEl.style.display = 'none';
     container.dataset.state = 'no-dates';
     container.classList.add('visible');
     return;
@@ -781,7 +779,6 @@ function pintarResumenEn(container) {
     priceEl.textContent = '';
     sep2El.style.display = 'none';
     if (ctaEl) ctaEl.style.display = 'none';
-    if (waEl) waEl.style.display = 'none';
     container.dataset.state = 'need-guests';
     container.classList.add('visible');
     return;
@@ -801,7 +798,6 @@ function pintarResumenEn(container) {
     ctaEl.textContent = t('summaryCta');
     ctaEl.style.display = priceEl.textContent ? 'inline-block' : 'none';
   }
-  if (waEl) waEl.style.display = priceEl.textContent ? 'flex' : 'none';
   container.dataset.state = 'complete';
   container.classList.add('visible');
 }
