@@ -734,7 +734,6 @@ function calcularPrecio() {
   actualizarBarraResumen();
 }
 
-let reservaEnPantalla = false;
 let guestsConfirmed   = false;
 let lastFechaEntradaKeyBar = null;
 
@@ -742,10 +741,6 @@ function actualizarBarraResumen() {
   const bar = document.getElementById('bookingSummaryBar');
   if (!bar) return;
 
-  if (reservaEnPantalla) {
-    bar.classList.remove('visible');
-    return;
-  }
 
   const dateEl   = bar.querySelector('.summary-dates');
   const guestsEl = bar.querySelector('.summary-guests');
@@ -834,14 +829,6 @@ function initBarraResumen() {
     (iA ? iA.closest('.form-row') || iA : reservaEl).scrollIntoView({ behavior: 'smooth', block: 'center' });
   });
   document.body.appendChild(bar);
-
-  if ('IntersectionObserver' in window) {
-    const observer = new IntersectionObserver((entries) => {
-      reservaEnPantalla = entries[0].isIntersecting;
-      actualizarBarraResumen();
-    }, { threshold: 0.1 });
-    observer.observe(reservaEl);
-  }
 
   actualizarBarraResumen();
 }
