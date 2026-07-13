@@ -253,6 +253,8 @@ footer { background: #ede3d8; color: var(--gris-oscuro); padding: 3rem 0 1.5rem;
   box-shadow: 0 -4px 20px rgba(42,33,24,0.15);
 }
 .booking-summary-bar.visible { display: flex; }
+.booking-summary-bar .summary-price { font-weight: 700; }
+.booking-summary-bar .summary-guests { text-decoration: underline; text-underline-offset: 2px; }
 @media (min-width: 769px) {
   .booking-summary-bar { display: none !important; }
 }

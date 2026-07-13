@@ -54,7 +54,8 @@ const I18N = {
     waTotalNoCleaning: (total, subtotal) => ` Importe: ${total} € (Subtotal: ${subtotal} €).`,
     waBreakdown: (txt) => ` Desglose:\n${txt}`,
     guestsLabel: (n) => `${n} Huésped${n !== 1 ? 'es' : ''}`,
-    summaryPlaceholder: 'Elige tus fechas →'
+    summaryPlaceholder: 'Elige tus fechas →',
+    summaryEnterGuests: 'Indica huéspedes →'
   },
   en: {
     syncOk: 'Synchronized',
@@ -91,7 +92,8 @@ const I18N = {
     waTotalNoCleaning: (total, subtotal) => ` Total: ${total} € (Subtotal: ${subtotal} €).`,
     waBreakdown: (txt) => ` Breakdown:\n${txt}`,
     guestsLabel: (n) => `${n} Guest${n !== 1 ? 's' : ''}`,
-    summaryPlaceholder: 'Pick your dates →'
+    summaryPlaceholder: 'Pick your dates →',
+    summaryEnterGuests: 'Enter guests →'
   }
 };
 
@@ -538,6 +540,8 @@ function stepPersonas(field, delta) {
   input.value = cur + delta;
   actualizarBotonesStepper();
   validarPersonas();
+  guestsConfirmed = true;
+  actualizarBarraResumen();
 }
 
 function validarFechas() {
@@ -731,6 +735,8 @@ function calcularPrecio() {
 }
 
 let reservaEnPantalla = false;
+let guestsConfirmed   = false;
+let lastFechaEntradaKeyBar = null;
 
 function actualizarBarraResumen() {
   const bar = document.getElementById('bookingSummaryBar');
@@ -744,31 +750,55 @@ function actualizarBarraResumen() {
   const dateEl   = bar.querySelector('.summary-dates');
   const guestsEl = bar.querySelector('.summary-guests');
   const sepEl    = bar.querySelector('.summary-sep');
+  const priceEl  = bar.querySelector('.summary-price');
+  const sep2El   = bar.querySelector('.summary-sep2');
 
   if (!fechaEntrada || !fechaSalida) {
+    const key = null;
+    if (lastFechaEntradaKeyBar !== key) { guestsConfirmed = false; lastFechaEntradaKeyBar = key; }
     dateEl.textContent = t('summaryPlaceholder');
     guestsEl.textContent = '';
     sepEl.style.display = 'none';
+    priceEl.textContent = '';
+    sep2El.style.display = 'none';
+    bar.dataset.state = 'no-dates';
     bar.classList.add('visible');
     return;
   }
 
+  const entradaKey = toKey(fechaEntrada) + '_' + toKey(fechaSalida);
+  if (lastFechaEntradaKeyBar !== entradaKey) { guestsConfirmed = false; lastFechaEntradaKeyBar = entradaKey; }
+
   const lang   = getLang();
   const MESES  = MESES_ABREV_I18N[lang] || MESES_ABREV_I18N.es;
-  const iA     = document.querySelector('input[name="adultos"]');
-  const iN     = document.querySelector('input[name="ninos"]');
-  const adultos = parseInt(iA && iA.value) || 1;
-  const ninos   = parseInt(iN && iN.value) || 0;
-  const total   = adultos + ninos;
-
   const mismoMes = fechaEntrada.getMonth() === fechaSalida.getMonth();
   const rangoFechas = mismoMes
     ? `${fechaEntrada.getDate()} - ${fechaSalida.getDate()} ${MESES[fechaSalida.getMonth()]}`
     : `${fechaEntrada.getDate()} ${MESES[fechaEntrada.getMonth()]} - ${fechaSalida.getDate()} ${MESES[fechaSalida.getMonth()]}`;
 
   dateEl.textContent = rangoFechas;
+
+  if (!guestsConfirmed) {
+    guestsEl.textContent = t('summaryEnterGuests');
+    sepEl.style.display = '';
+    priceEl.textContent = '';
+    sep2El.style.display = 'none';
+    bar.dataset.state = 'need-guests';
+    bar.classList.add('visible');
+    return;
+  }
+
+  const iA      = document.querySelector('input[name="adultos"]');
+  const iN      = document.querySelector('input[name="ninos"]');
+  const adultos = parseInt(iA && iA.value) || 1;
+  const ninos   = parseInt(iN && iN.value) || 0;
+  const total   = adultos + ninos;
+
   guestsEl.textContent = t('guestsLabel', total);
   sepEl.style.display = '';
+  priceEl.textContent = lastPricing && lastPricing.total ? lastPricing.total.toFixed(2) + ' €' : '';
+  sep2El.style.display = priceEl.textContent ? '' : 'none';
+  bar.dataset.state = 'complete';
   bar.classList.add('visible');
 }
 
@@ -784,9 +814,19 @@ function initBarraResumen() {
     <span class="summary-dates"></span>
     <span class="summary-sep"> | </span>
     <span class="summary-guests"></span>
+    <span class="summary-sep2"> | </span>
+    <span class="summary-price"></span>
   `;
   bar.addEventListener('click', () => {
-    reservaEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    if (bar.dataset.state === 'complete') {
+      const priceEl = document.getElementById('mobilePrice');
+      (priceEl || reservaEl).scrollIntoView({ behavior: 'smooth', block: 'center' });
+    } else if (bar.dataset.state === 'need-guests') {
+      const iA = document.querySelector('input[name="adultos"]');
+      (iA ? iA.closest('.form-row') || iA : reservaEl).scrollIntoView({ behavior: 'smooth', block: 'center' });
+    } else {
+      reservaEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
   });
   bar.querySelector('.summary-guests').addEventListener('click', (e) => {
     e.stopPropagation();
