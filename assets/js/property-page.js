@@ -736,6 +736,7 @@ function calcularPrecio() {
 
 let guestsConfirmed   = false;
 let widgetDismissed   = false;
+let widgetCollapsed   = false;
 let lastFechaEntradaKeyBar = null;
 
 function pintarResumenEn(container) {
@@ -814,6 +815,7 @@ function resetearSeleccionReserva() {
 function actualizarBarraResumen() {
   const bar = document.getElementById('bookingSummaryBar');
   const widget = document.getElementById('bookingSummaryWidget');
+  const tab = document.getElementById('bookingSummaryTab');
   if (!bar && !widget) return;
 
   if (fechaEntrada && fechaSalida) {
@@ -829,7 +831,21 @@ function actualizarBarraResumen() {
   }
 
   pintarResumenEn(bar);
-  pintarResumenEn(widget);
+
+  if (widget) {
+    if (widgetDismissed) {
+      widget.classList.remove('visible');
+      if (tab) tab.classList.remove('visible');
+    } else {
+      pintarResumenEn(widget);
+      if (widgetCollapsed) {
+        widget.classList.remove('visible');
+        if (tab) tab.classList.add('visible');
+      } else if (tab) {
+        tab.classList.remove('visible');
+      }
+    }
+  }
 }
 
 function wireResumenClicks(container, reservaEl) {
@@ -882,6 +898,7 @@ function initBarraResumen() {
   widget.id = 'bookingSummaryWidget';
   widget.className = 'booking-summary-widget';
   widget.innerHTML = `
+    <button type="button" class="widget-collapse" aria-label="Minimizar">›</button>
     <button type="button" class="widget-close" aria-label="Cerrar">✕</button>
     ${summaryInnerHTML}
   `;
@@ -892,7 +909,24 @@ function initBarraResumen() {
     widget.classList.remove('visible');
     resetearSeleccionReserva();
   });
+  widget.querySelector('.widget-collapse').addEventListener('click', (e) => {
+    e.stopPropagation();
+    widgetCollapsed = true;
+    actualizarBarraResumen();
+  });
   document.body.appendChild(widget);
+
+  const tab = document.createElement('button');
+  tab.id = 'bookingSummaryTab';
+  tab.className = 'booking-summary-tab';
+  tab.type = 'button';
+  tab.setAttribute('aria-label', 'Mostrar resumen de reserva');
+  tab.textContent = '‹';
+  tab.addEventListener('click', () => {
+    widgetCollapsed = false;
+    actualizarBarraResumen();
+  });
+  document.body.appendChild(tab);
 
   actualizarBarraResumen();
 }

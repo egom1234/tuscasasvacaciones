@@ -297,8 +297,35 @@ footer { background: #ede3d8; color: var(--gris-oscuro); padding: 3rem 0 1.5rem;
   padding: 0.25rem;
 }
 .booking-summary-widget .widget-close:hover { color: #333; }
+.booking-summary-widget .widget-collapse {
+  position: absolute;
+  top: 0.5rem; left: 0.6rem;
+  background: none; border: none;
+  font-size: 1rem;
+  color: #999;
+  cursor: pointer;
+  line-height: 1;
+  padding: 0.25rem;
+}
+.booking-summary-widget .widget-collapse:hover { color: #333; }
+.booking-summary-tab {
+  display: none;
+  position: fixed;
+  bottom: 1.5rem; right: 0;
+  z-index: 998;
+  background: var(--verde-primario, #B5896A);
+  color: #fff;
+  border: none;
+  font-size: 1.1rem;
+  width: 32px; height: 44px;
+  border-radius: 8px 0 0 8px;
+  cursor: pointer;
+  box-shadow: -2px 0 10px rgba(0,0,0,0.15);
+}
+.booking-summary-tab.visible { display: block; }
 @media (max-width: 768px) {
   .booking-summary-widget { display: none !important; }
+  .booking-summary-tab { display: none !important; }
 }
 @media (min-width: 769px) {
   .wa-container { bottom: 9rem; }
