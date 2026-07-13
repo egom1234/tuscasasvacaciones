@@ -12,6 +12,10 @@ const DIAS_I18N = {
   es: ['L','M','X','J','V','S','D'],
   en: ['M','T','W','T','F','S','S']
 };
+const MESES_ABREV_I18N = {
+  es: ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'],
+  en: ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']
+};
 const MAX_MESES_VISTA = 9;
 
 const I18N = {
@@ -48,7 +52,12 @@ const I18N = {
     waStarting: (from) => ` A partir del ${from}.`,
     waTotal: (total, subtotal, cleaning) => ` Importe: ${total} € (Subtotal: ${subtotal} €, Limpieza: ${cleaning} €).`,
     waTotalNoCleaning: (total, subtotal) => ` Importe: ${total} € (Subtotal: ${subtotal} €).`,
-    waBreakdown: (txt) => ` Desglose:\n${txt}`
+    waBreakdown: (txt) => ` Desglose:\n${txt}`,
+    guestsLabel: (n) => `${n} Huésped${n !== 1 ? 'es' : ''}`,
+    summaryPlaceholder: 'Elige tus fechas →',
+    summaryEnterGuests: 'Indica huéspedes →',
+    summaryCta: 'Reservar →',
+    summaryWaTooltip: 'Escríbenos'
   },
   en: {
     syncOk: 'Synchronized',
@@ -83,7 +92,12 @@ const I18N = {
     waStarting: (from) => ` Starting from ${from}.`,
     waTotal: (total, subtotal, cleaning) => ` Total: ${total} € (Subtotal: ${subtotal} €, Cleaning: ${cleaning} €).`,
     waTotalNoCleaning: (total, subtotal) => ` Total: ${total} € (Subtotal: ${subtotal} €).`,
-    waBreakdown: (txt) => ` Breakdown:\n${txt}`
+    waBreakdown: (txt) => ` Breakdown:\n${txt}`,
+    guestsLabel: (n) => `${n} Guest${n !== 1 ? 's' : ''}`,
+    summaryPlaceholder: 'Pick your dates →',
+    summaryEnterGuests: 'Enter guests →',
+    summaryCta: 'Book now →',
+    summaryWaTooltip: 'Message us'
   }
 };
 
@@ -530,6 +544,8 @@ function stepPersonas(field, delta) {
   input.value = cur + delta;
   actualizarBotonesStepper();
   validarPersonas();
+  guestsConfirmed = true;
+  actualizarBarraResumen();
 }
 
 function validarFechas() {
@@ -615,6 +631,7 @@ function calcularPrecio() {
     if (hT2) hT2.value = '';
     if (hB2) hB2.value = '';
     actualizarWAMensajes();
+    actualizarBarraResumen();
     return;
   }
 
@@ -718,7 +735,257 @@ function calcularPrecio() {
   if (hB) hB.value = lastPricing.breakdown;
 
   actualizarWAMensajes();
+  actualizarBarraResumen();
 }
+
+let guestsConfirmed   = false;
+let widgetDismissed   = false;
+let widgetCollapsed   = false;
+let lastFechaEntradaKeyBar = null;
+
+function pintarResumenEn(container) {
+  if (!container) return;
+  if (container.id === 'bookingSummaryWidget' && widgetDismissed) return;
+
+  const dateEl   = container.querySelector('.summary-dates');
+  const guestsEl = container.querySelector('.summary-guests');
+  const sepEl    = container.querySelector('.summary-sep');
+  const priceEl  = container.querySelector('.summary-price');
+  const sep2El   = container.querySelector('.summary-sep2');
+  const ctaEl    = container.querySelector('.summary-cta');
+
+  if (!fechaEntrada || !fechaSalida) {
+    dateEl.textContent = t('summaryPlaceholder');
+    guestsEl.textContent = '';
+    sepEl.style.display = 'none';
+    priceEl.textContent = '';
+    sep2El.style.display = 'none';
+    if (ctaEl) ctaEl.style.display = 'none';
+    container.dataset.state = 'no-dates';
+    container.classList.add('visible');
+    return;
+  }
+
+  const lang   = getLang();
+  const MESES  = MESES_ABREV_I18N[lang] || MESES_ABREV_I18N.es;
+  const mismoMes = fechaEntrada.getMonth() === fechaSalida.getMonth();
+  const rangoFechas = mismoMes
+    ? `${fechaEntrada.getDate()} - ${fechaSalida.getDate()} ${MESES[fechaSalida.getMonth()]}`
+    : `${fechaEntrada.getDate()} ${MESES[fechaEntrada.getMonth()]} - ${fechaSalida.getDate()} ${MESES[fechaSalida.getMonth()]}`;
+
+  dateEl.textContent = rangoFechas;
+
+  if (!guestsConfirmed) {
+    guestsEl.textContent = t('summaryEnterGuests');
+    sepEl.style.display = '';
+    priceEl.textContent = '';
+    sep2El.style.display = 'none';
+    if (ctaEl) ctaEl.style.display = 'none';
+    container.dataset.state = 'need-guests';
+    container.classList.add('visible');
+    return;
+  }
+
+  const iA      = document.querySelector('input[name="adultos"]');
+  const iN      = document.querySelector('input[name="ninos"]');
+  const adultos = parseInt(iA && iA.value) || 1;
+  const ninos   = parseInt(iN && iN.value) || 0;
+  const total   = adultos + ninos;
+
+  guestsEl.textContent = t('guestsLabel', total);
+  sepEl.style.display = '';
+  priceEl.textContent = lastPricing && lastPricing.total ? lastPricing.total.toFixed(2) + ' €' : '';
+  sep2El.style.display = priceEl.textContent ? '' : 'none';
+  if (ctaEl) {
+    ctaEl.textContent = t('summaryCta');
+    ctaEl.style.display = priceEl.textContent ? 'inline-block' : 'none';
+  }
+  container.dataset.state = 'complete';
+  container.classList.add('visible');
+}
+
+function resetearSeleccionReserva() {
+  fechaEntrada = null;
+  fechaSalida  = null;
+  guestsConfirmed = false;
+
+  const iA = document.querySelector('input[name="adultos"]');
+  const iN = document.querySelector('input[name="ninos"]');
+  if (iA) iA.value = 1;
+  if (iN) iN.value = 0;
+  actualizarBotonesStepper();
+
+  appliedPromo = null;
+  const promoInput = document.getElementById('promoCodeInput');
+  if (promoInput) promoInput.value = '';
+
+  renderCalendario();
+  calcularPrecio();
+}
+
+function actualizarBarraResumen() {
+  const bar = document.getElementById('bookingSummaryBar');
+  const widget = document.getElementById('bookingSummaryWidget');
+  const tab = document.getElementById('bookingSummaryTab');
+  if (!bar && !widget) return;
+
+  if (fechaEntrada && fechaSalida) {
+    const entradaKey = toKey(fechaEntrada) + '_' + toKey(fechaSalida);
+    if (lastFechaEntradaKeyBar !== entradaKey) {
+      guestsConfirmed = false;
+      lastFechaEntradaKeyBar = entradaKey;
+      widgetDismissed = false;
+    }
+  } else if (lastFechaEntradaKeyBar !== null) {
+    guestsConfirmed = false;
+    lastFechaEntradaKeyBar = null;
+  }
+
+  pintarResumenEn(bar);
+
+  if (widget) {
+    if (widgetDismissed) {
+      widget.classList.remove('visible');
+      if (tab) tab.classList.remove('visible');
+    } else {
+      pintarResumenEn(widget);
+      if (widgetCollapsed) {
+        widget.classList.remove('visible');
+        if (tab) tab.classList.add('visible');
+      } else {
+        if (tab) tab.classList.remove('visible');
+      }
+    }
+  }
+
+  const waContainer = document.querySelector('.wa-container');
+  if (waContainer) waContainer.classList.toggle('box-open', widget && !widgetDismissed);
+}
+
+function wireResumenClicks(container, reservaEl) {
+  container.addEventListener('click', () => {
+    if (container.dataset.state === 'complete') {
+      const priceEl = document.getElementById('mobilePrice');
+      (priceEl || reservaEl).scrollIntoView({ behavior: 'smooth', block: 'center' });
+    } else if (container.dataset.state === 'need-guests') {
+      guestsConfirmed = true;
+      actualizarBarraResumen();
+      const iA = document.querySelector('input[name="adultos"]');
+      (iA ? iA.closest('.form-row') || iA : reservaEl).scrollIntoView({ behavior: 'smooth', block: 'center' });
+    } else {
+      reservaEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  });
+  const dateEl = container.querySelector('.summary-dates');
+  if (dateEl) {
+    dateEl.addEventListener('click', (e) => {
+      e.stopPropagation();
+      reservaEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  }
+  const guestsEl = container.querySelector('.summary-guests');
+  if (guestsEl) {
+    guestsEl.addEventListener('click', (e) => {
+      e.stopPropagation();
+      guestsConfirmed = true;
+      actualizarBarraResumen();
+      const iA = document.querySelector('input[name="adultos"]');
+      (iA ? iA.closest('.form-row') || iA : reservaEl).scrollIntoView({ behavior: 'smooth', block: 'center' });
+    });
+  }
+  const ctaEl = container.querySelector('.summary-cta');
+  if (ctaEl) {
+    ctaEl.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const nameInput = document.querySelector('input[name="name"]');
+      (nameInput || reservaEl).scrollIntoView({ behavior: 'smooth', block: 'center' });
+      if (nameInput) nameInput.focus({ preventScroll: true });
+    });
+  }
+  const waEl = container.querySelector('.summary-wa');
+  if (waEl) {
+    waEl.addEventListener('click', (e) => {
+      e.stopPropagation();
+      actualizarWAMensajes();
+      const waLink = document.querySelector('.wa-container a.wa-option');
+      if (waLink) waEl.href = waLink.href;
+    });
+  }
+}
+
+function initBarraResumen() {
+  const reservaEl = document.getElementById('reserva');
+  if (!reservaEl || document.getElementById('bookingSummaryBar')) return;
+
+  const summaryInnerHTML = `
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+    <span class="summary-dates"></span>
+    <span class="summary-sep"> | </span>
+    <span class="summary-guests"></span>
+    <span class="summary-sep2"> | </span>
+    <span class="summary-price-row">
+      <span class="summary-price"></span>
+      <span class="summary-actions">
+        <a href="#" target="_blank" rel="noopener noreferrer" class="summary-wa" aria-label="WhatsApp">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        </a>
+        <button type="button" class="summary-cta"></button>
+      </span>
+    </span>
+  `;
+
+  const bar = document.createElement('div');
+  bar.id = 'bookingSummaryBar';
+  bar.className = 'booking-summary-bar';
+  bar.innerHTML = summaryInnerHTML;
+  wireResumenClicks(bar, reservaEl);
+  document.body.appendChild(bar);
+
+  const widget = document.createElement('div');
+  widget.id = 'bookingSummaryWidget';
+  widget.className = 'booking-summary-widget';
+  widget.innerHTML = `
+    <button type="button" class="widget-collapse" aria-label="Minimizar">›</button>
+    <button type="button" class="widget-close" aria-label="Cerrar">✕</button>
+    ${summaryInnerHTML}
+  `;
+  wireResumenClicks(widget, reservaEl);
+  widget.querySelector('.widget-close').addEventListener('click', (e) => {
+    e.stopPropagation();
+    widgetDismissed = true;
+    widget.classList.remove('visible');
+    resetearSeleccionReserva();
+  });
+  widget.querySelector('.widget-collapse').addEventListener('click', (e) => {
+    e.stopPropagation();
+    widgetCollapsed = true;
+    actualizarBarraResumen();
+  });
+  document.body.appendChild(widget);
+
+  const tab = document.createElement('button');
+  tab.id = 'bookingSummaryTab';
+  tab.className = 'booking-summary-tab';
+  tab.type = 'button';
+  tab.setAttribute('aria-label', 'Mostrar resumen de reserva');
+  tab.textContent = '‹';
+  tab.addEventListener('click', () => {
+    widgetCollapsed = false;
+    actualizarBarraResumen();
+  });
+  document.body.appendChild(tab);
+
+  const waLink = document.querySelector('.wa-container a.wa-option');
+  if (waLink) {
+    document.querySelectorAll('.summary-wa').forEach(a => {
+      a.href = waLink.href;
+      a.setAttribute('data-tooltip', t('summaryWaTooltip'));
+    });
+  }
+
+  actualizarBarraResumen();
+}
+initBarraResumen();
 
 async function aplicarCodigoPromo() {
   const input = document.getElementById('promoCodeInput');
