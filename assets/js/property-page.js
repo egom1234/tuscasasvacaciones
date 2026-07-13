@@ -792,6 +792,25 @@ function pintarResumenEn(container) {
   container.classList.add('visible');
 }
 
+function resetearSeleccionReserva() {
+  fechaEntrada = null;
+  fechaSalida  = null;
+  guestsConfirmed = false;
+
+  const iA = document.querySelector('input[name="adultos"]');
+  const iN = document.querySelector('input[name="ninos"]');
+  if (iA) iA.value = 1;
+  if (iN) iN.value = 0;
+  actualizarBotonesStepper();
+
+  appliedPromo = null;
+  const promoInput = document.getElementById('promoCodeInput');
+  if (promoInput) promoInput.value = '';
+
+  renderCalendario();
+  calcularPrecio();
+}
+
 function actualizarBarraResumen() {
   const bar = document.getElementById('bookingSummaryBar');
   const widget = document.getElementById('bookingSummaryWidget');
@@ -863,6 +882,7 @@ function initBarraResumen() {
     e.stopPropagation();
     widgetDismissed = true;
     widget.classList.remove('visible');
+    resetearSeleccionReserva();
   });
   document.body.appendChild(widget);
 
