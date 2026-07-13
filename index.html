@@ -786,18 +786,11 @@ function validarNombre(input) {
 
     try {
       const turnstileToken = form.querySelector('[name="cf-turnstile-response"]')?.value || '';
-      const verifyRes  = await fetch('https://turnstile-siteverify-casitasdemar.eduardgomez-4.workers.dev', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ token: turnstileToken })
-      });
-      const verifyData = await verifyRes.json();
-      if (!verifyData.success) {
+      if (!turnstileToken) {
         errorMsg.style.display  = 'block';
         submitBtn.disabled      = false;
         submitBtn.textContent   = 'Enviar mensaje';
         submitBtn.style.opacity = '1';
-        if (window.turnstile) window.turnstile.reset();
         return;
       }
 

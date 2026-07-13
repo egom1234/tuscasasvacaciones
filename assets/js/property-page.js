@@ -4,7 +4,6 @@
 
 const WORKER          = 'https://tuscasasvacaciones.eduardgomez-4.workers.dev';
 const FORM_WORKER     = 'https://casitasdemar-form.eduardgomez-4.workers.dev';
-const TURNSTILE_WORKER = 'https://turnstile-siteverify-casitasdemar.eduardgomez-4.workers.dev';
 const MESES_I18N = {
   es: ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'],
   en: ['January','February','March','April','May','June','July','August','September','October','November','December']
@@ -798,18 +797,11 @@ async function aplicarCodigoPromo() {
 
     try {
       const turnstileToken = form.querySelector('[name="cf-turnstile-response"]')?.value || '';
-      const verifyRes  = await fetch(TURNSTILE_WORKER, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ token: turnstileToken })
-      });
-      const verifyData = await verifyRes.json();
-      if (!verifyData.success) {
+      if (!turnstileToken) {
         errorMsg.style.display = 'block';
         btn.disabled      = false;
         btn.textContent   = t('requestBooking');
         btn.style.opacity = '1';
-        if (window.turnstile) window.turnstile.reset();
         return;
       }
 
