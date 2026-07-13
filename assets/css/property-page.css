@@ -321,6 +321,19 @@ footer { background: #ede3d8; color: var(--gris-oscuro); padding: 3rem 0 1.5rem;
   cursor: pointer;
 }
 .booking-summary-widget .summary-cta:hover { filter: brightness(0.92); }
+.booking-summary-widget .summary-wa {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  background: #25D366;
+  color: #fff;
+  flex-shrink: 0;
+  transition: transform 0.15s ease;
+}
+.booking-summary-widget .summary-wa:hover { transform: scale(1.08); }
+.booking-summary-bar .summary-wa { display: none; }
 .booking-summary-widget .widget-close {
   position: absolute;
   top: 0.5rem; right: 0.6rem;
@@ -372,7 +385,7 @@ footer { background: #ede3d8; color: var(--gris-oscuro); padding: 3rem 0 1.5rem;
   .booking-summary-tab { display: none !important; }
 }
 @media (min-width: 769px) {
-  .wa-container { bottom: 9rem; }
+  .wa-container.above-widget { bottom: 9rem; }
 }
 
 /* ── Selector de idioma ──────────────────────────────────── */
