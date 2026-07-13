@@ -255,6 +255,7 @@ footer { background: #ede3d8; color: var(--gris-oscuro); padding: 3rem 0 1.5rem;
 }
 .booking-summary-bar.visible { display: flex; }
 .booking-summary-bar .summary-price-row { display: contents; }
+.booking-summary-bar .summary-actions { display: contents; }
 .booking-summary-bar .summary-price { font-weight: 700; }
 .booking-summary-bar .summary-guests { text-decoration: underline; text-underline-offset: 2px; }
 .booking-summary-bar .summary-cta {
@@ -294,7 +295,7 @@ footer { background: #ede3d8; color: var(--gris-oscuro); padding: 3rem 0 1.5rem;
   border: 1px solid rgba(0,0,0,0.06);
 }
 .booking-summary-widget.visible { display: flex; }
-.booking-summary-widget svg { display: none; }
+.booking-summary-widget > svg { display: none; }
 .booking-summary-widget .summary-sep,
 .booking-summary-widget .summary-sep2 { display: none !important; }
 .booking-summary-widget .summary-dates { font-weight: 600; }
@@ -306,6 +307,12 @@ footer { background: #ede3d8; color: var(--gris-oscuro); padding: 3rem 0 1.5rem;
   justify-content: space-between;
   gap: 0.5rem;
   width: 100%;
+}
+.booking-summary-widget .summary-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.3rem;
 }
 .booking-summary-widget .summary-cta {
   display: none;
@@ -385,7 +392,7 @@ footer { background: #ede3d8; color: var(--gris-oscuro); padding: 3rem 0 1.5rem;
   .booking-summary-tab { display: none !important; }
 }
 @media (min-width: 769px) {
-  .wa-container.above-widget { bottom: 9rem; }
+  .wa-container.box-open { display: none; }
 }
 
 /* ── Selector de idioma ──────────────────────────────────── */
