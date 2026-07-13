@@ -735,34 +735,29 @@ function calcularPrecio() {
 }
 
 let guestsConfirmed   = false;
+let widgetDismissed   = false;
 let lastFechaEntradaKeyBar = null;
 
-function actualizarBarraResumen() {
-  const bar = document.getElementById('bookingSummaryBar');
-  if (!bar) return;
+function pintarResumenEn(container) {
+  if (!container) return;
+  if (container.id === 'bookingSummaryWidget' && widgetDismissed) return;
 
-
-  const dateEl   = bar.querySelector('.summary-dates');
-  const guestsEl = bar.querySelector('.summary-guests');
-  const sepEl    = bar.querySelector('.summary-sep');
-  const priceEl  = bar.querySelector('.summary-price');
-  const sep2El   = bar.querySelector('.summary-sep2');
+  const dateEl   = container.querySelector('.summary-dates');
+  const guestsEl = container.querySelector('.summary-guests');
+  const sepEl    = container.querySelector('.summary-sep');
+  const priceEl  = container.querySelector('.summary-price');
+  const sep2El   = container.querySelector('.summary-sep2');
 
   if (!fechaEntrada || !fechaSalida) {
-    const key = null;
-    if (lastFechaEntradaKeyBar !== key) { guestsConfirmed = false; lastFechaEntradaKeyBar = key; }
     dateEl.textContent = t('summaryPlaceholder');
     guestsEl.textContent = '';
     sepEl.style.display = 'none';
     priceEl.textContent = '';
     sep2El.style.display = 'none';
-    bar.dataset.state = 'no-dates';
-    bar.classList.add('visible');
+    container.dataset.state = 'no-dates';
+    container.classList.add('visible');
     return;
   }
-
-  const entradaKey = toKey(fechaEntrada) + '_' + toKey(fechaSalida);
-  if (lastFechaEntradaKeyBar !== entradaKey) { guestsConfirmed = false; lastFechaEntradaKeyBar = entradaKey; }
 
   const lang   = getLang();
   const MESES  = MESES_ABREV_I18N[lang] || MESES_ABREV_I18N.es;
@@ -778,8 +773,8 @@ function actualizarBarraResumen() {
     sepEl.style.display = '';
     priceEl.textContent = '';
     sep2El.style.display = 'none';
-    bar.dataset.state = 'need-guests';
-    bar.classList.add('visible');
+    container.dataset.state = 'need-guests';
+    container.classList.add('visible');
     return;
   }
 
@@ -793,18 +788,54 @@ function actualizarBarraResumen() {
   sepEl.style.display = '';
   priceEl.textContent = lastPricing && lastPricing.total ? lastPricing.total.toFixed(2) + ' €' : '';
   sep2El.style.display = priceEl.textContent ? '' : 'none';
-  bar.dataset.state = 'complete';
-  bar.classList.add('visible');
+  container.dataset.state = 'complete';
+  container.classList.add('visible');
+}
+
+function actualizarBarraResumen() {
+  const bar = document.getElementById('bookingSummaryBar');
+  const widget = document.getElementById('bookingSummaryWidget');
+  if (!bar && !widget) return;
+
+  if (fechaEntrada && fechaSalida) {
+    const entradaKey = toKey(fechaEntrada) + '_' + toKey(fechaSalida);
+    if (lastFechaEntradaKeyBar !== entradaKey) { guestsConfirmed = false; lastFechaEntradaKeyBar = entradaKey; }
+  } else if (lastFechaEntradaKeyBar !== null) {
+    guestsConfirmed = false;
+    lastFechaEntradaKeyBar = null;
+  }
+
+  pintarResumenEn(bar);
+  pintarResumenEn(widget);
+}
+
+function wireResumenClicks(container, reservaEl) {
+  container.addEventListener('click', () => {
+    if (container.dataset.state === 'complete') {
+      const priceEl = document.getElementById('mobilePrice');
+      (priceEl || reservaEl).scrollIntoView({ behavior: 'smooth', block: 'center' });
+    } else if (container.dataset.state === 'need-guests') {
+      const iA = document.querySelector('input[name="adultos"]');
+      (iA ? iA.closest('.form-row') || iA : reservaEl).scrollIntoView({ behavior: 'smooth', block: 'center' });
+    } else {
+      reservaEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  });
+  const guestsEl = container.querySelector('.summary-guests');
+  if (guestsEl) {
+    guestsEl.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const iA = document.querySelector('input[name="adultos"]');
+      (iA ? iA.closest('.form-row') || iA : reservaEl).scrollIntoView({ behavior: 'smooth', block: 'center' });
+    });
+  }
 }
 
 function initBarraResumen() {
   const reservaEl = document.getElementById('reserva');
   if (!reservaEl || document.getElementById('bookingSummaryBar')) return;
 
-  const bar = document.createElement('div');
-  bar.id = 'bookingSummaryBar';
-  bar.className = 'booking-summary-bar';
-  bar.innerHTML = `
+  const summaryInnerHTML = `
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
     <span class="summary-dates"></span>
     <span class="summary-sep"> | </span>
@@ -812,23 +843,28 @@ function initBarraResumen() {
     <span class="summary-sep2"> | </span>
     <span class="summary-price"></span>
   `;
-  bar.addEventListener('click', () => {
-    if (bar.dataset.state === 'complete') {
-      const priceEl = document.getElementById('mobilePrice');
-      (priceEl || reservaEl).scrollIntoView({ behavior: 'smooth', block: 'center' });
-    } else if (bar.dataset.state === 'need-guests') {
-      const iA = document.querySelector('input[name="adultos"]');
-      (iA ? iA.closest('.form-row') || iA : reservaEl).scrollIntoView({ behavior: 'smooth', block: 'center' });
-    } else {
-      reservaEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
-  });
-  bar.querySelector('.summary-guests').addEventListener('click', (e) => {
-    e.stopPropagation();
-    const iA = document.querySelector('input[name="adultos"]');
-    (iA ? iA.closest('.form-row') || iA : reservaEl).scrollIntoView({ behavior: 'smooth', block: 'center' });
-  });
+
+  const bar = document.createElement('div');
+  bar.id = 'bookingSummaryBar';
+  bar.className = 'booking-summary-bar';
+  bar.innerHTML = summaryInnerHTML;
+  wireResumenClicks(bar, reservaEl);
   document.body.appendChild(bar);
+
+  const widget = document.createElement('div');
+  widget.id = 'bookingSummaryWidget';
+  widget.className = 'booking-summary-widget';
+  widget.innerHTML = `
+    <button type="button" class="widget-close" aria-label="Cerrar">✕</button>
+    ${summaryInnerHTML}
+  `;
+  wireResumenClicks(widget, reservaEl);
+  widget.querySelector('.widget-close').addEventListener('click', (e) => {
+    e.stopPropagation();
+    widgetDismissed = true;
+    widget.classList.remove('visible');
+  });
+  document.body.appendChild(widget);
 
   actualizarBarraResumen();
 }
