@@ -264,7 +264,7 @@ footer { background: #ede3d8; color: var(--gris-oscuro); padding: 3rem 0 1.5rem;
 .booking-summary-widget {
   display: none;
   position: fixed;
-  bottom: 1.5rem; left: 1.5rem;
+  bottom: 1.5rem; right: 1.5rem;
   z-index: 998;
   flex-direction: column;
   gap: 0.35rem;
@@ -299,6 +299,9 @@ footer { background: #ede3d8; color: var(--gris-oscuro); padding: 3rem 0 1.5rem;
 .booking-summary-widget .widget-close:hover { color: #333; }
 @media (max-width: 768px) {
   .booking-summary-widget { display: none !important; }
+}
+@media (min-width: 769px) {
+  .wa-container { bottom: 8rem; }
 }
 
 /* ── Selector de idioma ──────────────────────────────────── */

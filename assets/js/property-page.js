@@ -818,7 +818,11 @@ function actualizarBarraResumen() {
 
   if (fechaEntrada && fechaSalida) {
     const entradaKey = toKey(fechaEntrada) + '_' + toKey(fechaSalida);
-    if (lastFechaEntradaKeyBar !== entradaKey) { guestsConfirmed = false; lastFechaEntradaKeyBar = entradaKey; }
+    if (lastFechaEntradaKeyBar !== entradaKey) {
+      guestsConfirmed = false;
+      lastFechaEntradaKeyBar = entradaKey;
+      widgetDismissed = false;
+    }
   } else if (lastFechaEntradaKeyBar !== null) {
     guestsConfirmed = false;
     lastFechaEntradaKeyBar = null;
