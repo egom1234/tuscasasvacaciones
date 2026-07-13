@@ -22,6 +22,26 @@ function isAuthorized(request, env) {
   return token && token === env.ADMIN_TOKEN && user === env.ADMIN_USER;
 }
 
+// ====== TURNSTILE ======
+
+const TURNSTILE_WORKER = 'https://turnstile-siteverify-casitasdemar.eduardgomez-4.workers.dev';
+
+async function verifyTurnstile(data, request) {
+  const token = data.get('cf-turnstile-response') || '';
+  if (!token) return false;
+  try {
+    const res = await fetch(TURNSTILE_WORKER, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ token, remoteip: request.headers.get('CF-Connecting-IP') || undefined }),
+    });
+    const result = await res.json();
+    return !!result.success;
+  } catch {
+    return false;
+  }
+}
+
 // ====== PRICING ENGINE (mirrors property-page.js exactly) ======
 
 const ICAL_WORKER = 'https://tuscasasvacaciones.eduardgomez-4.workers.dev';
@@ -388,6 +408,7 @@ export default {
 
 async function handleContacto(request, env, cors, ctx) {
   const data = await request.formData();
+  if (!(await verifyTurnstile(data, request))) return json({ ok: false, error: 'Verificación anti-bot fallida' }, 400, cors);
   const nombre   = (data.get('name')     || '').trim();
   const email    = (data.get('email')    || '').trim();
   const telefono = (data.get('telefono') || '').trim();
@@ -407,6 +428,7 @@ async function handleContacto(request, env, cors, ctx) {
 
 async function handleReserva(request, env, cors, ctx) {
   const data = await request.formData();
+  if (!(await verifyTurnstile(data, request))) return json({ ok: false, error: 'Verificación anti-bot fallida' }, 400, cors);
 
   const nombre       = (data.get('name')           || '').trim();
   const email        = (data.get('email')          || '').trim();
