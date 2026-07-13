@@ -24,20 +24,28 @@ function isAuthorized(request, env) {
 
 // ====== TURNSTILE ======
 
-const TURNSTILE_WORKER = 'https://turnstile-siteverify-casitasdemar.eduardgomez-4.workers.dev';
-
-async function verifyTurnstile(data, request) {
+async function verifyTurnstile(data, request, env) {
   const token = data.get('cf-turnstile-response') || '';
-  if (!token) return false;
+  if (!token) {
+    console.log('Turnstile: no token in submission');
+    return false;
+  }
   try {
-    const res = await fetch(TURNSTILE_WORKER, {
+    const body = new FormData();
+    body.append('secret', env.TURNSTILE_SECRET_KEY);
+    body.append('response', token);
+    const remoteip = request.headers.get('CF-Connecting-IP');
+    if (remoteip) body.append('remoteip', remoteip);
+
+    const res = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ token, remoteip: request.headers.get('CF-Connecting-IP') || undefined }),
+      body,
     });
     const result = await res.json();
+    if (!result.success) console.log('Turnstile verify failed:', JSON.stringify(result));
     return !!result.success;
-  } catch {
+  } catch (e) {
+    console.log('Turnstile verify exception:', e.message);
     return false;
   }
 }
@@ -408,7 +416,7 @@ export default {
 
 async function handleContacto(request, env, cors, ctx) {
   const data = await request.formData();
-  if (!(await verifyTurnstile(data, request))) return json({ ok: false, error: 'Verificación anti-bot fallida' }, 400, cors);
+  if (!(await verifyTurnstile(data, request, env))) return json({ ok: false, error: 'Verificación anti-bot fallida' }, 400, cors);
   const nombre   = (data.get('name')     || '').trim();
   const email    = (data.get('email')    || '').trim();
   const telefono = (data.get('telefono') || '').trim();
@@ -428,7 +436,7 @@ async function handleContacto(request, env, cors, ctx) {
 
 async function handleReserva(request, env, cors, ctx) {
   const data = await request.formData();
-  if (!(await verifyTurnstile(data, request))) return json({ ok: false, error: 'Verificación anti-bot fallida' }, 400, cors);
+  if (!(await verifyTurnstile(data, request, env))) return json({ ok: false, error: 'Verificación anti-bot fallida' }, 400, cors);
 
   const nombre       = (data.get('name')           || '').trim();
   const email        = (data.get('email')          || '').trim();
