@@ -208,13 +208,16 @@ const ICAL_SLUGS_BY_PROPERTY = {
   'Loft Tarifa':        ['tarifa-loft-airbnb', 'tarifa-loft-booking'],
 };
 
-async function determinarIsGap(config, entrada, salida, propiedad) {
+async function determinarIsGap(config, entrada, salida, propiedad, env) {
   const minNoches = config.minNoches || 1;
   if (minNoches <= 1) { console.log(`isGap check [${propiedad}]: minNoches=${minNoches} <= 1, skipping`); return false; }
   const slugs = config.icalSlugs || ICAL_SLUGS_BY_PROPERTY[propiedad] || [];
   if (slugs.length === 0) { console.log(`isGap check [${propiedad}]: no icalSlugs found (config.icalSlugs=${JSON.stringify(config.icalSlugs)})`); return false; }
   try {
-    const responses = await Promise.all(slugs.map(s => fetch(`${ICAL_WORKER}/ical/${s}`)));
+    // Fetched via a Service Binding, not a plain fetch(): Cloudflare blocks
+    // Worker-to-Worker requests to *.workers.dev URLs (error 1042), which
+    // silently broke this check (always saw an empty calendar).
+    const responses = await Promise.all(slugs.map(s => env.ICAL_SERVICE.fetch(`${ICAL_WORKER}/ical/${s}`)));
     const texts = await Promise.all(responses.map(r => r.ok ? r.text() : ''));
     responses.forEach((r, i) => { if (!r.ok) console.log(`isGap check [${propiedad}]: ical fetch for slug "${slugs[i]}" failed HTTP ${r.status}`); });
     const fechasReservadas = new Set(texts.flatMap(t => [...parsearIcalW(t)]));
@@ -474,7 +477,7 @@ async function handleReserva(request, env, cors, ctx) {
 
         if (entradaDate >= hoy && salidaDate > entradaDate) {
           // Validate gap via iCal
-          const isGap = await determinarIsGap(config, entradaDate, salidaDate, propiedad);
+          const isGap = await determinarIsGap(config, entradaDate, salidaDate, propiedad, env);
 
           // Load promo row for server-side discount
           let promoRow = null;
