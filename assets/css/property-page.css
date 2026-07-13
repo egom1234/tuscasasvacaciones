@@ -331,11 +331,11 @@ footer { background: #ede3d8; color: var(--gris-oscuro); padding: 3rem 0 1.5rem;
 .booking-summary-widget .summary-cta:hover { filter: brightness(0.92); }
 .booking-summary-widget .summary-wa {
   position: absolute;
-  top: 0.55rem; right: 2.5rem;
+  top: 0.45rem; right: 2.5rem;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 30px; height: 30px;
+  width: 38px; height: 38px;
   border-radius: 50%;
   background: #25D366;
   color: #fff;
