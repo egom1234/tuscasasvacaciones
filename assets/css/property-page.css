@@ -15,6 +15,7 @@
 
 /* ── Reset & Base ───────────────────────────────────────── */
 * { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
 body { font-family: var(--font-body); line-height: 1.6; color: var(--gris-oscuro); background: var(--blanco); }
 
 /* ── Header ─────────────────────────────────────────────── */
@@ -35,6 +36,9 @@ main { padding-top: 80px; min-height: calc(100vh - 200px); }
 .property-hero { background: var(--blanco); padding: 4rem 0 2rem; }
 .property-title { font-size: 3rem; font-weight: 400; font-family: var(--font-display); color: var(--verde-oscuro); margin-bottom: 0.5rem; letter-spacing: 0; }
 .property-location { font-size: 1rem; color: var(--verde-primario); font-weight: 400; letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 2rem; }
+.cta-reserva { display: block; width: fit-content; background: var(--verde-primario); color: #f7f3ee; padding: 0.9rem 2rem; border: none; border-radius: 0; font-size: 0.85rem; font-weight: 400; font-family: var(--font-body); letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer; transition: background 0.3s; text-decoration: none; margin: 0 auto 1.5rem; }
+.cta-reserva:hover { background: var(--verde-oscuro); }
+#reserva { scroll-margin-top: 100px; }
 .gallery { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin: 2rem 0; }
 .gallery-main { grid-column: span 2; grid-row: span 2; height: 655px; background-size: cover; background-position: center; border-radius: 0; cursor: pointer; transition: opacity 0.2s; }
 .gallery-item  { height: 320px; background-size: cover; background-position: center; border-radius: 0; cursor: pointer; transition: opacity 0.2s; }
@@ -219,6 +223,17 @@ footer { background: #ede3d8; color: var(--gris-oscuro); padding: 3rem 0 1.5rem;
   .property-title { font-size: 1.8rem; }
   .gallery-main { height: 250px; }
   .gallery-item { height: 180px; }
+}
+
+@media (max-width: 768px) {
+  .cta-reserva {
+    position: fixed; bottom: 0; left: 0; right: 0;
+    width: 100%; margin: 0; padding: 1rem;
+    text-align: center; z-index: 998;
+    box-shadow: 0 -4px 20px rgba(42,33,24,0.15);
+  }
+  body { padding-bottom: 64px; }
+  .wa-container { bottom: 4.5rem; }
 }
 
 /* ── Selector de idioma ──────────────────────────────────── */
