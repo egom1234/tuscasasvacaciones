@@ -303,7 +303,7 @@
             <option value="Loft Binibeca">Loft Binibeca</option>
             <option value="Apartamento Tarifa">Apartamento Tarifa</option>
             <option value="Loft Tarifa">Loft Tarifa</option>
-            <option value="La Almeza">La Almeza</option>
+            <option value="Casa Pepita">Casa Pepita</option>
           </select>
         </div>
         <div>
@@ -390,7 +390,7 @@
     'Loft Binibeca':      ['loft-binibeca-airbnb', 'loft-binibeca-booking'],
     'Apartamento Tarifa': ['tarifa-apt-airbnb', 'tarifa-apt-booking'],
     'Loft Tarifa':        ['tarifa-loft-airbnb', 'tarifa-loft-booking'],
-    'La Almeza':          ['pepita-airbnb'],
+    'Casa Pepita':        ['pepita-airbnb'],
   };
 
   let token = '';
@@ -951,7 +951,7 @@
       discounts: [{ minNights:5, pct:0.05 },{ minNights:6, pct:0.08 },{ minNights:7, pct:0.11 }],
       rates: { "1":40,"2":40,"3":50,"4":50,"5":70,"6":80,"7":100,"8":120,"9":80,"10":60,"11":50,"12":50 }
     },
-    'La Almeza': {
+    'Casa Pepita': {
       maxPersonas: 12, minNoches: 2, cleaning: 100,
       rates: {
         "1":{"weekday":330,"weekend":400}, "2":{"weekday":330,"weekend":400}, "3":{"weekday":330,"weekend":400},
@@ -962,7 +962,7 @@
     }
   };
 
-  const CONFIG_PROPS = ['Casa Gonda','Casa Blava','Loft Binibeca','Apartamento Tarifa','Loft Tarifa','La Almeza'];
+  const CONFIG_PROPS = ['Casa Gonda','Casa Blava','Loft Binibeca','Apartamento Tarifa','Loft Tarifa','Casa Pepita'];
 
   function propSlug(p) { return p.toLowerCase().replace(/\s+/g, '-'); }
 
