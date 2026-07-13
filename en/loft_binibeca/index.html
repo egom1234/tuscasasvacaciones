@@ -204,39 +204,6 @@
         <div id="reserva" class="booking-panel">
           <h2 class="booking-title">Book now</h2>
 
-          <div class="calendar">
-            <div class="calendar-header">
-              <button class="calendar-nav" onclick="cambiarMes(-1)">&#8249;</button>
-              <span class="calendar-month" id="mesActual"></span>
-              <button class="calendar-nav" onclick="cambiarMes(1)">&#8250;</button>
-            </div>
-            <div class="sync-status">
-              <div class="sync-dot loading" id="syncDot"></div>
-              <span id="syncText">Loading availability...</span>
-            </div>
-            <div class="calendar-grid" id="calendarioGrid"></div>
-            <div class="calendar-legend">
-              <div class="legend-item"><div class="legend-dot available"></div> Available</div>
-              <div class="legend-item"><div class="legend-dot booked"></div> Booked</div>
-              <div class="legend-item"><div class="legend-dot selected"></div> Selected</div>
-            </div>
-            <p class="calendar-note">Select check-in and check-out dates</p>
-          </div>
-
-          <div id="mobilePrice" class="price-highlight" style="margin-bottom:1rem;">
-            <h4>Estimated cost</h4>
-            <div id="priceAmount" class="price-amount">Select dates</div>
-            <div id="priceSummary" class="price-summary" style="display:none;margin-top:0.5rem;font-size:0.95rem;background:#fbfbfb;padding:0.5rem;border-radius:6px;">
-              <div><strong>Nights:</strong> <span id="nightsCount">0</span></div>
-              <div><strong>Subtotal:</strong> <span id="subtotalAmount">0 €</span></div>
-              <div id="discountRow" style="display:none;color:green;"><strong>Discount (<span id="discountLabel"></span>):</strong> <span id="discountAmount">0 €</span></div>
-              <div id="promoDiscountRow" style="display:none;color:green;"><strong>Promo code (<span id="promoDiscountLabel"></span>):</strong> <span id="promoDiscountAmount">0 €</span></div>
-              <div id="cleaningRow"><strong>Cleaning:</strong> <span id="cleaningAmount">60 €</span></div>
-              <div style="margin-top:0.5rem;"><strong>Total:</strong> <span id="totalAmount">0 €</span></div>
-              <div class="breakdown" style="margin-top:0.5rem;font-size:0.9rem;color:#555;"></div>
-            </div>
-          </div>
-
           <form class="booking-form" id="formularioReserva" action="https://casitasdemar-form.eduardgomez-4.workers.dev/reserva" method="POST" novalidate>
             <input type="hidden" name="access_key" value="ba4d4800-cc82-4659-86e0-f10021d29924">
             <input type="hidden" name="subject" value="New booking request - Binibeca Loft">
@@ -253,6 +220,25 @@
               ⚠️ There was a problem sending your request. Please try again.
             </div>
 
+          <div class="calendar">
+            <div class="calendar-header">
+              <button type="button" class="calendar-nav" onclick="cambiarMes(-1)">&#8249;</button>
+              <span class="calendar-month" id="mesActual"></span>
+              <button type="button" class="calendar-nav" onclick="cambiarMes(1)">&#8250;</button>
+            </div>
+            <div class="sync-status">
+              <div class="sync-dot loading" id="syncDot"></div>
+              <span id="syncText">Loading availability...</span>
+            </div>
+            <div class="calendar-grid" id="calendarioGrid"></div>
+            <div class="calendar-legend">
+              <div class="legend-item"><div class="legend-dot available"></div> Available</div>
+              <div class="legend-item"><div class="legend-dot booked"></div> Booked</div>
+              <div class="legend-item"><div class="legend-dot selected"></div> Selected</div>
+            </div>
+            <p class="calendar-note">Select check-in and check-out dates</p>
+          </div>
+
             <div class="form-row">
               <div class="form-group">
                 <label class="form-label">Check-in</label>
@@ -265,7 +251,7 @@
             </div>
             <span class="field-error" id="errorFechas">⚠️ You must select check-in and check-out dates</span>
 
-            <div class="form-row">
+            <div class="form-row form-row-personas">
               <div class="form-group">
                 <label class="form-label">Adults</label>
                 <div class="stepper">
@@ -284,6 +270,20 @@
               </div>
             </div>
             <span class="field-error" id="errorPersonas">⚠️ The total number of guests cannot exceed 2</span>
+
+          <div id="mobilePrice" class="price-highlight" style="margin-bottom:1rem;">
+            <h4>Estimated cost</h4>
+            <div id="priceAmount" class="price-amount">Select dates</div>
+            <div id="priceSummary" class="price-summary" style="display:none;margin-top:0.5rem;font-size:0.95rem;background:#fbfbfb;padding:0.5rem;border-radius:6px;">
+              <div><strong>Nights:</strong> <span id="nightsCount">0</span></div>
+              <div><strong>Subtotal:</strong> <span id="subtotalAmount">0 €</span></div>
+              <div id="discountRow" style="display:none;color:green;"><strong>Discount (<span id="discountLabel"></span>):</strong> <span id="discountAmount">0 €</span></div>
+              <div id="promoDiscountRow" style="display:none;color:green;"><strong>Promo code (<span id="promoDiscountLabel"></span>):</strong> <span id="promoDiscountAmount">0 €</span></div>
+              <div id="cleaningRow"><strong>Cleaning:</strong> <span id="cleaningAmount">60 €</span></div>
+              <div style="margin-top:0.5rem;"><strong>Total:</strong> <span id="totalAmount">0 €</span></div>
+              <div class="breakdown" style="margin-top:0.5rem;font-size:0.9rem;color:#555;"></div>
+            </div>
+          </div>
 
             <div class="form-group">
               <label class="form-label">Full name</label>

@@ -200,6 +200,7 @@ footer { background: #ede3d8; color: var(--gris-oscuro); padding: 3rem 0 1.5rem;
   nav { gap: 1rem; }
   .features { grid-template-columns: 1fr; }
   .form-row { grid-template-columns: 1fr; }
+  .form-row.form-row-personas { grid-template-columns: repeat(2, 1fr); gap: 0.75rem; }
   .mobile-menu-btn { display: block !important; position: absolute; right: 1rem; top: 1.5rem; }
   #main-nav {
     position: fixed !important; top: 0 !important; right: -100% !important;
@@ -226,14 +227,196 @@ footer { background: #ede3d8; color: var(--gris-oscuro); padding: 3rem 0 1.5rem;
 }
 
 @media (max-width: 768px) {
-  .cta-reserva {
-    position: fixed; bottom: 0; left: 0; right: 0;
-    width: 100%; margin: 0; padding: 1rem;
-    text-align: center; z-index: 998;
-    box-shadow: 0 -4px 20px rgba(42,33,24,0.15);
-  }
+  /* Replaced by .booking-summary-bar, which stays live-updated and
+     hides itself once the booking panel is in view. */
+  .cta-reserva { display: none; }
   body { padding-bottom: 64px; }
   .wa-container { bottom: 4.5rem; }
+}
+
+/* ── Barra fija resumen fechas/huéspedes (mobile) ────────── */
+.booking-summary-bar {
+  display: none;
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  z-index: 998;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  background: var(--verde-primario);
+  color: #f7f3ee;
+  padding: 1rem;
+  padding-bottom: calc(1rem + env(safe-area-inset-bottom));
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  box-shadow: 0 -4px 20px rgba(42,33,24,0.15);
+}
+.booking-summary-bar.visible { display: flex; }
+.booking-summary-bar .summary-price-row { display: contents; }
+.booking-summary-bar .summary-actions { display: contents; }
+.booking-summary-bar .summary-price { font-weight: 700; }
+.booking-summary-bar .summary-guests { text-decoration: underline; text-underline-offset: 2px; }
+.booking-summary-bar .summary-cta {
+  display: none;
+  margin-left: 0.5rem;
+  background: #fff;
+  color: var(--verde-primario, #B5896A);
+  border: none;
+  border-radius: 20px;
+  padding: 0.4rem 0.9rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+}
+@media (min-width: 769px) {
+  .booking-summary-bar { display: none !important; }
+}
+
+/* ── Widget flotante resumen (desktop) ───────────────────── */
+.booking-summary-widget {
+  display: none;
+  position: fixed;
+  bottom: 1.5rem; right: 1.5rem;
+  z-index: 998;
+  flex-direction: column;
+  gap: 0.55rem;
+  width: 260px;
+  background: #fff;
+  color: var(--verde-oscuro, #2a2118);
+  padding: 1.6rem 1.1rem 1rem;
+  border-radius: 10px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.18);
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  line-height: 1.25;
+  cursor: pointer;
+  border: 1px solid rgba(0,0,0,0.06);
+}
+.booking-summary-widget.visible { display: flex; }
+.booking-summary-widget > svg { display: none; }
+.booking-summary-widget .summary-sep,
+.booking-summary-widget .summary-sep2 { display: none !important; }
+.booking-summary-widget .summary-dates { font-weight: 600; }
+.booking-summary-widget .summary-guests { text-decoration: underline; text-underline-offset: 2px; }
+.booking-summary-widget .summary-price { font-weight: 700; font-size: 1.05rem; color: var(--verde-primario); }
+.booking-summary-widget .summary-price-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  width: 100%;
+}
+.booking-summary-widget .summary-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.4rem;
+}
+.booking-summary-widget .summary-cta {
+  display: none;
+  background: var(--verde-primario, #B5896A);
+  color: #fff;
+  border: none;
+  border-radius: 20px;
+  padding: 0.35rem 0.85rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  font-family: inherit;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.booking-summary-widget .summary-cta:hover { filter: brightness(0.92); }
+.booking-summary-widget .summary-wa {
+  position: absolute;
+  top: 0.55rem; right: 2.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px; height: 30px;
+  border-radius: 50%;
+  background: #25D366;
+  color: #fff;
+  flex-shrink: 0;
+  transition: transform 0.15s ease;
+}
+.booking-summary-widget .summary-wa:hover { transform: scale(1.08); }
+.booking-summary-widget .summary-wa::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  top: 130%;
+  right: 0;
+  background: var(--verde-oscuro, #2a2118);
+  color: #fff;
+  font-size: 0.72rem;
+  font-weight: 600;
+  white-space: nowrap;
+  padding: 0.25rem 0.55rem;
+  border-radius: 6px;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-4px);
+  transition: opacity 0.15s ease, transform 0.15s ease;
+}
+.booking-summary-widget .summary-wa:hover::after {
+  opacity: 1;
+  transform: translateY(0);
+}
+.booking-summary-bar .summary-wa { display: none; }
+.booking-summary-widget .widget-close {
+  position: absolute;
+  top: 0.5rem; right: 0.6rem;
+  background: none; border: none;
+  font-size: 0.85rem;
+  color: #aaa;
+  cursor: pointer;
+  line-height: 1;
+  padding: 0.25rem;
+  transition: color 0.15s;
+}
+.booking-summary-widget .widget-close:hover { color: #333; }
+.booking-summary-widget .widget-collapse {
+  position: absolute;
+  top: 50%; left: -26px;
+  transform: translateY(-50%);
+  background: var(--verde-primario, #B5896A);
+  border: none;
+  font-size: 1rem;
+  color: #fff;
+  cursor: pointer;
+  line-height: 1;
+  width: 26px; height: 42px;
+  border-radius: 6px 0 0 6px;
+  display: flex; align-items: center; justify-content: center;
+  transition: filter 0.15s;
+}
+.booking-summary-widget .widget-collapse:hover { filter: brightness(0.9); }
+
+.booking-summary-tab {
+  display: none;
+  position: fixed;
+  bottom: 1.5rem; right: 1.5rem;
+  z-index: 998;
+  width: 44px; height: 44px;
+  background: #fff;
+  color: var(--verde-primario, #B5896A);
+  border: 1px solid rgba(0,0,0,0.08);
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 1.2rem;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+  align-items: center; justify-content: center;
+}
+.booking-summary-tab.visible { display: flex; }
+.booking-summary-tab:hover { box-shadow: 0 8px 24px rgba(0,0,0,0.2); }
+@media (max-width: 768px) {
+  .booking-summary-widget { display: none !important; }
+  .booking-summary-tab { display: none !important; }
+}
+@media (min-width: 769px) {
+  .wa-container.box-open { display: none; }
 }
 
 /* ── Selector de idioma ──────────────────────────────────── */
