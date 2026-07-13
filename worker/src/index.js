@@ -22,6 +22,34 @@ function isAuthorized(request, env) {
   return token && token === env.ADMIN_TOKEN && user === env.ADMIN_USER;
 }
 
+// ====== TURNSTILE ======
+
+async function verifyTurnstile(data, request, env) {
+  const token = data.get('cf-turnstile-response') || '';
+  if (!token) {
+    console.log('Turnstile: no token in submission');
+    return false;
+  }
+  try {
+    const body = new FormData();
+    body.append('secret', env.TURNSTILE_SECRET_KEY);
+    body.append('response', token);
+    const remoteip = request.headers.get('CF-Connecting-IP');
+    if (remoteip) body.append('remoteip', remoteip);
+
+    const res = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
+      method: 'POST',
+      body,
+    });
+    const result = await res.json();
+    if (!result.success) console.log('Turnstile verify failed:', JSON.stringify(result));
+    return !!result.success;
+  } catch (e) {
+    console.log('Turnstile verify exception:', e.message);
+    return false;
+  }
+}
+
 // ====== PRICING ENGINE (mirrors property-page.js exactly) ======
 
 const ICAL_WORKER = 'https://tuscasasvacaciones.eduardgomez-4.workers.dev';
@@ -102,6 +130,10 @@ function obtenerTarifaNocheW(fecha, config) {
   const holidays = config.holidays || [];
   const m = fecha.getMonth() + 1;
 
+  const specialDates = config.specialDates || {};
+  const dateKey = `${fecha.getFullYear()}-${String(m).padStart(2,'0')}-${String(fecha.getDate()).padStart(2,'0')}`;
+  if (specialDates[dateKey] !== undefined) return specialDates[dateKey];
+
   function isNightBeforeHoliday(d) {
     const next = new Date(d.getTime() + 86400000);
     const mmdd = `${String(next.getMonth()+1).padStart(2,'0')}-${String(next.getDate()).padStart(2,'0')}`;
@@ -132,7 +164,8 @@ function calcularPrecioW(config, entrada, salida, isGap, promoRow) {
     cur = new Date(cur.getTime() + 86400000);
   }
 
-  const limpieza = config.cleaning || 50;
+  const gapCleaning = config.gapCleaning != null ? config.gapCleaning : null;
+  const limpieza = (isGap && gapCleaning != null) ? gapCleaning : (config.cleaning != null ? config.cleaning : 50);
 
   const discountTiers = config.discounts || [];
   const activeTier = discountTiers
@@ -164,20 +197,36 @@ function calcularPrecioW(config, entrada, salida, isGap, promoRow) {
   return { total, subtotal, subtotalFinal: subtotalWithPromo, cleaning: limpieza, nights: noches, breakdown: breakdownText, tierDiscount, tierPct, gapDiscount, promoDiscount };
 }
 
-async function determinarIsGap(config, entrada, salida) {
+// Fallback: property_config saved from the admin panel doesn't include icalSlugs
+// (the admin JSON template omits it), so mirror the slugs hardcoded in each
+// property page here to keep server-side gap detection working regardless.
+const ICAL_SLUGS_BY_PROPERTY = {
+  'Casa Gonda':         ['gonda-airbnb', 'gonda-booking'],
+  'Casa Blava':         ['casa-blava-airbnb', 'casa-blava-booking'],
+  'Loft Binibeca':      ['loft-binibeca-airbnb', 'loft-binibeca-booking'],
+  'Apartamento Tarifa': ['tarifa-apt-airbnb', 'tarifa-apt-booking'],
+  'Loft Tarifa':        ['tarifa-loft-airbnb', 'tarifa-loft-booking'],
+};
+
+async function determinarIsGap(config, entrada, salida, propiedad, env) {
   const minNoches = config.minNoches || 1;
-  if (minNoches <= 1) return false;
-  const slugs = config.icalSlugs || [];
-  if (slugs.length === 0) return false;
+  if (minNoches <= 1) { console.log(`isGap check [${propiedad}]: minNoches=${minNoches} <= 1, skipping`); return false; }
+  const slugs = config.icalSlugs || ICAL_SLUGS_BY_PROPERTY[propiedad] || [];
+  if (slugs.length === 0) { console.log(`isGap check [${propiedad}]: no icalSlugs found (config.icalSlugs=${JSON.stringify(config.icalSlugs)})`); return false; }
   try {
-    const texts = await Promise.all(
-      slugs.map(s => fetch(`${ICAL_WORKER}/ical/${s}`).then(r => r.ok ? r.text() : ''))
-    );
+    // Fetched via a Service Binding, not a plain fetch(): Cloudflare blocks
+    // Worker-to-Worker requests to *.workers.dev URLs (error 1042), which
+    // silently broke this check (always saw an empty calendar).
+    const responses = await Promise.all(slugs.map(s => env.ICAL_SERVICE.fetch(`${ICAL_WORKER}/ical/${s}`)));
+    const texts = await Promise.all(responses.map(r => r.ok ? r.text() : ''));
+    responses.forEach((r, i) => { if (!r.ok) console.log(`isGap check [${propiedad}]: ical fetch for slug "${slugs[i]}" failed HTTP ${r.status}`); });
     const fechasReservadas = new Set(texts.flatMap(t => [...parsearIcalW(t)]));
     const gapDays = computarGapsW(fechasReservadas, minNoches);
-    return isGapSelectionW(gapDays, entrada, salida);
+    const result = isGapSelectionW(gapDays, entrada, salida);
+    console.log(`isGap check [${propiedad}]: slugs=${JSON.stringify(slugs)} minNoches=${minNoches} fechasReservadas=${fechasReservadas.size} gapDays=${gapDays.size} entrada=${toKeyW(entrada)} salida=${toKeyW(salida)} result=${result}`);
+    return result;
   } catch (e) {
-    console.error('iCal gap check error:', e);
+    console.error(`isGap check [${propiedad}]: error`, e);
     return false;
   }
 }
@@ -263,6 +312,32 @@ export default {
         return json({ ok: true }, 200, cors);
       }
 
+      // ---- Admin: bloqueos manuales de calendario ----
+      if (url.pathname === '/admin/bloqueos') {
+        if (!isAuthorized(request, env)) return json({ ok: false, error: 'Unauthorized' }, 401, cors);
+        if (request.method === 'GET') {
+          const { results } = await env.DB.prepare('SELECT * FROM bloqueos ORDER BY entrada').all();
+          return json({ ok: true, data: results }, 200, cors);
+        }
+        if (request.method === 'POST') {
+          const body = await request.json();
+          const { propiedad, entrada, salida, motivo } = body;
+          if (!propiedad || !entrada || !salida) return json({ ok: false, error: 'Faltan campos' }, 400, cors);
+          if (salida <= entrada) return json({ ok: false, error: 'Rango de fechas inválido' }, 400, cors);
+          await env.DB.prepare(
+            `INSERT INTO bloqueos (propiedad, entrada, salida, motivo) VALUES (?, ?, ?, ?)`
+          ).bind(propiedad, entrada, salida, motivo || null).run();
+          return json({ ok: true }, 200, cors);
+        }
+      }
+
+      if (url.pathname.startsWith('/admin/bloqueos/') && request.method === 'DELETE') {
+        if (!isAuthorized(request, env)) return json({ ok: false, error: 'Unauthorized' }, 401, cors);
+        const id = url.pathname.split('/').pop();
+        await env.DB.prepare('DELETE FROM bloqueos WHERE id = ?').bind(parseInt(id)).run();
+        return json({ ok: true }, 200, cors);
+      }
+
       // ---- Admin: property-config ----
       if (url.pathname === '/admin/property-config') {
         if (!isAuthorized(request, env)) return json({ ok: false, error: 'Unauthorized' }, 401, cors);
@@ -311,11 +386,22 @@ export default {
         });
       }
 
+      // ---- Public: confirmed direct reservations + manual blocks (block dates on the visitor-facing calendar) ----
+      if (url.pathname.startsWith('/blocked-dates/') && request.method === 'GET') {
+        const propiedad = decodeURIComponent(url.pathname.split('/blocked-dates/')[1] || '');
+        if (!propiedad) return json({ ok: false, error: 'Propiedad requerida' }, 400, cors);
+        const [reservasRes, bloqueosRes] = await Promise.all([
+          env.DB.prepare(`SELECT entrada, salida FROM reservas WHERE propiedad = ? AND estado = 'confirmada'`).bind(propiedad).all(),
+          env.DB.prepare(`SELECT entrada, salida FROM bloqueos WHERE propiedad = ?`).bind(propiedad).all(),
+        ]);
+        return json({ ok: true, ranges: [...reservasRes.results, ...bloqueosRes.results] }, 200, cors);
+      }
+
       if (request.method !== 'POST') {
         return new Response('Method not allowed', { status: 405, headers: cors });
       }
 
-      if (url.pathname === '/contacto') return await handleContacto(request, env, cors);
+      if (url.pathname === '/contacto') return await handleContacto(request, env, cors, ctx);
       if (url.pathname === '/reserva')  return await handleReserva(request, env, cors, ctx);
 
       return new Response('Not found', { status: 404, headers: cors });
@@ -331,8 +417,9 @@ export default {
 
 // ====== HANDLERS ======
 
-async function handleContacto(request, env, cors) {
+async function handleContacto(request, env, cors, ctx) {
   const data = await request.formData();
+  if (!(await verifyTurnstile(data, request, env))) return json({ ok: false, error: 'Verificación anti-bot fallida' }, 400, cors);
   const nombre   = (data.get('name')     || '').trim();
   const email    = (data.get('email')    || '').trim();
   const telefono = (data.get('telefono') || '').trim();
@@ -341,11 +428,18 @@ async function handleContacto(request, env, cors) {
   await env.DB.prepare(
     `INSERT INTO contactos (nombre, email, telefono, mensaje) VALUES (?, ?, ?, ?)`
   ).bind(nombre, email, telefono, mensaje).run();
+
+  ctx.waitUntil(
+    sendAdminContactNotification(env, { nombre, email, telefono, mensaje })
+      .catch(e => console.error('Admin contact email failed:', e))
+  );
+
   return json({ ok: true }, 200, cors);
 }
 
 async function handleReserva(request, env, cors, ctx) {
   const data = await request.formData();
+  if (!(await verifyTurnstile(data, request, env))) return json({ ok: false, error: 'Verificación anti-bot fallida' }, 400, cors);
 
   const nombre       = (data.get('name')           || '').trim();
   const email        = (data.get('email')          || '').trim();
@@ -383,7 +477,7 @@ async function handleReserva(request, env, cors, ctx) {
 
         if (entradaDate >= hoy && salidaDate > entradaDate) {
           // Validate gap via iCal
-          const isGap = await determinarIsGap(config, entradaDate, salidaDate);
+          const isGap = await determinarIsGap(config, entradaDate, salidaDate, propiedad, env);
 
           // Load promo row for server-side discount
           let promoRow = null;
@@ -424,21 +518,10 @@ async function handleReserva(request, env, cors, ctx) {
     ).bind(promo_code).run();
   }
 
-  // Admin notification via Web3Forms + guest confirmation via Brevo (keep alive until both complete)
+  // Admin notification + guest confirmation, both via Brevo (keep alive until both complete)
   ctx.waitUntil((async () => {
-    try {
-      const fdEmail = new FormData();
-      for (const [k, v] of data.entries()) fdEmail.append(k, v);
-      if (precio_calculado) fdEmail.set('precio_calculado', precio_calculado);
-      if (precio_discrepancia) fdEmail.set('alerta_precio', 'DISCREPANCIA DETECTADA');
-      if (calc) {
-        if (calc.tierDiscount > 0) fdEmail.set('descuento_temporada', `-${calc.tierDiscount} € (${Math.round(calc.tierPct * 100)}%)`);
-        if (calc.gapDiscount  > 0) fdEmail.set('descuento_fill_gap',  `-${calc.gapDiscount} €`);
-        if (calc.promoDiscount > 0) fdEmail.set('descuento_codigo_promo', `-${calc.promoDiscount} € (código: ${promo_code})`);
-      }
-      await fetch('https://api.web3forms.com/submit', { method: 'POST', body: fdEmail })
-        .then(r => r.json()).then(d => { if (!d.success) console.error('Web3Forms error:', d); });
-    } catch (e) { console.error('Web3Forms failed:', e); }
+    await sendAdminReservationNotification(env, { nombre, email, telefono, propiedad, entrada, salida, adultos, ninos, noches, precio_total, comentarios, promo_code, precio_calculado, precio_discrepancia, calc })
+      .catch(e => console.error('Admin reservation email failed:', e));
 
     await sendGuestConfirmation(env, { nombre, email, propiedad, entrada, salida, adultos, ninos, noches, precio_total, comentarios, promo_code, calc })
       .catch(e => console.error('Brevo guest email failed:', e));
@@ -447,8 +530,118 @@ async function handleReserva(request, env, cors, ctx) {
   return json({ ok: true, precio_calculado }, 200, cors);
 }
 
+const ADMIN_NOTIFICATION_EMAIL = 'casablavapeniscola@gmail.com';
+
+function escHtml(s) {
+  return String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+function adminRow(label, value) {
+  return `<tr>
+    <td style="padding:6px 10px;color:#555;font-family:sans-serif;font-size:0.85rem;border-bottom:1px solid #eee">${label}</td>
+    <td style="padding:6px 10px;color:#111;font-family:sans-serif;font-size:0.85rem;border-bottom:1px solid #eee;font-weight:600">${value}</td>
+  </tr>`;
+}
+
+async function sendAdminEmail(env, { subject, html, replyToEmail, replyToName }) {
+  if (!env.BREVO_API_KEY) { console.error('Admin email skipped: BREVO_API_KEY not set'); return; }
+
+  const res = await fetch('https://api.brevo.com/v3/smtp/email', {
+    method: 'POST',
+    headers: { 'api-key': env.BREVO_API_KEY, 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      sender:  { name: 'Casitas de Mar', email: 'info@casitasdemar.com' },
+      to:      [{ email: ADMIN_NOTIFICATION_EMAIL }],
+      replyTo: { email: replyToEmail || 'info@casitasdemar.com', name: replyToName || 'Casitas de Mar' },
+      subject,
+      htmlContent: html,
+    }),
+  });
+
+  if (!res.ok) {
+    const body = await res.text().catch(() => '');
+    console.error(`Admin email failed: HTTP ${res.status} - ${body.slice(0, 500)}`);
+  }
+}
+
+async function sendAdminReservationNotification(env, { nombre, email, telefono, propiedad, entrada, salida, adultos, ninos, noches, precio_total, comentarios, promo_code, precio_calculado, precio_discrepancia, calc }) {
+  const totalDisplay = calc ? `${calc.total.toFixed(2)} €` : (precio_total ? `${precio_total} €` : '—');
+
+  const alertaHtml = precio_discrepancia
+    ? `<p style="margin:0 0 16px;padding:10px 14px;background:#fdecea;color:#c0392b;font-family:sans-serif;font-size:0.85rem;font-weight:600">
+        ⚠️ Discrepancia de precio: el cliente envió ${escHtml(precio_total)} €, el servidor calculó ${escHtml(precio_calculado)} €
+      </p>`
+    : '';
+
+  const descuentosHtml = calc
+    ? [
+        calc.tierDiscount  > 0 ? adminRow('Descuento temporada', `-${calc.tierDiscount.toFixed(2)} € (${Math.round(calc.tierPct * 100)}%)`) : '',
+        calc.gapDiscount   > 0 ? adminRow('Descuento Fill the Gap', `-${calc.gapDiscount.toFixed(2)} €`) : '',
+        calc.promoDiscount > 0 ? adminRow('Descuento código promo', `-${calc.promoDiscount.toFixed(2)} € (${escHtml(promo_code)})`) : '',
+      ].join('')
+    : '';
+
+  const html = `<!DOCTYPE html>
+<html lang="es"><body style="margin:0;padding:24px 16px;background:#f5f0e8">
+<table width="100%" cellpadding="0" cellspacing="0" style="max-width:560px;margin:0 auto;background:#ffffff">
+<tr><td style="padding:28px 32px 4px">
+  <h2 style="margin:0 0 4px;font-family:Georgia,serif;color:#2a2118;font-weight:400">Nueva solicitud de reserva</h2>
+  <p style="margin:0 0 16px;color:#888;font-family:sans-serif;font-size:0.85rem">${escHtml(propiedad)}</p>
+</td></tr>
+<tr><td style="padding:0 32px 28px">
+  ${alertaHtml}
+  <table width="100%" cellpadding="0" cellspacing="0">
+    ${adminRow('Nombre', escHtml(nombre))}
+    ${adminRow('Email', `<a href="mailto:${escHtml(email)}" style="color:#2a2118">${escHtml(email)}</a>`)}
+    ${adminRow('Teléfono', escHtml(telefono) || '—')}
+    ${adminRow('Entrada', escHtml(entrada))}
+    ${adminRow('Salida', escHtml(salida))}
+    ${adminRow('Noches', String(noches))}
+    ${adminRow('Huéspedes', `${adultos} adulto${adultos != 1 ? 's' : ''}${ninos > 0 ? ` · ${ninos} niño${ninos != 1 ? 's' : ''}` : ''}`)}
+    ${descuentosHtml}
+    ${adminRow('Total', totalDisplay)}
+    ${promo_code ? adminRow('Código promo', escHtml(promo_code)) : ''}
+  </table>
+  ${comentarios ? `<p style="margin:16px 0 0;padding:14px;background:#f9f6f1;color:#555;font-family:sans-serif;font-size:0.85rem;line-height:1.6">${escHtml(comentarios)}</p>` : ''}
+</td></tr>
+</table>
+</body></html>`;
+
+  await sendAdminEmail(env, {
+    subject: `Nueva solicitud de reserva - ${propiedad}`,
+    html,
+    replyToEmail: email,
+    replyToName: nombre,
+  });
+}
+
+async function sendAdminContactNotification(env, { nombre, email, telefono, mensaje }) {
+  const html = `<!DOCTYPE html>
+<html lang="es"><body style="margin:0;padding:24px 16px;background:#f5f0e8">
+<table width="100%" cellpadding="0" cellspacing="0" style="max-width:560px;margin:0 auto;background:#ffffff">
+<tr><td style="padding:28px 32px">
+  <h2 style="margin:0 0 16px;font-family:Georgia,serif;color:#2a2118;font-weight:400">Nuevo mensaje de contacto</h2>
+  <table width="100%" cellpadding="0" cellspacing="0">
+    ${adminRow('Nombre', escHtml(nombre))}
+    ${adminRow('Email', `<a href="mailto:${escHtml(email)}" style="color:#2a2118">${escHtml(email)}</a>`)}
+    ${adminRow('Teléfono', escHtml(telefono) || '—')}
+  </table>
+  ${mensaje ? `<p style="margin:16px 0 0;padding:14px;background:#f9f6f1;color:#555;font-family:sans-serif;font-size:0.85rem;line-height:1.6">${escHtml(mensaje)}</p>` : ''}
+</td></tr>
+</table>
+</body></html>`;
+
+  await sendAdminEmail(env, {
+    subject: `Nuevo mensaje de contacto de ${nombre}`,
+    html,
+    replyToEmail: email,
+    replyToName: nombre,
+  });
+}
+
 async function sendGuestConfirmation(env, { nombre, email, propiedad, entrada, salida, adultos, ninos, noches, precio_total, comentarios, promo_code, calc }) {
-  if (!env.BREVO_API_KEY || !email) return;
+  if (!env.BREVO_API_KEY) { console.error('Brevo guest email skipped: BREVO_API_KEY not set'); return; }
+  if (!email) { console.error('Brevo guest email skipped: no recipient email'); return; }
 
   const esc = s => String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
@@ -479,7 +672,7 @@ async function sendGuestConfirmation(env, { nombre, email, propiedad, entrada, s
     if (calc.tierDiscount > 0) priceRows += guestRow(`Descuento temporada (${Math.round(calc.tierPct * 100)}%)`, calc.tierDiscount.toFixed(2));
     if (calc.gapDiscount  > 0) priceRows += guestRow('Descuento Fill the Gap', calc.gapDiscount.toFixed(2));
     if (calc.promoDiscount > 0) priceRows += guestRow(`Código promo (${esc(promo_code)})`, calc.promoDiscount.toFixed(2));
-    priceRows += row('Limpieza', `${calc.cleaning.toFixed(2)} €`);
+    if (calc.cleaning > 0) priceRows += row('Limpieza', `${calc.cleaning.toFixed(2)} €`);
     totalDisplay = `${calc.total.toFixed(2)} €`;
   }
 
@@ -546,7 +739,7 @@ ${comentariosSection}
 </body>
 </html>`;
 
-  await fetch('https://api.brevo.com/v3/smtp/email', {
+  const res = await fetch('https://api.brevo.com/v3/smtp/email', {
     method: 'POST',
     headers: { 'api-key': env.BREVO_API_KEY, 'Content-Type': 'application/json' },
     body: JSON.stringify({
@@ -557,4 +750,9 @@ ${comentariosSection}
       htmlContent: html,
     }),
   });
+
+  if (!res.ok) {
+    const body = await res.text().catch(() => '');
+    console.error(`Brevo guest email failed: HTTP ${res.status} - ${body.slice(0, 500)}`);
+  }
 }

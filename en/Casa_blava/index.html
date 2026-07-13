@@ -74,6 +74,7 @@
   "priceRange": "€110 – €250"
 }
   </script>
+  <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 </head>
 <body>
 
@@ -214,7 +215,7 @@
         </div>
 
         <!-- BOOKING PANEL -->
-        <div class="booking-panel" id="reserva">
+        <div id="reserva" class="booking-panel">
           <h2 class="booking-title">Book now</h2>
 
           <div class="calendar">
@@ -244,7 +245,7 @@
     <div><strong>Subtotal:</strong> <span id="subtotalAmount">0 €</span></div>
     <div id="discountRow" style="display:none;color:green;"><strong>Discount (<span id="discountLabel"></span>):</strong> <span id="discountAmount">0 €</span></div>
     <div id="promoDiscountRow" style="display:none;color:green;"><strong>Promo code (<span id="promoDiscountLabel"></span>):</strong> <span id="promoDiscountAmount">0 €</span></div>
-    <div><strong>Cleaning:</strong> <span id="cleaningAmount">60 €</span></div>
+    <div id="cleaningRow"><strong>Cleaning:</strong> <span id="cleaningAmount">60 €</span></div>
     <div style="margin-top:0.5rem;"><strong>Total:</strong> <span id="totalAmount">0 €</span></div>
     <div class="breakdown" style="margin-top:0.5rem;font-size:0.9rem;color:#555;"></div>
   </div>
@@ -341,7 +342,8 @@
                           <span id="promoCodeMsg" style="display:none;font-size:0.85rem;margin-top:0.3rem;"></span>
                         </div>
                         <input type="hidden" name="promo_code" id="hdPromoCode" value="">
-            <button type="submit" class="submit-btn" id="submitBtnReserva">Request booking</button>
+                        <div class="cf-turnstile" data-sitekey="0x4AAAAAADz5-D-Hg3DX4Bvj" data-action="turnstile-spin-v1"></div>
+<button type="submit" class="submit-btn" id="submitBtnReserva">Request booking</button>
           </form>
         </div>
 

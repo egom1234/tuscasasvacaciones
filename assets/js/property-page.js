@@ -47,6 +47,7 @@ const I18N = {
     waFromTo: (from, to, nights) => ` Del ${from} al ${to} (${nights} noches).`,
     waStarting: (from) => ` A partir del ${from}.`,
     waTotal: (total, subtotal, cleaning) => ` Importe: ${total} € (Subtotal: ${subtotal} €, Limpieza: ${cleaning} €).`,
+    waTotalNoCleaning: (total, subtotal) => ` Importe: ${total} € (Subtotal: ${subtotal} €).`,
     waBreakdown: (txt) => ` Desglose:\n${txt}`
   },
   en: {
@@ -81,6 +82,7 @@ const I18N = {
     waFromTo: (from, to, nights) => ` From ${from} to ${to} (${nights} nights).`,
     waStarting: (from) => ` Starting from ${from}.`,
     waTotal: (total, subtotal, cleaning) => ` Total: ${total} € (Subtotal: ${subtotal} €, Cleaning: ${cleaning} €).`,
+    waTotalNoCleaning: (total, subtotal) => ` Total: ${total} € (Subtotal: ${subtotal} €).`,
     waBreakdown: (txt) => ` Breakdown:\n${txt}`
   }
 };
@@ -105,6 +107,34 @@ let anyoActual       = new Date().getFullYear();
 let fechaEntrada     = null;
 let fechaSalida      = null;
 
+function expandirRango(entrada, salida) {
+  const fechas = new Set();
+  const hoy    = new Date(); hoy.setHours(0,0,0,0);
+  let cur      = new Date(entrada + 'T00:00:00');
+  const fin    = new Date(salida  + 'T00:00:00');
+  while (cur < fin) {
+    if (cur >= hoy) fechas.add(toKey(cur));
+    cur = new Date(cur.getTime() + 86400000);
+  }
+  return fechas;
+}
+
+async function cargarReservasConfirmadas() {
+  const propiedad = (window.PAGE_CONFIG || {}).propiedad;
+  if (!propiedad) return new Set();
+  try {
+    const res  = await fetch(FORM_WORKER + '/blocked-dates/' + encodeURIComponent(propiedad));
+    const data = await res.json();
+    if (!data.ok) return new Set();
+    const fechas = new Set();
+    (data.ranges || []).forEach(r => expandirRango(r.entrada, r.salida).forEach(k => fechas.add(k)));
+    return fechas;
+  } catch (e) {
+    console.error('Blocked-dates fetch failed:', e);
+    return new Set();
+  }
+}
+
 async function cargarIcal() {
   const dot   = document.getElementById('syncDot');
   const text  = document.getElementById('syncText');
@@ -112,7 +142,8 @@ async function cargarIcal() {
   try {
     const responses = await Promise.all(slugs.map(s => fetch(WORKER + '/ical/' + s)));
     const texts     = await Promise.all(responses.map(r => r.ok ? r.text() : Promise.resolve('')));
-    fechasReservadas = new Set(texts.flatMap(t => [...parsearIcal(t)]));
+    const reservadasConfirmadas = await cargarReservasConfirmadas();
+    fechasReservadas = new Set([...texts.flatMap(t => [...parsearIcal(t)]), ...reservadasConfirmadas]);
     dot.className    = 'sync-dot ok';
     text.textContent = t('syncOk');
   } catch (e) {
@@ -541,6 +572,10 @@ function obtenerTarifaNoche(fecha) {
   const rates = cfg.rates || null;
   const m = fecha.getMonth() + 1;
 
+  const specialDates = cfg.specialDates || {};
+  const dateKey = `${fecha.getFullYear()}-${String(m).padStart(2,'0')}-${String(fecha.getDate()).padStart(2,'0')}`;
+  if (specialDates[dateKey] !== undefined) return specialDates[dateKey];
+
   function isNightBeforeHoliday(d) {
     const holidays = (cfg.holidays || []);
     const next = new Date(d.getTime() + 86400000);
@@ -566,7 +601,7 @@ function calcularPrecio() {
     if (pa) pa.textContent = t('selectDates');
     if (ps) ps.style.display = 'none';
 
-    const limpiezaBase = (window.PAGE_CONFIG && window.PAGE_CONFIG.cleaning) || LIMPIEZA;
+    const limpiezaBase = (window.PAGE_CONFIG && window.PAGE_CONFIG.cleaning != null) ? window.PAGE_CONFIG.cleaning : LIMPIEZA;
     lastPricing = { nights: 0, subtotal: 0, cleaning: limpiezaBase, total: 0, breakdown: '' };
 
     const hN2 = document.getElementById('hdNights');
@@ -597,8 +632,10 @@ function calcularPrecio() {
     cur = new Date(cur.getTime() + 86400000);
   }
 
-  const limpieza = (window.PAGE_CONFIG && window.PAGE_CONFIG.cleaning) || LIMPIEZA;
   const isGap = isGapSelection(fechaEntrada, fechaSalida);
+  const cfgCleaning = (window.PAGE_CONFIG && window.PAGE_CONFIG.cleaning != null) ? window.PAGE_CONFIG.cleaning : LIMPIEZA;
+  const gapCleaning = (window.PAGE_CONFIG && window.PAGE_CONFIG.gapCleaning != null) ? window.PAGE_CONFIG.gapCleaning : null;
+  const limpieza = (isGap && gapCleaning != null) ? gapCleaning : cfgCleaning;
   const discountTiers = (window.PAGE_CONFIG && window.PAGE_CONFIG.discounts) || [];
   const activeTier = discountTiers
     .filter(d => noches >= d.minNights)
@@ -650,6 +687,8 @@ function calcularPrecio() {
       promoLbl.textContent = appliedPromo.tipo === 'pct' ? `${appliedPromo.valor}%` : `${appliedPromo.valor} €`;
     }
     if (promoEl) promoEl.textContent = '-' + promoDiscountAmount.toFixed(2) + ' €';
+    const cleaningRow = ps.querySelector('#cleaningRow');
+    if (cleaningRow) cleaningRow.style.display = limpieza > 0 ? '' : 'none';
     ps.querySelector('#cleaningAmount').textContent = limpieza.toFixed(2) + ' €';
     ps.querySelector('#totalAmount').textContent = total.toFixed(2) + ' €';
     ps.querySelector('.breakdown').innerHTML = breakdownHTML;
@@ -780,12 +819,24 @@ async function aplicarCodigoPromo() {
       return;
     }
 
+    await cargarIcal();
+    calcularPrecio();
+
     btn.disabled      = true;
     btn.textContent   = t('sending');
     btn.style.opacity = '0.7';
     errorMsg.style.display = 'none';
 
     try {
+      const turnstileToken = form.querySelector('[name="cf-turnstile-response"]')?.value || '';
+      if (!turnstileToken) {
+        errorMsg.style.display = 'block';
+        btn.disabled      = false;
+        btn.textContent   = t('requestBooking');
+        btn.style.opacity = '1';
+        return;
+      }
+
       const fd = new FormData(form);
       fd.set('nights', String(lastPricing.nights));
       fd.set('subtotal', lastPricing.subtotal.toFixed(2));
@@ -795,28 +846,20 @@ async function aplicarCodigoPromo() {
       fd.set('promo_code', appliedPromo ? appliedPromo.codigo : '');
       fd.set('propiedad', (window.PAGE_CONFIG && window.PAGE_CONFIG.propiedad) || '');
 
-      const fdEmail = new FormData(form);
-      fdEmail.set('nights',           String(lastPricing.nights));
-      fdEmail.set('subtotal',         lastPricing.subtotal.toFixed(2));
-      fdEmail.set('cleaning',         lastPricing.cleaning.toFixed(2));
-      fdEmail.set('total_price',      lastPricing.total.toFixed(2));
-      fdEmail.set('price_breakdown',  lastPricing.breakdown);
-      fdEmail.set('replyto',          fdEmail.get('email') || '');
-      if (lastPricing.tierDiscount > 0) fdEmail.set('descuento_temporada', `-${lastPricing.tierDiscount.toFixed(2)} € (${lastPricing.discountLabel})`);
-      if (lastPricing.gapDiscount  > 0) fdEmail.set('descuento_fill_gap',  `-${lastPricing.gapDiscount.toFixed(2)} €`);
-      if (lastPricing.promoDiscount > 0) fdEmail.set('descuento_codigo_promo', `-${lastPricing.promoDiscount.toFixed(2)} € (código: ${lastPricing.promoCode})`);
-      fetch('https://api.web3forms.com/submit', { method: 'POST', body: fdEmail })
-        .then(r => r.json())
-        .then(d => { if (!d.success) console.error('Web3Forms error:', d); })
-        .catch(e => console.error('Web3Forms fetch failed:', e));
-
+      // Admin notification is sent server-side by the Worker (Brevo).
       const res = await fetch(FORM_WORKER + '/reserva', { method: 'POST', body: fd });
       const text = await res.text();
       let data = {};
       try { data = text ? JSON.parse(text) : {}; } catch (e) { console.warn('Non-JSON response:', text); }
 
       if (!res.ok) {
-        throw new Error(`HTTP ${res.status} ${res.statusText} - ${data.error || text.slice(0,200)}`);
+        errorMsg.style.display = 'block';
+        errorMsg.textContent = data.error || t('submitError');
+        btn.disabled      = false;
+        btn.textContent   = t('requestBooking');
+        btn.style.opacity = '1';
+        if (window.turnstile) window.turnstile.reset();
+        return;
       }
 
       if (data && data.ok) {
@@ -857,6 +900,7 @@ async function aplicarCodigoPromo() {
         btn.disabled      = false;
         btn.textContent   = t('requestBooking');
         btn.style.opacity = '1';
+        if (window.turnstile) window.turnstile.reset();
       }
     }
   });
@@ -926,7 +970,11 @@ function actualizarWAMensajes() {
   if (fechaEntrada && fechaSalida) {
     const noches = lastPricing && lastPricing.nights ? lastPricing.nights : Math.ceil((fechaSalida - fechaEntrada) / 86400000);
     msg += t('waFromTo', toKey(fechaEntrada), toKey(fechaSalida), noches);
-    if (lastPricing && lastPricing.total) msg += t('waTotal', lastPricing.total.toFixed(2), lastPricing.subtotal.toFixed(2), lastPricing.cleaning.toFixed(2));
+    if (lastPricing && lastPricing.total) {
+      msg += lastPricing.cleaning > 0
+        ? t('waTotal', lastPricing.total.toFixed(2), lastPricing.subtotal.toFixed(2), lastPricing.cleaning.toFixed(2))
+        : t('waTotalNoCleaning', lastPricing.total.toFixed(2), lastPricing.subtotal.toFixed(2));
+    }
     if (lastPricing && lastPricing.breakdown) msg += t('waBreakdown', lastPricing.breakdown);
   } else if (fechaEntrada) {
     msg += t('waStarting', toKey(fechaEntrada));
