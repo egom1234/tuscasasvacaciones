@@ -303,6 +303,7 @@
             <option value="Loft Binibeca">Loft Binibeca</option>
             <option value="Apartamento Tarifa">Apartamento Tarifa</option>
             <option value="Loft Tarifa">Loft Tarifa</option>
+            <option value="La Almeza">La Almeza</option>
           </select>
         </div>
         <div>
@@ -351,7 +352,7 @@
     <!-- Bloqueos -->
     <div id="tab-bloqueos" style="display:none">
       <div style="padding:1rem 0 0.5rem;color:#52525b;font-size:0.875rem;">
-        Bloquea fechas manualmente (mantenimiento, uso propio, etc.). Los días en gris ya están ocupados por iCal (Airbnb/Booking) o una reserva confirmada y no se pueden tocar. Click en un día libre para marcar el inicio y click en otro día para confirmar el rango; click en un bloqueo existente (azul) para eliminarlo.
+        Bloquea fechas manualmente (mantenimiento, uso propio, etc.). Los días coloreados ya están ocupados (ver leyenda abajo) y no se pueden tocar. Click en un día libre para marcar el inicio y click en otro día para confirmar el rango; click en un bloqueo existente (morado) para eliminarlo.
       </div>
       <div class="toolbar">
         <select id="bloqueos-propiedad" onchange="cambiarPropiedadBloqueos()"></select>
@@ -365,7 +366,7 @@
           <strong id="bloqueos-mes-label" style="font-size:0.9rem;"></strong>
           <button onclick="cambiarMesBloqueos(1)" style="padding:0.3rem 0.7rem;border:1px solid #d4d4d8;border-radius:6px;background:#f4f4f5;cursor:pointer;">→</button>
         </div>
-        <div id="bloqueos-grid" style="display:grid;grid-template-columns:repeat(7,1fr);gap:3px;"></div>
+        <div id="bloqueos-grid" style="display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:3px;"></div>
         <div style="display:flex;gap:1rem;padding:0.75rem 0;font-size:0.75rem;color:#52525b;flex-wrap:wrap;">
           <span><span style="display:inline-block;width:10px;height:10px;background:#ffe1e0;border-radius:3px;margin-right:4px;"></span>Airbnb</span>
           <span><span style="display:inline-block;width:10px;height:10px;background:#dbeafe;border-radius:3px;margin-right:4px;"></span>Booking.com</span>
@@ -389,6 +390,7 @@
     'Loft Binibeca':      ['loft-binibeca-airbnb', 'loft-binibeca-booking'],
     'Apartamento Tarifa': ['tarifa-apt-airbnb', 'tarifa-apt-booking'],
     'Loft Tarifa':        ['tarifa-loft-airbnb', 'tarifa-loft-booking'],
+    'La Almeza':          ['pepita-airbnb'],
   };
 
   let token = '';
@@ -949,7 +951,7 @@
       discounts: [{ minNights:5, pct:0.05 },{ minNights:6, pct:0.08 },{ minNights:7, pct:0.11 }],
       rates: { "1":40,"2":40,"3":50,"4":50,"5":70,"6":80,"7":100,"8":120,"9":80,"10":60,"11":50,"12":50 }
     },
-    'Casa Pepita': {
+    'La Almeza': {
       maxPersonas: 12, minNoches: 2, cleaning: 100,
       rates: {
         "1":{"weekday":330,"weekend":400}, "2":{"weekday":330,"weekend":400}, "3":{"weekday":330,"weekend":400},
@@ -960,7 +962,7 @@
     }
   };
 
-  const CONFIG_PROPS = ['Casa Gonda','Casa Blava','Loft Binibeca','Apartamento Tarifa','Loft Tarifa','Casa Pepita'];
+  const CONFIG_PROPS = ['Casa Gonda','Casa Blava','Loft Binibeca','Apartamento Tarifa','Loft Tarifa','La Almeza'];
 
   function propSlug(p) { return p.toLowerCase().replace(/\s+/g, '-'); }
 
