@@ -902,8 +902,10 @@ function initBarraResumen() {
     <span class="summary-sep"> | </span>
     <span class="summary-guests"></span>
     <span class="summary-sep2"> | </span>
-    <span class="summary-price"></span>
-    <button type="button" class="summary-cta"></button>
+    <span class="summary-price-row">
+      <span class="summary-price"></span>
+      <button type="button" class="summary-cta"></button>
+    </span>
   `;
 
   const bar = document.createElement('div');
