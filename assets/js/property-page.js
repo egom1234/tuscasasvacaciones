@@ -904,7 +904,12 @@ function wireResumenClicks(container, reservaEl) {
   }
   const waEl = container.querySelector('.summary-wa');
   if (waEl) {
-    waEl.addEventListener('click', (e) => e.stopPropagation());
+    waEl.addEventListener('click', (e) => {
+      e.stopPropagation();
+      actualizarWAMensajes();
+      const waLink = document.querySelector('.wa-container a.wa-option');
+      if (waLink) waEl.href = waLink.href;
+    });
   }
 }
 
