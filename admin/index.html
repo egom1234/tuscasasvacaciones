@@ -117,8 +117,10 @@
     .bq-day { aspect-ratio: 1; display: flex; align-items: center; justify-content: center; border-radius: 6px; font-size: 0.8rem; cursor: pointer; background: #fff; border: 1px solid #e4e4e7; }
     .bq-day.empty { visibility: hidden; cursor: default; }
     .bq-day.past { color: #d4d4d8; cursor: default; background: #fafafa; }
-    .bq-day.ocupado { background: #e4e4e7; color: #a1a1aa; cursor: not-allowed; }
-    .bq-day.bloqueado { background: #bfdbfe; color: #1d4ed8; font-weight: 600; }
+    .bq-day.ocupado-airbnb { background: #ffe1e0; color: #c0392b; cursor: not-allowed; }
+    .bq-day.ocupado-booking { background: #dbeafe; color: #1e40af; cursor: not-allowed; }
+    .bq-day.ocupado-web { background: #fef3c7; color: #92400e; cursor: not-allowed; }
+    .bq-day.bloqueado { background: #ede9fe; color: #6d28d9; font-weight: 600; }
     .bq-day.seleccionado { background: #dcfce7; color: #166534; font-weight: 600; }
     .bq-day.libre:hover { background: #f4f4f5; }
   </style>
@@ -352,8 +354,10 @@
         </div>
         <div id="bloqueos-grid" style="display:grid;grid-template-columns:repeat(7,1fr);gap:3px;"></div>
         <div style="display:flex;gap:1rem;padding:0.75rem 0;font-size:0.75rem;color:#52525b;flex-wrap:wrap;">
-          <span><span style="display:inline-block;width:10px;height:10px;background:#e4e4e7;border-radius:3px;margin-right:4px;"></span>Ocupado</span>
-          <span><span style="display:inline-block;width:10px;height:10px;background:#bfdbfe;border-radius:3px;margin-right:4px;"></span>Bloqueado (click para quitar)</span>
+          <span><span style="display:inline-block;width:10px;height:10px;background:#ffe1e0;border-radius:3px;margin-right:4px;"></span>Airbnb</span>
+          <span><span style="display:inline-block;width:10px;height:10px;background:#dbeafe;border-radius:3px;margin-right:4px;"></span>Booking.com</span>
+          <span><span style="display:inline-block;width:10px;height:10px;background:#fef3c7;border-radius:3px;margin-right:4px;"></span>Web (reserva directa)</span>
+          <span><span style="display:inline-block;width:10px;height:10px;background:#ede9fe;border-radius:3px;margin-right:4px;"></span>Bloqueado manual (click para quitar)</span>
           <span><span style="display:inline-block;width:10px;height:10px;background:#dcfce7;border-radius:3px;margin-right:4px;"></span>Inicio seleccionado</span>
         </div>
       </div>
@@ -386,6 +390,9 @@
   let bloqueos = [];
   let bloqueosLoaded = false;
   let bloqueosOcupadas = new Set();
+  let bloqueosAirbnb = new Set();
+  let bloqueosBooking = new Set();
+  let bloqueosWeb = new Set();
   let bloqueosMes = new Date().getMonth();
   let bloqueosAnyo = new Date().getFullYear();
   let bloqueoInicio = null;
@@ -1149,17 +1156,23 @@
   async function cargarOcupacionBloqueos() {
     const propiedad = document.getElementById('bloqueos-propiedad').value;
     bloqueosOcupadas = new Set();
+    bloqueosAirbnb = new Set();
+    bloqueosBooking = new Set();
+    bloqueosWeb = new Set();
 
     const slugs = ICAL_SLUGS_BY_PROPERTY[propiedad] || [];
     try {
       const responses = await Promise.all(slugs.map(s => fetch(`${ICAL_WORKER_URL}/ical/${s}`)));
       const texts      = await Promise.all(responses.map(r => r.ok ? r.text() : ''));
-      texts.forEach(t => parsearIcalBloqueos(t).forEach(k => bloqueosOcupadas.add(k)));
+      texts.forEach((t, i) => {
+        const dest = slugs[i].endsWith('-booking') ? bloqueosBooking : bloqueosAirbnb;
+        parsearIcalBloqueos(t).forEach(k => { dest.add(k); bloqueosOcupadas.add(k); });
+      });
     } catch (e) { console.error('iCal fetch failed:', e); }
 
     reservas
       .filter(r => r.propiedad === propiedad && r.estado === 'confirmada' && r.entrada && r.salida)
-      .forEach(r => expandirRangoBloqueos(r.entrada, r.salida).forEach(k => bloqueosOcupadas.add(k)));
+      .forEach(r => expandirRangoBloqueos(r.entrada, r.salida).forEach(k => { bloqueosWeb.add(k); bloqueosOcupadas.add(k); }));
   }
 
   function cambiarPropiedadBloqueos() {
@@ -1224,9 +1237,15 @@
 
       if (fecha < hoy) {
         el.classList.add('past');
-      } else if (bloqueosOcupadas.has(key)) {
-        el.classList.add('ocupado');
-        el.title = 'Ocupado (iCal o reserva confirmada)';
+      } else if (bloqueosAirbnb.has(key)) {
+        el.classList.add('ocupado-airbnb');
+        el.title = 'Ocupado — Airbnb';
+      } else if (bloqueosBooking.has(key)) {
+        el.classList.add('ocupado-booking');
+        el.title = 'Ocupado — Booking.com';
+      } else if (bloqueosWeb.has(key)) {
+        el.classList.add('ocupado-web');
+        el.title = 'Ocupado — reserva directa por la web';
       } else if (bloqueo) {
         el.classList.add('bloqueado');
         el.title = bloqueo.motivo || 'Bloqueado (click para quitar)';
