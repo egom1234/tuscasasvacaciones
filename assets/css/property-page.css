@@ -301,7 +301,7 @@ footer { background: #ede3d8; color: var(--gris-oscuro); padding: 3rem 0 1.5rem;
   .booking-summary-widget { display: none !important; }
 }
 @media (min-width: 769px) {
-  .wa-container { bottom: 8rem; }
+  .wa-container { bottom: 10rem; }
 }
 
 /* ── Selector de idioma ──────────────────────────────────── */
