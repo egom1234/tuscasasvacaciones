@@ -231,7 +231,7 @@ footer { background: #ede3d8; color: var(--gris-oscuro); padding: 3rem 0 1.5rem;
      hides itself once the booking panel is in view. */
   .cta-reserva { display: none; }
   body { padding-bottom: 64px; }
-  .wa-container { bottom: calc(4.5rem + env(safe-area-inset-bottom)); }
+  .wa-container { bottom: calc(5.3rem + env(safe-area-inset-bottom)); }
 }
 
 /* ── Barra fija resumen fechas/huéspedes (mobile) ────────── */

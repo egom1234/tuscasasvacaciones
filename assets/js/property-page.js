@@ -53,7 +53,7 @@ const I18N = {
     waTotal: (total, subtotal, cleaning) => ` Importe: ${total} € (Subtotal: ${subtotal} €, Limpieza: ${cleaning} €).`,
     waTotalNoCleaning: (total, subtotal) => ` Importe: ${total} € (Subtotal: ${subtotal} €).`,
     waBreakdown: (txt) => ` Desglose:\n${txt}`,
-    guestsLabel: (n) => `${n} Huésped${n !== 1 ? 'es' : ''}`,
+    guestsLabel: (n) => `${n} pers.`,
     summaryPlaceholder: 'Elige tus fechas →',
     summaryEnterGuests: 'Indica huéspedes →',
     summaryCta: 'Reservar →',
