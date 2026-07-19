@@ -168,6 +168,7 @@
     <button data-tab="codigos" onclick="showTab('codigos', this)">Códigos descuento</button>
     <button data-tab="config" onclick="showTab('config', this)">Configuración precios</button>
     <button data-tab="bloqueos" onclick="showTab('bloqueos', this)">Bloqueos calendario</button>
+    <button data-tab="ical" onclick="showTab('ical', this)">Exportar iCal</button>
   </nav>
 
   <main>
@@ -378,6 +379,14 @@
       <div id="bloqueos-loading" class="loading" style="display:none">Cargando...</div>
     </div>
 
+    <!-- Exportar iCal -->
+    <div id="tab-ical" style="display:none">
+      <div style="padding:1rem 0 0.5rem;color:#52525b;font-size:0.875rem;">
+        Copia la URL de cada propiedad y pégala en Booking.com (Extranet → Calendario → Sincronizar calendarios → Importar) y en Airbnb (Calendario → Disponibilidad → Importar calendario). El feed incluye reservas confirmadas y bloqueos manuales — sin datos del huésped. Booking.com/Airbnb tardan hasta varias horas en volver a consultar la URL, no es instantáneo.
+      </div>
+      <div id="ical-export-list" class="table-wrap"></div>
+    </div>
+
   </main>
 </div>
 
@@ -497,7 +506,7 @@
   // ---- Tabs ----
 
   function showTab(tab, btn) {
-    ['dashboard','reservas','contactos','codigos','config','bloqueos'].forEach(t => {
+    ['dashboard','reservas','contactos','codigos','config','bloqueos','ical'].forEach(t => {
       document.getElementById('tab-' + t).style.display = tab === t ? '' : 'none';
     });
     document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
@@ -506,7 +515,41 @@
     if (tab === 'codigos'   && !codigosLoaded)   fetchCodigos();
     if (tab === 'config'    && !configLoaded)    fetchConfig();
     if (tab === 'bloqueos'  && !bloqueosLoaded)  { initBloqueosPropiedadSelect(); fetchBloqueos(); }
+    if (tab === 'ical')     renderIcalExport();
     if (tab === 'dashboard') renderDashboard();
+  }
+
+  // ---- iCal export ----
+
+  const ICAL_EXPORT_SLUGS = {
+    'casa-gonda':          'Casa Gonda',
+    'casa-blava':          'Casa Blava',
+    'casa-pepita':         'Casa Pepita',
+    'apartamento-tarifa':  'Apartamento Tarifa',
+    'loft-tarifa':         'Loft Tarifa',
+    'loft-binibeca':       'Loft Binibeca',
+  };
+
+  function renderIcalExport() {
+    const wrap = document.getElementById('ical-export-list');
+    wrap.innerHTML = `<table><thead><tr><th>Propiedad</th><th>URL iCal</th><th></th></tr></thead><tbody>` +
+      Object.entries(ICAL_EXPORT_SLUGS).map(([slug, nombre]) => {
+        const url = `${WORKER_URL}/ical/${slug}.ics`;
+        return `<tr>
+          <td>${nombre}</td>
+          <td><code style="font-size:0.8rem;word-break:break-all;">${url}</code></td>
+          <td><button onclick="copyIcalUrl(this, '${url}')" style="padding:0.3rem 0.7rem;border:1px solid #d4d4d8;border-radius:6px;background:#f4f4f5;cursor:pointer;">Copiar</button></td>
+        </tr>`;
+      }).join('') +
+      `</tbody></table>`;
+  }
+
+  function copyIcalUrl(btn, url) {
+    navigator.clipboard.writeText(url).then(() => {
+      const original = btn.textContent;
+      btn.textContent = 'Copiado ✓';
+      setTimeout(() => { btn.textContent = original; }, 1500);
+    });
   }
 
   // ---- Sort ----
