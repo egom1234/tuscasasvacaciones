@@ -15,6 +15,50 @@ function json(body, status, cors) {
   });
 }
 
+// ====== ICAL EXPORT ======
+
+const ICAL_EXPORT_SLUGS = {
+  'casa-gonda': 'Casa Gonda',
+  'casa-blava': 'Casa Blava',
+  'casa-pepita': 'Casa Pepita',
+  'apartamento-tarifa': 'Apartamento Tarifa',
+  'loft-tarifa': 'Loft Tarifa',
+  'loft-binibeca': 'Loft Binibeca',
+};
+
+function toIcsDate(dateStr) {
+  return (dateStr || '').replace(/-/g, '');
+}
+
+function icsEscape(s) {
+  return String(s || '').replace(/\\/g, '\\\\').replace(/,/g, '\\,').replace(/;/g, '\\;');
+}
+
+function buildIcs(propiedad, ranges) {
+  const now = new Date().toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
+  const lines = [
+    'BEGIN:VCALENDAR',
+    'VERSION:2.0',
+    'PRODID:-//Casitas de Mar//iCal Export//ES',
+    'CALSCALE:GREGORIAN',
+    `X-WR-CALNAME:${icsEscape(propiedad)} - Casitas de Mar`,
+  ];
+  for (const r of ranges) {
+    if (!r.entrada || !r.salida) continue;
+    lines.push(
+      'BEGIN:VEVENT',
+      `UID:${r.uid}@casitasdemar.com`,
+      `DTSTAMP:${now}`,
+      `DTSTART;VALUE=DATE:${toIcsDate(r.entrada)}`,
+      `DTEND;VALUE=DATE:${toIcsDate(r.salida)}`,
+      'SUMMARY:Ocupado - Casitas de Mar',
+      'END:VEVENT'
+    );
+  }
+  lines.push('END:VCALENDAR');
+  return lines.join('\r\n');
+}
+
 function isAuthorized(request, env) {
   const auth = request.headers.get('Authorization') || '';
   const token = auth.replace('Bearer ', '');
@@ -396,6 +440,28 @@ export default {
           env.DB.prepare(`SELECT entrada, salida FROM bloqueos WHERE propiedad = ?`).bind(propiedad).all(),
         ]);
         return json({ ok: true, ranges: [...reservasRes.results, ...bloqueosRes.results] }, 200, cors);
+      }
+
+      // ---- Public: outbound iCal export (channel manager) — import into Booking.com / Airbnb ----
+      if (url.pathname.startsWith('/ical/') && url.pathname.endsWith('.ics') && request.method === 'GET') {
+        const slug = url.pathname.slice('/ical/'.length, -'.ics'.length);
+        const propiedad = ICAL_EXPORT_SLUGS[slug];
+        if (!propiedad) return new Response('Not found', { status: 404, headers: cors });
+
+        const [reservasRes, bloqueosRes] = await Promise.all([
+          env.DB.prepare(`SELECT id, entrada, salida FROM reservas WHERE propiedad = ? AND estado = 'confirmada'`).bind(propiedad).all(),
+          env.DB.prepare(`SELECT id, entrada, salida FROM bloqueos WHERE propiedad = ?`).bind(propiedad).all(),
+        ]);
+
+        const ics = buildIcs(propiedad, [
+          ...reservasRes.results.map(r => ({ uid: `reserva-${r.id}`, entrada: r.entrada, salida: r.salida })),
+          ...bloqueosRes.results.map(r => ({ uid: `bloqueo-${r.id}`, entrada: r.entrada, salida: r.salida })),
+        ]);
+
+        return new Response(ics, {
+          status: 200,
+          headers: { ...cors, 'Content-Type': 'text/calendar; charset=utf-8', 'Cache-Control': 'public, max-age=900' },
+        });
       }
 
       if (request.method !== 'POST') {
