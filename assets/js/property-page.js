@@ -199,8 +199,9 @@ function parseFecha(s) {
 }
 
 function computarGaps() {
-  const minNoches = (window.PAGE_CONFIG || {}).minNoches || 1;
   gapDays = new Set();
+  if ((window.PAGE_CONFIG || {}).noGapDiscount) return;
+  const minNoches = (window.PAGE_CONFIG || {}).minNoches || 1;
   if (minNoches <= 1) return;
 
   const hoy = new Date(); hoy.setHours(0,0,0,0);

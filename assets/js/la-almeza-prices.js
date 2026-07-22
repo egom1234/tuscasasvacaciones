@@ -2,6 +2,7 @@ window.LA_ALMEZA_PRICES = {
   maxPersonas: 12,
   minNoches:   2,
   cleaning:    100,
+  noGapDiscount: true,
   rates: {
     "1":  { "weekday": 330, "weekend": 400 },
     "2":  { "weekday": 330, "weekend": 400 },
