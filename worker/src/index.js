@@ -254,6 +254,7 @@ const ICAL_SLUGS_BY_PROPERTY = {
 };
 
 async function determinarIsGap(config, entrada, salida, propiedad, env) {
+  if (config.noGapDiscount) return false;
   const minNoches = config.minNoches || 1;
   if (minNoches <= 1) { console.log(`isGap check [${propiedad}]: minNoches=${minNoches} <= 1, skipping`); return false; }
   const slugs = config.icalSlugs || ICAL_SLUGS_BY_PROPERTY[propiedad] || [];
