@@ -64,6 +64,49 @@
       font-weight: 500;
       margin-bottom: 0.6rem;
     }
+    .events-banner {
+      background: linear-gradient(120deg, #eef6ea 0%, #e4f0de 100%);
+      border: 1px solid var(--gris-claro);
+      border-radius: 12px;
+      padding: 1.2rem 1.4rem;
+      margin: 2.2rem auto 0;
+      max-width: 1120px;
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+    }
+    .events-banner h2 {
+      margin: 0;
+      color: var(--verde-oscuro);
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 1.6rem;
+      font-weight: 500;
+    }
+    .events-banner p {
+      margin: 0.35rem 0 0;
+      color: var(--gris-oscuro);
+      font-size: 0.97rem;
+      line-height: 1.5;
+      max-width: 760px;
+    }
+    .events-banner .events-link {
+      background: var(--verde-primario);
+      color: var(--blanco);
+      text-decoration: none;
+      padding: 0.65rem 1rem;
+      border-radius: 999px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      white-space: nowrap;
+      transition: background 0.2s ease;
+    }
+    .events-banner .events-link:hover { background: #3f6533; }
+    @media (max-width: 768px) {
+      .events-banner { margin: 1.5rem 1rem 0; }
+      .events-banner h2 { font-size: 1.4rem; }
+    }
   </style>
 
   <script type="application/ld+json">
@@ -164,6 +207,14 @@
           <div class="gallery-item" style="background-color: #3d5a30; background-image: url('/images/almeza/almeza_vistas.webp');"></div>
         </div>
       </div>
+    </section>
+
+    <section class="events-banner" aria-label="Events and activities in Alpuente">
+      <div>
+        <h2>Events and plans during your stay</h2>
+        <p>Discover local festivities, recommended routes, gastronomy and calm plans to enjoy Alpuente and its surroundings throughout the year.</p>
+      </div>
+      <a class="events-link" href="/en/La_Almeza/events/">View events and local guide</a>
     </section>
 
     <div class="container">
