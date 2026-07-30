@@ -1177,6 +1177,17 @@ async function aplicarCodigoPromo() {
 function toggleMobileMenu() {
   document.getElementById('main-nav').classList.toggle('active');
 }
+
+function toggleGallery() {
+  const gallery = document.querySelector('.gallery');
+  const btn = document.querySelector('.gallery-toggle');
+  if (!gallery || !btn) return;
+  if (!btn.dataset.expandLabel) btn.dataset.expandLabel = btn.textContent;
+  const expanded = gallery.classList.toggle('expanded');
+  const collapseLabel = getLang() === 'en' ? 'Show fewer photos' : 'Ver menos fotos';
+  btn.textContent = expanded ? collapseLabel : btn.dataset.expandLabel;
+  if (!expanded) gallery.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
 document.querySelectorAll('#main-nav a').forEach(link => {
   link.addEventListener('click', () => document.getElementById('main-nav').classList.remove('active'));
 });
@@ -1263,3 +1274,14 @@ document.addEventListener('click', (e) => {
     document.getElementById('waBtn').classList.remove('open');
   }
 });
+
+function scrollToTop() {
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+(function () {
+  const btn = document.querySelector('.back-to-top');
+  if (!btn) return;
+  window.addEventListener('scroll', () => {
+    btn.classList.toggle('visible', window.scrollY > 600);
+  });
+})();

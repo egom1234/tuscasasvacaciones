@@ -43,6 +43,23 @@ main { padding-top: 80px; min-height: calc(100vh - 200px); }
 .gallery-main { grid-column: span 2; grid-row: span 2; height: 655px; background-size: cover; background-position: center; border-radius: 0; cursor: pointer; transition: opacity 0.2s; }
 .gallery-item  { height: 320px; background-size: cover; background-position: center; border-radius: 0; cursor: pointer; transition: opacity 0.2s; }
 .gallery-main:hover, .gallery-item:hover { opacity: 0.85; }
+.gallery-item.gallery-hidden { display: none; }
+.gallery.expanded .gallery-item.gallery-hidden { display: block; }
+.gallery-toggle {
+  display: block;
+  margin: -1rem auto 1.5rem;
+  background: none;
+  border: 1px solid var(--verde-primario);
+  color: var(--verde-primario);
+  padding: 0.6rem 1.4rem;
+  border-radius: 0;
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+.gallery-toggle:hover { background: var(--verde-primario); color: var(--blanco); }
 
 /* ── Layout contenido ───────────────────────────────────── */
 .content-wrapper { display: grid; grid-template-columns: 1.5fr 1fr; gap: 3rem; padding: 3rem 0; }
@@ -186,6 +203,12 @@ footer { background: #ede3d8; color: var(--gris-oscuro); padding: 3rem 0 1.5rem;
 .wa-container .wa-label { font-size: 0.9rem; font-weight: 400; color: var(--gris-oscuro); }
 .wa-container .wa-icon-sm { width: 34px; height: 34px; background: #25D366; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1rem; flex-shrink: 0; }
 
+/* ── Volver arriba ──────────────────────────────────────── */
+.back-to-top { position: fixed; bottom: 2rem; left: 2rem; width: 48px; height: 48px; border-radius: 50%; background: var(--verde-primario); border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 20px rgba(0,0,0,0.18); z-index: 9999; opacity: 0; pointer-events: none; transform: translateY(10px); transition: opacity 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease; }
+.back-to-top.visible { opacity: 1; pointer-events: all; transform: translateY(0); }
+.back-to-top:hover { box-shadow: 0 6px 25px rgba(0,0,0,0.25); }
+.back-to-top svg { width: 22px; height: 22px; }
+
 /* ── Responsive ─────────────────────────────────────────── */
 @media (max-width: 992px) {
   .content-wrapper { grid-template-columns: 1fr; }
@@ -218,6 +241,8 @@ footer { background: #ede3d8; color: var(--gris-oscuro); padding: 3rem 0 1.5rem;
   .wa-container .wa-option { padding: 0.55rem 1rem; }
   .wa-container .wa-label { font-size: 0.85rem; }
   .wa-container .wa-icon-sm { width: 30px; height: 30px; font-size: 0.9rem; }
+  .back-to-top { bottom: 1.2rem; left: 1.2rem; width: 42px; height: 42px; }
+  .back-to-top svg { width: 18px; height: 18px; }
 }
 
 @media (max-width: 480px) {
@@ -232,6 +257,7 @@ footer { background: #ede3d8; color: var(--gris-oscuro); padding: 3rem 0 1.5rem;
   .cta-reserva { display: none; }
   body { padding-bottom: 64px; }
   .wa-container { bottom: calc(5.3rem + env(safe-area-inset-bottom)); }
+  .back-to-top { bottom: calc(5.3rem + env(safe-area-inset-bottom)); }
 }
 
 /* ── Barra fija resumen fechas/huéspedes (mobile) ────────── */

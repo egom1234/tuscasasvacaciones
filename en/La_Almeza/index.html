@@ -96,7 +96,7 @@
       color: var(--blanco);
       text-decoration: none;
       padding: 0.65rem 1rem;
-      border-radius: 999px;
+      border-radius: 0;
       font-size: 0.9rem;
       font-weight: 500;
       white-space: nowrap;
@@ -236,34 +236,36 @@
           <a class="events-link" href="/en/La_Almeza/events/">View events and local guide</a>
         </section>
 
-        <div class="gallery">
+        <div class="gallery" id="almezaGallery">
           <div class="gallery-main" style="background-color: #3d5a30; background-image: url('/images/almeza/almeza_mirador.webp');"></div>
           <div class="gallery-item" style="background-color: #4a6837; background-image: url('/images/almeza/almeza_exterior.webp');"></div>
-          <div class="gallery-item" style="background-color: #526a3e; background-image: url('/images/almeza/almeza_patio.webp');"></div>          <div class="gallery-item" style="background-color: #4a6837; background-image: url('/images/almeza/almeza_salon.webp');"></div>
-          <div class="gallery-item" style="background-color: #3d5a30; background-image: url('/images/almeza/almeza_salon-hab.webp');"></div>
-          <div class="gallery-item" style="background-color: #4a6837; background-image: url('/images/almeza/almeza_salon2.webp');"></div>
-          <div class="gallery-item" style="background-color: #526a3e; background-image: url('/images/almeza/almeza_salon3.webp');"></div>
-          <div class="gallery-item" style="background-color: #3d5a30; background-image: url('/images/almeza/almeza_chimenea.webp');"></div>
-          <div class="gallery-item" style="background-color: #4a6837; background-image: url('/images/almeza/almeza_comedor.webp');"></div>
-          <div class="gallery-item" style="background-color: #526a3e; background-image: url('/images/almeza/almeza_cocina.webp');"></div>
-          <div class="gallery-item" style="background-color: #3d5a30; background-image: url('/images/almeza/almeza_cocina2.webp');"></div>
-          <div class="gallery-item" style="background-color: #4a6837; background-image: url('/images/almeza/almeza_hab1.webp');"></div>
-          <div class="gallery-item" style="background-color: #526a3e; background-image: url('/images/almeza/almeza_hab2.webp');"></div>
-          <div class="gallery-item" style="background-color: #3d5a30; background-image: url('/images/almeza/almeza_hab3.webp');"></div>
-          <div class="gallery-item" style="background-color: #4a6837; background-image: url('/images/almeza/almeza_hab3-cuna.webp');"></div>
-          <div class="gallery-item" style="background-color: #526a3e; background-image: url('/images/almeza/almeza_hab4.webp');"></div>
-          <div class="gallery-item" style="background-color: #3d5a30; background-image: url('/images/almeza/almeza_hab5.webp');"></div>
-          <div class="gallery-item" style="background-color: #4a6837; background-image: url('/images/almeza/almeza_bano.webp');"></div>
-          <div class="gallery-item" style="background-color: #526a3e; background-image: url('/images/almeza/almeza_bano2.webp');"></div>
-          <div class="gallery-item" style="background-color: #3d5a30; background-image: url('/images/almeza/almeza_bano3.webp');"></div>
-          <div class="gallery-item" style="background-color: #4a6837; background-image: url('/images/almeza/almeza_bano4.webp');"></div>
-          <div class="gallery-item" style="background-color: #526a3e; background-image: url('/images/almeza/almeza_jacuzzi.webp');"></div>
-          <div class="gallery-item" style="background-color: #526a3e; background-image: url('/images/almeza/almeza_sauna.webp');"></div>
-          <div class="gallery-item" style="background-color: #3d5a30; background-image: url('/images/almeza/almeza_escalera.webp');"></div>
-          <div class="gallery-item" style="background-color: #526a3e; background-image: url('/images/almeza/almeza_terraza.webp');"></div>
-          <div class="gallery-item" style="background-color: #3d5a30; background-image: url('/images/almeza/almeza_vistas.webp');"></div>
-          <div class="gallery-item" style="background-color: #1a2d15; background-image: url('/images/almeza/almeza_javalambre.webp');"></div>
+          <div class="gallery-item" style="background-color: #526a3e; background-image: url('/images/almeza/almeza_patio.webp');"></div>
+          <div class="gallery-item gallery-hidden" style="background-color: #4a6837; background-image: url('/images/almeza/almeza_salon.webp');"></div>
+          <div class="gallery-item gallery-hidden" style="background-color: #3d5a30; background-image: url('/images/almeza/almeza_salon-hab.webp');"></div>
+          <div class="gallery-item gallery-hidden" style="background-color: #4a6837; background-image: url('/images/almeza/almeza_salon2.webp');"></div>
+          <div class="gallery-item gallery-hidden" style="background-color: #526a3e; background-image: url('/images/almeza/almeza_salon3.webp');"></div>
+          <div class="gallery-item gallery-hidden" style="background-color: #3d5a30; background-image: url('/images/almeza/almeza_chimenea.webp');"></div>
+          <div class="gallery-item gallery-hidden" style="background-color: #4a6837; background-image: url('/images/almeza/almeza_comedor.webp');"></div>
+          <div class="gallery-item gallery-hidden" style="background-color: #526a3e; background-image: url('/images/almeza/almeza_cocina.webp');"></div>
+          <div class="gallery-item gallery-hidden" style="background-color: #3d5a30; background-image: url('/images/almeza/almeza_cocina2.webp');"></div>
+          <div class="gallery-item gallery-hidden" style="background-color: #4a6837; background-image: url('/images/almeza/almeza_hab1.webp');"></div>
+          <div class="gallery-item gallery-hidden" style="background-color: #526a3e; background-image: url('/images/almeza/almeza_hab2.webp');"></div>
+          <div class="gallery-item gallery-hidden" style="background-color: #3d5a30; background-image: url('/images/almeza/almeza_hab3.webp');"></div>
+          <div class="gallery-item gallery-hidden" style="background-color: #4a6837; background-image: url('/images/almeza/almeza_hab3-cuna.webp');"></div>
+          <div class="gallery-item gallery-hidden" style="background-color: #526a3e; background-image: url('/images/almeza/almeza_hab4.webp');"></div>
+          <div class="gallery-item gallery-hidden" style="background-color: #3d5a30; background-image: url('/images/almeza/almeza_hab5.webp');"></div>
+          <div class="gallery-item gallery-hidden" style="background-color: #4a6837; background-image: url('/images/almeza/almeza_bano.webp');"></div>
+          <div class="gallery-item gallery-hidden" style="background-color: #526a3e; background-image: url('/images/almeza/almeza_bano2.webp');"></div>
+          <div class="gallery-item gallery-hidden" style="background-color: #3d5a30; background-image: url('/images/almeza/almeza_bano3.webp');"></div>
+          <div class="gallery-item gallery-hidden" style="background-color: #4a6837; background-image: url('/images/almeza/almeza_bano4.webp');"></div>
+          <div class="gallery-item gallery-hidden" style="background-color: #526a3e; background-image: url('/images/almeza/almeza_jacuzzi.webp');"></div>
+          <div class="gallery-item gallery-hidden" style="background-color: #526a3e; background-image: url('/images/almeza/almeza_sauna.webp');"></div>
+          <div class="gallery-item gallery-hidden" style="background-color: #3d5a30; background-image: url('/images/almeza/almeza_escalera.webp');"></div>
+          <div class="gallery-item gallery-hidden" style="background-color: #526a3e; background-image: url('/images/almeza/almeza_terraza.webp');"></div>
+          <div class="gallery-item gallery-hidden" style="background-color: #3d5a30; background-image: url('/images/almeza/almeza_vistas.webp');"></div>
+          <div class="gallery-item gallery-hidden" style="background-color: #1a2d15; background-image: url('/images/almeza/almeza_javalambre.webp');"></div>
         </div>
+        <button type="button" class="gallery-toggle" id="galleryToggle" onclick="toggleGallery()">View all photos (+24)</button>
       </div>
     </section>
 
@@ -524,6 +526,10 @@
   </div>
 
   <!-- FLOATING WHATSAPP BUTTON -->
+  <button class="back-to-top" onclick="scrollToTop()" aria-label="Back to top">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>
+  </button>
+
   <div class="wa-container">
     <div class="wa-options" id="waOptions">
       <a href="https://wa.me/34613119183?text=Hello,%20I%20am%20interested%20in%20Casa%20Pepita.%20Could%20you%20send%20me%20more%20information%3F%20Thank%20you."
