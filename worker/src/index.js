@@ -39,8 +39,9 @@ function buildIcs(propiedad, ranges) {
   const lines = [
     'BEGIN:VCALENDAR',
     'VERSION:2.0',
-    'PRODID:-//Casitas de Mar//iCal Export//ES',
+    'PRODID:-//Casitas de Mar//iCal Export//EN',
     'CALSCALE:GREGORIAN',
+    'METHOD:PUBLISH',
     `X-WR-CALNAME:${icsEscape(propiedad)} - Casitas de Mar`,
   ];
   for (const r of ranges) {
@@ -250,7 +251,7 @@ const ICAL_SLUGS_BY_PROPERTY = {
   'Loft Binibeca':      ['loft-binibeca-airbnb', 'loft-binibeca-booking'],
   'Apartamento Tarifa': ['tarifa-apt-airbnb', 'tarifa-apt-booking'],
   'Loft Tarifa':        ['tarifa-loft-airbnb', 'tarifa-loft-booking'],
-  'Casa Pepita':        ['pepita-airbnb'],
+  'Casa Pepita':        ['pepita-airbnb', 'pepita-booking'],
 };
 
 async function determinarIsGap(config, entrada, salida, propiedad, env) {
