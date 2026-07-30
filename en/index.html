@@ -974,7 +974,12 @@ document.addEventListener('click', (e) => {
       </svg>
     </button>
   </div>
- 
+
+<!-- BACK TO TOP BUTTON -->
+<button class="back-to-top" onclick="scrollToTop()" aria-label="Back to top">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>
+</button>
+
 <style>
 /* Aislamos todos los estilos con .wa-container para evitar conflictos */
 .wa-container {
@@ -1097,6 +1102,34 @@ document.addEventListener('click', (e) => {
     font-size: 0.9rem;
   }
 }
+
+.back-to-top {
+  position: fixed;
+  bottom: 2rem;
+  left: 2rem;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--verde-primario);
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.18);
+  z-index: 9999;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(10px);
+  transition: opacity 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+}
+.back-to-top.visible { opacity: 1; pointer-events: all; transform: translateY(0); }
+.back-to-top:hover { box-shadow: 0 6px 25px rgba(0,0,0,0.25); }
+.back-to-top svg { width: 22px; height: 22px; }
+@media (max-width: 768px) {
+  .back-to-top { bottom: 1.2rem; left: 1.2rem; width: 42px; height: 42px; }
+  .back-to-top svg { width: 18px; height: 18px; }
+}
 </style>
 <script>
 function toggleWA() {
@@ -1113,6 +1146,17 @@ document.addEventListener('click', (e) => {
     document.getElementById('waBtn').classList.remove('open');
   }
 });
+
+function scrollToTop() {
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+(function () {
+  const btn = document.querySelector('.back-to-top');
+  if (!btn) return;
+  window.addEventListener('scroll', () => {
+    btn.classList.toggle('visible', window.scrollY > 600);
+  });
+})();
 </script>
 </body>
 </html>
