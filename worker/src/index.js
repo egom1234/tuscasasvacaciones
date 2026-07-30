@@ -250,7 +250,7 @@ const ICAL_SLUGS_BY_PROPERTY = {
   'Loft Binibeca':      ['loft-binibeca-airbnb', 'loft-binibeca-booking'],
   'Apartamento Tarifa': ['tarifa-apt-airbnb', 'tarifa-apt-booking'],
   'Loft Tarifa':        ['tarifa-loft-airbnb', 'tarifa-loft-booking'],
-  'Casa Pepita':        ['pepita-airbnb'],
+  'Casa Pepita':        ['pepita-airbnb', 'pepita-booking'],
 };
 
 async function determinarIsGap(config, entrada, salida, propiedad, env) {
