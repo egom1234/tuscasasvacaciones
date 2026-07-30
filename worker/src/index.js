@@ -39,8 +39,9 @@ function buildIcs(propiedad, ranges) {
   const lines = [
     'BEGIN:VCALENDAR',
     'VERSION:2.0',
-    'PRODID:-//Casitas de Mar//iCal Export//ES',
+    'PRODID:-//Casitas de Mar//iCal Export//EN',
     'CALSCALE:GREGORIAN',
+    'METHOD:PUBLISH',
     `X-WR-CALNAME:${icsEscape(propiedad)} - Casitas de Mar`,
   ];
   for (const r of ranges) {
