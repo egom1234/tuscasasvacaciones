@@ -117,20 +117,21 @@
           <div class="gallery-main" style="background-image: url('/images/gonda/gonda_portada.webp')"></div>
           <div class="gallery-item" style="background-image: url('/images/gonda/gonda_faro.webp')"></div>
           <div class="gallery-item" style="background-image: url('/images/gonda/gonda_cala.webp')"></div>
-          <div class="gallery-item" style="background-image: url('/images/gonda/gonda_hab.webp')"></div>
-          <div class="gallery-item" style="background-image: url('/images/gonda/gonda_hab2.webp')"></div>
-          <div class="gallery-item" style="background-image: url('/images/gonda/gonda_salon.webp')"></div>
-          <div class="gallery-item" style="background-image: url('/images/gonda/gonda_salon2.webp')"></div>
-          <div class="gallery-item" style="background-image: url('/images/gonda/gonda_cocina.webp')"></div>
-          <div class="gallery-item" style="background-image: url('/images/gonda/gonda_bano.webp')"></div>
-          <div class="gallery-item" style="background-image: url('/images/gonda/gonda_bano2.webp')"></div>
-          <div class="gallery-item" style="background-image: url('/images/gonda/gonda_patio.webp')"></div>
-          <div class="gallery-item" style="background-image: url('/images/gonda/gonda_ducha-ext.webp')"></div>
-          <div class="gallery-item" style="background-image: url('/images/gonda/gonda_terraza.webp')"></div>
-          <div class="gallery-item" style="background-image: url('/images/gonda/gonda_terraza2.webp')"></div>
-          <div class="gallery-item" style="background-image: url('/images/gonda/gonda_porche.webp')"></div>
-          <div class="gallery-item" style="background-image: url('/images/gonda/gonda_vistas.webp')"></div>
+          <div class="gallery-item gallery-hidden" style="background-image: url('/images/gonda/gonda_hab.webp')"></div>
+          <div class="gallery-item gallery-hidden" style="background-image: url('/images/gonda/gonda_hab2.webp')"></div>
+          <div class="gallery-item gallery-hidden" style="background-image: url('/images/gonda/gonda_salon.webp')"></div>
+          <div class="gallery-item gallery-hidden" style="background-image: url('/images/gonda/gonda_salon2.webp')"></div>
+          <div class="gallery-item gallery-hidden" style="background-image: url('/images/gonda/gonda_cocina.webp')"></div>
+          <div class="gallery-item gallery-hidden" style="background-image: url('/images/gonda/gonda_bano.webp')"></div>
+          <div class="gallery-item gallery-hidden" style="background-image: url('/images/gonda/gonda_bano2.webp')"></div>
+          <div class="gallery-item gallery-hidden" style="background-image: url('/images/gonda/gonda_patio.webp')"></div>
+          <div class="gallery-item gallery-hidden" style="background-image: url('/images/gonda/gonda_ducha-ext.webp')"></div>
+          <div class="gallery-item gallery-hidden" style="background-image: url('/images/gonda/gonda_terraza.webp')"></div>
+          <div class="gallery-item gallery-hidden" style="background-image: url('/images/gonda/gonda_terraza2.webp')"></div>
+          <div class="gallery-item gallery-hidden" style="background-image: url('/images/gonda/gonda_porche.webp')"></div>
+          <div class="gallery-item gallery-hidden" style="background-image: url('/images/gonda/gonda_vistas.webp')"></div>
         </div>
+        <button type="button" class="gallery-toggle" onclick="toggleGallery()">Ver todas las fotos (+13)</button>
       </div>
     </section>
 
@@ -375,6 +376,10 @@
   </div>
 
   <!-- BOTÓN WHATSAPP FLOTANTE -->
+  <button class="back-to-top" onclick="scrollToTop()" aria-label="Volver arriba">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>
+  </button>
+
   <div class="wa-container">
     <div class="wa-options" id="waOptions">
       <a href="https://wa.me/34690288196"
