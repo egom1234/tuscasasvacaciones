@@ -64,6 +64,92 @@
       font-weight: 500;
       margin-bottom: 0.6rem;
     }
+    .events-banner {
+      background: linear-gradient(120deg, #eef6ea 0%, #e4f0de 100%);
+      border: 1px solid var(--gris-claro);
+      border-radius: 12px;
+      padding: 1.2rem 1.4rem;
+      margin: 2.2rem auto 0;
+      max-width: 1120px;
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+    }
+    .events-banner h2 {
+      margin: 0;
+      color: var(--verde-oscuro);
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 1.6rem;
+      font-weight: 500;
+    }
+    .events-banner p {
+      margin: 0.35rem 0 0;
+      color: var(--gris-oscuro);
+      font-size: 0.97rem;
+      line-height: 1.5;
+      max-width: 760px;
+    }
+    .events-banner .events-link {
+      background: var(--verde-primario);
+      color: var(--blanco);
+      text-decoration: none;
+      padding: 0.65rem 1rem;
+      border-radius: 999px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      white-space: nowrap;
+      transition: background 0.2s ease;
+    }
+    .events-banner .events-link:hover { background: #3f6533; }
+    @media (max-width: 768px) {
+      .events-banner { margin: 1.5rem 1rem 0; }
+      .events-banner h2 { font-size: 1.4rem; }
+    }
+    .nav-dropdown { position: relative; }
+    .nav-dropdown-toggle {
+      background: none;
+      border: none;
+      font-family: inherit;
+      font-size: 0.95rem;
+      color: var(--gris);
+      cursor: pointer;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+      transition: color 0.3s;
+    }
+    .nav-dropdown-toggle:hover { color: var(--verde-primario); }
+    .nav-dropdown-menu {
+      display: none;
+      flex-direction: column;
+      position: absolute;
+      top: 100%;
+      left: 0;
+      margin-top: 0.9rem;
+      background: var(--blanco);
+      border: 1px solid var(--gris-claro);
+      border-radius: 8px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+      padding: 0.4rem;
+      min-width: 170px;
+      z-index: 10;
+    }
+    .nav-dropdown.open .nav-dropdown-menu { display: flex; }
+    .nav-dropdown-menu a { padding: 0.55rem 0.75rem !important; white-space: nowrap; }
+    @media (max-width: 768px) {
+      .nav-dropdown-menu {
+        position: static;
+        box-shadow: none;
+        border: none;
+        margin: 0.5rem 0 0;
+        padding: 0 0 0 1rem;
+        min-width: 0;
+      }
+      .nav-dropdown-menu a { border-bottom: none !important; padding: 0.6rem 0 !important; }
+    }
   </style>
 
   <script type="application/ld+json">
@@ -107,11 +193,17 @@
         </a>
         <nav id="main-nav">
           <a href="/en/">Home</a>
-          <a href="/en/Casa_Gonda/">Casa Gonda</a>
-          <a href="/en/loft_binibeca/">Binibeca</a>
-          <a href="/en/Casa_blava/">Peñíscola</a>
-          <a href="/en/Tarifa_apartamento/">Tarifa Apt</a>
-          <a href="/en/Tarifa_loft/">Tarifa Loft</a>
+          <a href="/en/La_Almeza/events/">Events</a>
+          <div class="nav-dropdown">
+            <button type="button" class="nav-dropdown-toggle" onclick="toggleNavDropdown(event)">Mediterranean Coast ▾</button>
+            <div class="nav-dropdown-menu">
+              <a href="/en/Casa_Gonda/">Casa Gonda</a>
+              <a href="/en/loft_binibeca/">Binibeca</a>
+              <a href="/en/Casa_blava/">Peñíscola</a>
+              <a href="/en/Tarifa_apartamento/">Tarifa Apt</a>
+              <a href="/en/Tarifa_loft/">Tarifa Loft</a>
+            </div>
+          </div>
           <div class="lang-selector">
             <a href="/La_Almeza/" hreflang="es" title="Español"><img src="https://flagcdn.com/es.svg" alt="Español" width="24" height="16"></a>
             <span class="divider">|</span>
@@ -135,11 +227,19 @@
         <h1 class="property-title">Casa Pepita</h1>
         <div class="property-location">📍 La Almeza, Alpuente · Valencia, Spain</div>
         <a href="#reserva" class="cta-reserva">Book now ↓</a>
+
+        <section class="events-banner" aria-label="Events and activities in Alpuente">
+          <div>
+            <h2>Events and plans during your stay</h2>
+            <p>Discover local festivities, recommended routes, gastronomy and calm plans to enjoy Alpuente and its surroundings throughout the year.</p>
+          </div>
+          <a class="events-link" href="/en/La_Almeza/events/">View events and local guide</a>
+        </section>
+
         <div class="gallery">
-          <div class="gallery-main" style="background-color: #3d5a30; background-image: url('/images/almeza/alpuente.webp');"></div>
+          <div class="gallery-main" style="background-color: #3d5a30; background-image: url('/images/almeza/almeza_mirador.webp');"></div>
           <div class="gallery-item" style="background-color: #4a6837; background-image: url('/images/almeza/almeza_exterior.webp');"></div>
-          <div class="gallery-item" style="background-color: #526a3e; background-image: url('/images/almeza/almeza_jardin.webp');"></div>
-          <div class="gallery-item" style="background-color: #4a6837; background-image: url('/images/almeza/almeza_salon.webp');"></div>
+          <div class="gallery-item" style="background-color: #526a3e; background-image: url('/images/almeza/almeza_patio.webp');"></div>          <div class="gallery-item" style="background-color: #4a6837; background-image: url('/images/almeza/almeza_salon.webp');"></div>
           <div class="gallery-item" style="background-color: #3d5a30; background-image: url('/images/almeza/almeza_salon-hab.webp');"></div>
           <div class="gallery-item" style="background-color: #4a6837; background-image: url('/images/almeza/almeza_salon2.webp');"></div>
           <div class="gallery-item" style="background-color: #526a3e; background-image: url('/images/almeza/almeza_salon3.webp');"></div>
@@ -162,6 +262,7 @@
           <div class="gallery-item" style="background-color: #3d5a30; background-image: url('/images/almeza/almeza_escalera.webp');"></div>
           <div class="gallery-item" style="background-color: #526a3e; background-image: url('/images/almeza/almeza_terraza.webp');"></div>
           <div class="gallery-item" style="background-color: #3d5a30; background-image: url('/images/almeza/almeza_vistas.webp');"></div>
+          <div class="gallery-item" style="background-color: #1a2d15; background-image: url('/images/almeza/almeza_javalambre.webp');"></div>
         </div>
       </div>
     </section>
@@ -456,6 +557,15 @@
     const nav = document.getElementById('main-nav');
     if (nav) nav.classList.toggle('active');
   }
+  function toggleNavDropdown(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    document.querySelector('.nav-dropdown').classList.toggle('open');
+  }
+  document.addEventListener('click', (e) => {
+    const dd = document.querySelector('.nav-dropdown');
+    if (dd && !dd.contains(e.target)) dd.classList.remove('open');
+  });
   document.querySelectorAll('#main-nav a').forEach(link => {
     link.addEventListener('click', () => {
       document.getElementById('main-nav').classList.remove('active');
