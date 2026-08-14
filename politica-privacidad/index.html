@@ -93,7 +93,7 @@
       <p>Los datos se conservan durante la relación y hasta 5 años después por obligaciones legales.</p>
 
       <h2>Cookies y analítica</h2>
-      <p>Utilizamos Google Analytics para estadísticas anónimas y Google Tag Manager. Estas cookies solo se activan si aceptas el aviso de cookies que aparece en tu primera visita; si lo rechazas, no se cargan cookies de analítica. Puedes cambiar tu elección en cualquier momento pulsando el icono 🍪 que aparece en la esquina inferior izquierda de la web. No se utilizan cookies propias de seguimiento.</p>
+      <p>Utilizamos Google Analytics para estadísticas anónimas y Google Tag Manager. Estas cookies solo se activan si aceptas el aviso de cookies que aparece en tu primera visita; si lo rechazas, no se cargan cookies de analítica. Puedes <a href="#" id="cd-reopen-consent">cambiar tu elección</a> en cualquier momento. No se utilizan cookies propias de seguimiento.</p>
       <table>
         <thead>
           <tr><th>Cookie</th><th>Proveedor</th><th>Finalidad</th><th>Duración</th></tr>
@@ -124,10 +124,20 @@
     </div>
   </footer>
 
+  <script src="/assets/js/cookie-consent.js" defer></script>
   <script>
     function toggleMobileMenu() {
       document.getElementById('main-nav').classList.toggle('active');
     }
+    document.addEventListener('DOMContentLoaded', function () {
+      var link = document.getElementById('cd-reopen-consent');
+      if (link) {
+        link.addEventListener('click', function (e) {
+          e.preventDefault();
+          if (window.cdReopenCookieBanner) window.cdReopenCookieBanner();
+        });
+      }
+    });
   </script>
 </body>
 </html>

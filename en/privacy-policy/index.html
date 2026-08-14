@@ -90,7 +90,7 @@
       <p>Data is kept for the duration of the relationship and up to 5 years afterwards to meet legal obligations.</p>
 
       <h2>Cookies and analytics</h2>
-      <p>We use Google Analytics for anonymous statistics and Google Tag Manager. These cookies are only activated if you accept the cookie notice shown on your first visit; if you reject it, no analytics cookies are loaded. You can change your choice at any time via the 🍪 icon in the bottom-left corner of the site. No first-party tracking cookies are used.</p>
+      <p>We use Google Analytics for anonymous statistics and Google Tag Manager. These cookies are only activated if you accept the cookie notice shown on your first visit; if you reject it, no analytics cookies are loaded. You can <a href="#" id="cd-reopen-consent">change your choice</a> at any time. No first-party tracking cookies are used.</p>
       <table>
         <thead>
           <tr><th>Cookie</th><th>Provider</th><th>Purpose</th><th>Duration</th></tr>
@@ -121,10 +121,20 @@
     </div>
   </footer>
 
+  <script src="/assets/js/cookie-consent.js" defer></script>
   <script>
     function toggleMobileMenu() {
       document.getElementById('main-nav').classList.toggle('active');
     }
+    document.addEventListener('DOMContentLoaded', function () {
+      var link = document.getElementById('cd-reopen-consent');
+      if (link) {
+        link.addEventListener('click', function (e) {
+          e.preventDefault();
+          if (window.cdReopenCookieBanner) window.cdReopenCookieBanner();
+        });
+      }
+    });
   </script>
 </body>
 </html>

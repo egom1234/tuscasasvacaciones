@@ -43,9 +43,7 @@
       '#cd-cookie-actions{display:flex;gap:0.5rem;flex-shrink:0}' +
       '#cd-cookie-actions button{cursor:pointer;border:none;border-radius:6px;padding:0.55rem 1.1rem;font-size:0.9rem;font-weight:600}' +
       '#cd-cookie-accept{background:#3fae7f;color:#fff}' +
-      '#cd-cookie-reject{background:transparent;color:#fff;border:1px solid rgba(255,255,255,0.5)!important}' +
-      '#cd-cookie-tab{position:fixed;left:1rem;bottom:1rem;z-index:9999;background:#1f2d2b;color:#fff;border:none;' +
-      'border-radius:50%;width:44px;height:44px;font-size:1.2rem;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,0.25)}';
+      '#cd-cookie-reject{background:transparent;color:#fff;border:1px solid rgba(255,255,255,0.5)!important}';
     document.head.appendChild(style);
   }
 
@@ -65,28 +63,11 @@
     document.getElementById('cd-cookie-accept').addEventListener('click', function () {
       setConsent(true);
       banner.remove();
-      showTab();
     });
     document.getElementById('cd-cookie-reject').addEventListener('click', function () {
       setConsent(false);
       banner.remove();
-      showTab();
     });
-  }
-
-  function showTab() {
-    if (document.getElementById('cd-cookie-tab')) return;
-    var tab = document.createElement('button');
-    tab.id = 'cd-cookie-tab';
-    tab.type = 'button';
-    tab.title = t.policy;
-    tab.setAttribute('aria-label', t.policy);
-    tab.textContent = '🍪';
-    tab.addEventListener('click', function () {
-      tab.remove();
-      showBanner();
-    });
-    document.body.appendChild(tab);
   }
 
   function setConsent(granted) {
@@ -107,13 +88,14 @@
 
     if (stored === 'granted') {
       updateConsent(true);
-      showTab();
-    } else if (stored === 'denied') {
-      showTab();
-    } else {
+    } else if (stored !== 'denied') {
       showBanner();
     }
   }
+
+  // Exposed so the privacy policy page can offer a plain link to change consent,
+  // instead of a permanently visible floating icon on every page.
+  window.cdReopenCookieBanner = showBanner;
 
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', init);
