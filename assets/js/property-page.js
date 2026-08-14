@@ -863,6 +863,16 @@ function actualizarBarraResumen() {
   if (waContainer) waContainer.classList.toggle('box-open', widget && !widgetDismissed);
 }
 
+function ocultarBarraResumen() {
+  widgetDismissed = true;
+  const bar = document.getElementById('bookingSummaryBar');
+  const widget = document.getElementById('bookingSummaryWidget');
+  const tab = document.getElementById('bookingSummaryTab');
+  if (bar) bar.classList.remove('visible');
+  if (widget) widget.classList.remove('visible');
+  if (tab) tab.classList.remove('visible');
+}
+
 function wireResumenClicks(container, reservaEl) {
   container.addEventListener('click', () => {
     if (container.dataset.state === 'complete') {
@@ -1134,6 +1144,7 @@ async function aplicarCodigoPromo() {
         form.querySelectorAll('.form-row, .form-group, .submit-btn, .field-error')
             .forEach(el => el.style.display = 'none');
         formExito.style.display = 'block';
+        ocultarBarraResumen();
       } else {
         throw new Error('Respuesta no exitosa: ' + (JSON.stringify(data) || text));
       }
