@@ -2,8 +2,8 @@
  * property-page.js — Shared logic for all property pages.
  */
 
-const WORKER          = 'https://tuscasasvacaciones.eduardgomez-4.workers.dev';
-const FORM_WORKER     = 'https://casitasdemar-form.eduardgomez-4.workers.dev';
+const WORKER          = 'https://ical.casitasdemar.com';
+const FORM_WORKER     = 'https://api.casitasdemar.com';
 const MESES_I18N = {
   es: ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'],
   en: ['January','February','March','April','May','June','July','August','September','October','November','December']

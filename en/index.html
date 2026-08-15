@@ -717,7 +717,7 @@
             </p>
           </div>
 
-          <form id="contactForm" action="https://casitasdemar-form.eduardgomez-4.workers.dev/contacto" method="POST"
+          <form id="contactForm" action="https://api.casitasdemar.com/contacto" method="POST"
                 style="display:flex; flex-direction:column; gap:1.2rem;">
 
             <input type="hidden" name="access_key" value="ba4d4800-cc82-4659-86e0-f10021d29924">
@@ -842,7 +842,7 @@ function validarNombre(input) {
       }
 
       // Admin notification for new contact messages is sent server-side by the Worker (Brevo).
-      const response = await fetch('https://casitasdemar-form.eduardgomez-4.workers.dev/contacto', {
+      const response = await fetch('https://api.casitasdemar.com/contacto', {
         method: 'POST',
         body: new FormData(form)
       });
