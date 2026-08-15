@@ -133,11 +133,19 @@ function expandirRango(entrada, salida) {
   return fechas;
 }
 
+const SYNC_TIMEOUT_MS = 8000;
+
+function fetchConTimeout(url, ms = SYNC_TIMEOUT_MS) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), ms);
+  return fetch(url, { signal: controller.signal }).finally(() => clearTimeout(timer));
+}
+
 async function cargarReservasConfirmadas() {
   const propiedad = (window.PAGE_CONFIG || {}).propiedad;
   if (!propiedad) return new Set();
   try {
-    const res  = await fetch(FORM_WORKER + '/blocked-dates/' + encodeURIComponent(propiedad));
+    const res  = await fetchConTimeout(FORM_WORKER + '/blocked-dates/' + encodeURIComponent(propiedad));
     const data = await res.json();
     if (!data.ok) return new Set();
     const fechas = new Set();
@@ -153,17 +161,21 @@ async function cargarIcal() {
   const dot   = document.getElementById('syncDot');
   const text  = document.getElementById('syncText');
   const slugs = (window.PAGE_CONFIG || {}).icalSlugs || [];
-  try {
-    const responses = await Promise.all(slugs.map(s => fetch(WORKER + '/ical/' + s)));
-    const texts     = await Promise.all(responses.map(r => r.ok ? r.text() : Promise.resolve('')));
-    const reservadasConfirmadas = await cargarReservasConfirmadas();
-    fechasReservadas = new Set([...texts.flatMap(t => [...parsearIcal(t)]), ...reservadasConfirmadas]);
+  const resultados = await Promise.allSettled(
+    slugs.map(s => fetchConTimeout(WORKER + '/ical/' + s).then(r => r.ok ? r.text() : ''))
+  );
+  const reservadasConfirmadas = await cargarReservasConfirmadas();
+  const okCount   = resultados.filter(r => r.status === 'fulfilled').length;
+  const textos    = resultados.filter(r => r.status === 'fulfilled').map(r => r.value);
+  fechasReservadas = new Set([...textos.flatMap(txt => [...parsearIcal(txt)]), ...reservadasConfirmadas]);
+
+  if (okCount === slugs.length) {
     dot.className    = 'sync-dot ok';
     text.textContent = t('syncOk');
-  } catch (e) {
+  } else {
     dot.className    = 'sync-dot error';
     text.textContent = t('syncError');
-    console.error('iCal error:', e);
+    resultados.filter(r => r.status === 'rejected').forEach(r => console.error('iCal source failed:', r.reason));
   }
   computarGaps();
   actualizarLeyendaGap();
