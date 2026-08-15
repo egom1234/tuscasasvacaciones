@@ -1,6 +1,17 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
+  <!-- Cookie consent: Google Consent Mode v2 default -->
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('consent', 'default', {
+      'ad_storage': 'denied',
+      'ad_user_data': 'denied',
+      'ad_personalization': 'denied',
+      'analytics_storage': 'denied'
+    });
+  </script>
   <!-- Google tag (gtag.js) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-2F51L7T7FV"></script>
   <script>
@@ -74,6 +85,7 @@
 }
   </script>
   <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+  <script src="/assets/js/cookie-consent.js" defer></script>
 </head>
 <body>
 
@@ -211,7 +223,6 @@
             <input type="checkbox" name="botcheck" style="display:none;">
 
             <div class="form-success" id="formSuccess" style="display:none;">
-              <div class="success-icon">✅</div>
               <h4>¡Mensaje enviado correctamente!</h4>
               <p style="color: var(--gris-oscuro); font-size: 1rem;">Gracias por contactarnos. Te responderemos en breve.</p>
             </div>

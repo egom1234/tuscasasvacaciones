@@ -37,6 +37,9 @@
     .privacy-content p, .privacy-content li { color: var(--gris-oscuro); line-height: 1.7; margin-bottom: 0.4rem; }
     .privacy-content ul { padding-left: 1.4rem; margin-bottom: 0.4rem; }
     .privacy-content a { color: var(--verde-primario); }
+    .privacy-content table { width: 100%; border-collapse: collapse; margin-bottom: 0.6rem; font-size: 0.85rem; }
+    .privacy-content th, .privacy-content td { text-align: left; padding: 0.5rem 0.6rem; border-bottom: 1px solid #e5e5e5; color: var(--gris-oscuro); }
+    .privacy-content th { color: var(--verde-oscuro); font-weight: 600; }
   </style>
 </head>
 <body>
@@ -86,8 +89,18 @@
       <h2>Retention</h2>
       <p>Data is kept for the duration of the relationship and up to 5 years afterwards to meet legal obligations.</p>
 
-      <h2>Analytics</h2>
-      <p>We use Google Analytics for anonymous statistics and Google Tag Manager. No first-party tracking cookies are used.</p>
+      <h2>Cookies and analytics</h2>
+      <p>We use Google Analytics for anonymous statistics and Google Tag Manager. These cookies are only activated if you accept the cookie notice shown on your first visit; if you reject it, no analytics cookies are loaded. You can <a href="#" id="cd-reopen-consent">change your choice</a> at any time. No first-party tracking cookies are used.</p>
+      <table>
+        <thead>
+          <tr><th>Cookie</th><th>Provider</th><th>Purpose</th><th>Duration</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>_ga, _ga_*</td><td>Google Analytics</td><td>Distinguish users for usage statistics</td><td>up to 2 years</td></tr>
+          <tr><td>_gid</td><td>Google Analytics</td><td>Distinguish users (short-lived)</td><td>24 hours</td></tr>
+          <tr><td>cd_cookie_consent</td><td>Casitas de Mar (first-party)</td><td>Remember your cookie choice</td><td>persistent (localStorage)</td></tr>
+        </tbody>
+      </table>
 
       <h2>Data Processors</h2>
       <p>Form submissions are stored in <strong>Cloudflare D1</strong> (a database hosted on Cloudflare, Inc. infrastructure, USA), under EU Standard Contractual Clauses. Additionally, <strong>Web3Forms</strong> handles email notification delivery. Your data is not shared with third parties except where required by law.</p>
@@ -108,10 +121,20 @@
     </div>
   </footer>
 
+  <script src="/assets/js/cookie-consent.js" defer></script>
   <script>
     function toggleMobileMenu() {
       document.getElementById('main-nav').classList.toggle('active');
     }
+    document.addEventListener('DOMContentLoaded', function () {
+      var link = document.getElementById('cd-reopen-consent');
+      if (link) {
+        link.addEventListener('click', function (e) {
+          e.preventDefault();
+          if (window.cdReopenCookieBanner) window.cdReopenCookieBanner();
+        });
+      }
+    });
   </script>
 </body>
 </html>
