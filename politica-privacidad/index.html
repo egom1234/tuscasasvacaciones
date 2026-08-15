@@ -40,9 +40,6 @@
     .privacy-content p, .privacy-content li { color: var(--gris-oscuro); line-height: 1.7; margin-bottom: 0.4rem; }
     .privacy-content ul { padding-left: 1.4rem; margin-bottom: 0.4rem; }
     .privacy-content a { color: var(--verde-primario); }
-    .privacy-content table { width: 100%; border-collapse: collapse; margin-bottom: 0.6rem; font-size: 0.85rem; }
-    .privacy-content th, .privacy-content td { text-align: left; padding: 0.5rem 0.6rem; border-bottom: 1px solid #e5e5e5; color: var(--gris-oscuro); }
-    .privacy-content th { color: var(--verde-oscuro); font-weight: 600; }
   </style>
 </head>
 <body>
@@ -92,18 +89,8 @@
       <h2>Conservación</h2>
       <p>Los datos se conservan durante la relación y hasta 5 años después por obligaciones legales.</p>
 
-      <h2>Cookies y analítica</h2>
-      <p>Utilizamos Google Analytics para estadísticas anónimas y Google Tag Manager. Estas cookies solo se activan si aceptas el aviso de cookies que aparece en tu primera visita; si lo rechazas, no se cargan cookies de analítica. Puedes <a href="#" id="cd-reopen-consent">cambiar tu elección</a> en cualquier momento. No se utilizan cookies propias de seguimiento.</p>
-      <table>
-        <thead>
-          <tr><th>Cookie</th><th>Proveedor</th><th>Finalidad</th><th>Duración</th></tr>
-        </thead>
-        <tbody>
-          <tr><td>_ga, _ga_*</td><td>Google Analytics</td><td>Distinguir usuarios para estadísticas de uso</td><td>hasta 2 años</td></tr>
-          <tr><td>_gid</td><td>Google Analytics</td><td>Distinguir usuarios (corta duración)</td><td>24 horas</td></tr>
-          <tr><td>cd_cookie_consent</td><td>Casitas de Mar (propia)</td><td>Recordar tu elección de cookies</td><td>persistente (localStorage)</td></tr>
-        </tbody>
-      </table>
+      <h2>Analítica</h2>
+      <p>Utilizamos Google Analytics para estadísticas anónimas y Google Tag Manager. No se utilizan cookies propias de seguimiento.</p>
 
       <h2>Encargados del tratamiento</h2>
       <p>Los datos enviados a través de los formularios se almacenan en <strong>Cloudflare D1</strong> (base de datos en la infraestructura de Cloudflare, Inc., EE. UU.), al amparo de las cláusulas contractuales estándar de la UE. Adicionalmente, <strong>Web3Forms</strong> gestiona el envío de notificaciones por email. No se ceden datos a terceros salvo obligación legal.</p>
@@ -124,20 +111,10 @@
     </div>
   </footer>
 
-  <script src="/assets/js/cookie-consent.js" defer></script>
   <script>
     function toggleMobileMenu() {
       document.getElementById('main-nav').classList.toggle('active');
     }
-    document.addEventListener('DOMContentLoaded', function () {
-      var link = document.getElementById('cd-reopen-consent');
-      if (link) {
-        link.addEventListener('click', function (e) {
-          e.preventDefault();
-          if (window.cdReopenCookieBanner) window.cdReopenCookieBanner();
-        });
-      }
-    });
   </script>
 </body>
 </html>
