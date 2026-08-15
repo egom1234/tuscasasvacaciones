@@ -57,7 +57,8 @@ const I18N = {
     summaryPlaceholder: 'Elige tus fechas →',
     summaryEnterGuests: 'Indica huéspedes →',
     summaryCta: 'Reservar →',
-    summaryWaTooltip: 'Escríbenos'
+    summaryWaTooltip: 'Escríbenos',
+    summarySuccess: 'Mensaje enviado con éxito'
   },
   en: {
     syncOk: 'Synchronized',
@@ -97,7 +98,8 @@ const I18N = {
     summaryPlaceholder: 'Pick your dates →',
     summaryEnterGuests: 'Enter guests →',
     summaryCta: 'Book now →',
-    summaryWaTooltip: 'Message us'
+    summaryWaTooltip: 'Message us',
+    summarySuccess: 'Message sent successfully'
   }
 };
 
@@ -875,9 +877,35 @@ function actualizarBarraResumen() {
   if (waContainer) waContainer.classList.toggle('box-open', widget && !widgetDismissed);
 }
 
+function ocultarBarraResumen() {
+  widgetDismissed = true;
+  const bar = document.getElementById('bookingSummaryBar');
+  const widget = document.getElementById('bookingSummaryWidget');
+  const tab = document.getElementById('bookingSummaryTab');
+  if (bar) bar.classList.remove('visible');
+  if (widget) widget.classList.remove('visible');
+  if (tab) tab.classList.remove('visible');
+}
+
+function mostrarExitoBarraResumen() {
+  const bar = document.getElementById('bookingSummaryBar');
+  const widget = document.getElementById('bookingSummaryWidget');
+  const tab = document.getElementById('bookingSummaryTab');
+  const successHTML = '<span class="summary-success">' + t('summarySuccess') + '</span>';
+  [bar, widget].forEach((el) => {
+    if (!el) return;
+    el.innerHTML = successHTML;
+    el.dataset.state = 'success';
+    el.classList.add('visible');
+  });
+  if (tab) tab.classList.remove('visible');
+}
+
 function wireResumenClicks(container, reservaEl) {
   container.addEventListener('click', () => {
-    if (container.dataset.state === 'complete') {
+    if (container.dataset.state === 'success') {
+      return;
+    } else if (container.dataset.state === 'complete') {
       const priceEl = document.getElementById('mobilePrice');
       (priceEl || reservaEl).scrollIntoView({ behavior: 'smooth', block: 'center' });
     } else if (container.dataset.state === 'need-guests') {
@@ -910,6 +938,13 @@ function wireResumenClicks(container, reservaEl) {
   if (ctaEl) {
     ctaEl.addEventListener('click', (e) => {
       e.stopPropagation();
+      const form = document.getElementById('formularioReserva');
+      if (form && typeof form.requestSubmit === 'function') {
+        // Let the form's own submit handler validate; it scrolls to
+        // whichever field is actually invalid, or submits if all is filled.
+        form.requestSubmit();
+        return;
+      }
       const nameInput = document.querySelector('input[name="name"]');
       (nameInput || reservaEl).scrollIntoView({ behavior: 'smooth', block: 'center' });
       if (nameInput) nameInput.focus({ preventScroll: true });
@@ -1146,6 +1181,8 @@ async function aplicarCodigoPromo() {
         form.querySelectorAll('.form-row, .form-group, .submit-btn, .field-error')
             .forEach(el => el.style.display = 'none');
         formExito.style.display = 'block';
+        formExito.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        mostrarExitoBarraResumen();
       } else {
         throw new Error('Respuesta no exitosa: ' + (JSON.stringify(data) || text));
       }
