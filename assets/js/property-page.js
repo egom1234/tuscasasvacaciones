@@ -908,6 +908,13 @@ function wireResumenClicks(container, reservaEl) {
   if (ctaEl) {
     ctaEl.addEventListener('click', (e) => {
       e.stopPropagation();
+      const form = document.getElementById('formularioReserva');
+      if (form && typeof form.requestSubmit === 'function') {
+        // Let the form's own submit handler validate; it scrolls to
+        // whichever field is actually invalid, or submits if all is filled.
+        form.requestSubmit();
+        return;
+      }
       const nameInput = document.querySelector('input[name="name"]');
       (nameInput || reservaEl).scrollIntoView({ behavior: 'smooth', block: 'center' });
       if (nameInput) nameInput.focus({ preventScroll: true });
