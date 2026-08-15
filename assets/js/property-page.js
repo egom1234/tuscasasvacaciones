@@ -57,7 +57,8 @@ const I18N = {
     summaryPlaceholder: 'Elige tus fechas →',
     summaryEnterGuests: 'Indica huéspedes →',
     summaryCta: 'Reservar →',
-    summaryWaTooltip: 'Escríbenos'
+    summaryWaTooltip: 'Escríbenos',
+    summarySuccess: 'Mensaje enviado con éxito'
   },
   en: {
     syncOk: 'Synchronized',
@@ -97,7 +98,8 @@ const I18N = {
     summaryPlaceholder: 'Pick your dates →',
     summaryEnterGuests: 'Enter guests →',
     summaryCta: 'Book now →',
-    summaryWaTooltip: 'Message us'
+    summaryWaTooltip: 'Message us',
+    summarySuccess: 'Message sent successfully'
   }
 };
 
@@ -873,9 +875,25 @@ function ocultarBarraResumen() {
   if (tab) tab.classList.remove('visible');
 }
 
+function mostrarExitoBarraResumen() {
+  const bar = document.getElementById('bookingSummaryBar');
+  const widget = document.getElementById('bookingSummaryWidget');
+  const tab = document.getElementById('bookingSummaryTab');
+  const successHTML = '<span class="summary-success">' + t('summarySuccess') + '</span>';
+  [bar, widget].forEach((el) => {
+    if (!el) return;
+    el.innerHTML = successHTML;
+    el.dataset.state = 'success';
+    el.classList.add('visible');
+  });
+  if (tab) tab.classList.remove('visible');
+}
+
 function wireResumenClicks(container, reservaEl) {
   container.addEventListener('click', () => {
-    if (container.dataset.state === 'complete') {
+    if (container.dataset.state === 'success') {
+      return;
+    } else if (container.dataset.state === 'complete') {
       const priceEl = document.getElementById('mobilePrice');
       (priceEl || reservaEl).scrollIntoView({ behavior: 'smooth', block: 'center' });
     } else if (container.dataset.state === 'need-guests') {
@@ -1151,7 +1169,7 @@ async function aplicarCodigoPromo() {
         form.querySelectorAll('.form-row, .form-group, .submit-btn, .field-error')
             .forEach(el => el.style.display = 'none');
         formExito.style.display = 'block';
-        ocultarBarraResumen();
+        mostrarExitoBarraResumen();
       } else {
         throw new Error('Respuesta no exitosa: ' + (JSON.stringify(data) || text));
       }
