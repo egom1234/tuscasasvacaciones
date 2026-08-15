@@ -1169,6 +1169,7 @@ async function aplicarCodigoPromo() {
         form.querySelectorAll('.form-row, .form-group, .submit-btn, .field-error')
             .forEach(el => el.style.display = 'none');
         formExito.style.display = 'block';
+        formExito.scrollIntoView({ behavior: 'smooth', block: 'center' });
         mostrarExitoBarraResumen();
       } else {
         throw new Error('Respuesta no exitosa: ' + (JSON.stringify(data) || text));
