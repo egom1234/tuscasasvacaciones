@@ -40,8 +40,8 @@ main { padding-top: 80px; min-height: calc(100vh - 200px); }
 .cta-reserva:hover { background: var(--verde-oscuro); }
 #reserva { scroll-margin-top: 100px; }
 .gallery { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin: 2rem 0; }
-.gallery-main { grid-column: span 2; grid-row: span 2; height: 655px; background-size: cover; background-position: center; border-radius: 0; cursor: pointer; transition: opacity 0.2s; }
-.gallery-item  { height: 320px; background-size: cover; background-position: center; border-radius: 0; cursor: pointer; transition: opacity 0.2s; }
+.gallery-main { grid-column: span 2; grid-row: span 2; height: 655px; width: 100%; object-fit: cover; object-position: center; border-radius: 0; cursor: pointer; transition: opacity 0.2s; display: block; }
+.gallery-item  { height: 320px; width: 100%; object-fit: cover; object-position: center; border-radius: 0; cursor: pointer; transition: opacity 0.2s; display: block; }
 .gallery-main:hover, .gallery-item:hover { opacity: 0.85; }
 .gallery-item.gallery-hidden { display: none; }
 .gallery.expanded .gallery-item.gallery-hidden { display: block; }
