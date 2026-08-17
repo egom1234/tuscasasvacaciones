@@ -123,6 +123,22 @@
   </url>
 
   <url>
+    <loc>https://casitasdemar.com/Casa_blava/guia-peniscola/</loc>
+    <xhtml:link rel="alternate" hreflang="es" href="https://casitasdemar.com/Casa_blava/guia-peniscola/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://casitasdemar.com/en/Casa_blava/peniscola-guide/"/>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <url>
+    <loc>https://casitasdemar.com/en/Casa_blava/peniscola-guide/</loc>
+    <xhtml:link rel="alternate" hreflang="es" href="https://casitasdemar.com/Casa_blava/guia-peniscola/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://casitasdemar.com/en/Casa_blava/peniscola-guide/"/>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
     <loc>https://casitasdemar.com/en/La_Almeza/events/</loc>
     <xhtml:link rel="alternate" hreflang="es" href="https://casitasdemar.com/La_Almeza/eventos/"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://casitasdemar.com/en/La_Almeza/events/"/>
