@@ -1252,7 +1252,7 @@ let currentGallery = [];
 document.addEventListener('DOMContentLoaded', () => {
   document.querySelectorAll('.gallery').forEach(gallery => {
     const items = [...gallery.querySelectorAll('.gallery-main, .gallery-item')];
-    currentGallery = items.map(i => i.style.backgroundImage.replace(/url\(["']?|["']?\)/g, ''));
+    currentGallery = items.map(i => i.src);
     items.forEach((item, index) => {
       item.addEventListener('click', () => { currentIndex = index; openLightbox(currentGallery[index]); });
     });
