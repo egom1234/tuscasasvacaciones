@@ -494,3 +494,33 @@ footer { background: #ede3d8; color: var(--gris-oscuro); padding: 3rem 0 1.5rem;
   .lang-selector-mobile { display: flex; position: absolute; right: 4rem; top: 50%; transform: translateY(-50%); }
   .lang-selector-mobile a { font-size: 1.6rem; min-height: 44px; display: flex; align-items: center; }
 }
+
+/* ── Guías de destino (local-guide) ─────────────────────── */
+.local-guide { max-width: 980px; margin: 0 auto; padding: 7rem 1.5rem 4rem; }
+.local-guide h1 { font-family: var(--font-display); color: var(--verde-oscuro); font-size: 2.2rem; margin-bottom: 0.4rem; font-weight: 500; }
+.local-guide .lead { color: var(--gris-oscuro); line-height: 1.7; margin-bottom: 1.8rem; max-width: 760px; }
+.guide-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1rem; margin-bottom: 1.6rem; }
+.guide-section { margin-bottom: 1.8rem; }
+.guide-section h2 { margin: 0 0 0.8rem; color: var(--verde-oscuro); font-size: 1.16rem; font-weight: 600; }
+.guide-card { border: 1px solid var(--gris-claro); background: #ffffff; border-radius: 12px; padding: 1rem; }
+.guide-card h2 { margin: 0 0 0.4rem; color: var(--verde-oscuro); font-size: 1.08rem; font-weight: 600; }
+.guide-card p { margin: 0; color: var(--gris-oscuro); line-height: 1.6; font-size: 0.95rem; }
+.guide-card img { display: block; width: 100%; border-radius: 8px; margin-bottom: 0.7rem; }
+.guide-links { border: 1px solid var(--gris-claro); border-radius: 12px; padding: 1rem; background: var(--gris-claro); }
+.guide-links h3 { margin: 0 0 0.5rem; color: var(--verde-oscuro); font-size: 1rem; font-weight: 600; }
+.guide-links p { margin: 0 0 0.65rem; color: var(--gris-oscuro); }
+.guide-links a { color: var(--verde-primario); font-weight: 500; text-decoration: none; }
+.guide-links a:hover { text-decoration: underline; }
+.back-link { display: inline-block; margin-top: 1.4rem; padding: 0.75rem 1.6rem; border: 1px solid var(--verde-primario); color: var(--verde-primario); text-decoration: none; font-weight: 500; transition: background 0.2s ease, color 0.2s ease; }
+.back-link:hover { background: var(--verde-primario); color: var(--blanco); }
+
+/* ── Banner "ver guía de destino" en la página de propiedad ── */
+.events-banner { background: linear-gradient(120deg, var(--blanco) 0%, var(--gris-claro) 100%); border: 1px solid var(--gris-claro); border-radius: 12px; padding: 1.2rem 1.4rem; margin: 2.2rem auto 0; max-width: 1120px; display: flex; gap: 1rem; align-items: center; justify-content: space-between; flex-wrap: wrap; }
+.events-banner h2 { margin: 0; color: var(--verde-oscuro); font-family: var(--font-display); font-size: 1.6rem; font-weight: 500; }
+.events-banner p { margin: 0.35rem 0 0; color: var(--gris-oscuro); font-size: 0.97rem; line-height: 1.5; max-width: 760px; }
+.events-banner .events-link { background: var(--verde-primario); color: var(--blanco); text-decoration: none; padding: 0.65rem 1rem; border-radius: 0; font-size: 0.9rem; font-weight: 500; white-space: nowrap; transition: background 0.2s ease; }
+.events-banner .events-link:hover { background: var(--verde-oscuro); }
+@media (max-width: 768px) {
+  .events-banner { margin: 1.5rem 1rem 0; }
+  .events-banner h2 { font-size: 1.4rem; }
+}
