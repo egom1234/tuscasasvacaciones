@@ -139,17 +139,17 @@
   </url>
 
   <url>
-    <loc>https://casitasdemar.com/Casa_Gonda/guia-menorca-sur/</loc>
-    <xhtml:link rel="alternate" hreflang="es" href="https://casitasdemar.com/Casa_Gonda/guia-menorca-sur/"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://casitasdemar.com/en/Casa_Gonda/menorca-sur-guide/"/>
+    <loc>https://casitasdemar.com/Casa_Gonda/guia-menorca/</loc>
+    <xhtml:link rel="alternate" hreflang="es" href="https://casitasdemar.com/Casa_Gonda/guia-menorca/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://casitasdemar.com/en/Casa_Gonda/menorca-guide/"/>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
 
   <url>
-    <loc>https://casitasdemar.com/en/Casa_Gonda/menorca-sur-guide/</loc>
-    <xhtml:link rel="alternate" hreflang="es" href="https://casitasdemar.com/Casa_Gonda/guia-menorca-sur/"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://casitasdemar.com/en/Casa_Gonda/menorca-sur-guide/"/>
+    <loc>https://casitasdemar.com/en/Casa_Gonda/menorca-guide/</loc>
+    <xhtml:link rel="alternate" hreflang="es" href="https://casitasdemar.com/Casa_Gonda/guia-menorca/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://casitasdemar.com/en/Casa_Gonda/menorca-guide/"/>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
