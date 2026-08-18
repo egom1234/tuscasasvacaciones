@@ -139,6 +139,38 @@
   </url>
 
   <url>
+    <loc>https://casitasdemar.com/Casa_Gonda/guia-menorca/</loc>
+    <xhtml:link rel="alternate" hreflang="es" href="https://casitasdemar.com/Casa_Gonda/guia-menorca/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://casitasdemar.com/en/Casa_Gonda/menorca-guide/"/>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <url>
+    <loc>https://casitasdemar.com/en/Casa_Gonda/menorca-guide/</loc>
+    <xhtml:link rel="alternate" hreflang="es" href="https://casitasdemar.com/Casa_Gonda/guia-menorca/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://casitasdemar.com/en/Casa_Gonda/menorca-guide/"/>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://casitasdemar.com/Tarifa_apartamento/guia-tarifa/</loc>
+    <xhtml:link rel="alternate" hreflang="es" href="https://casitasdemar.com/Tarifa_apartamento/guia-tarifa/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://casitasdemar.com/en/Tarifa_apartamento/tarifa-guide/"/>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <url>
+    <loc>https://casitasdemar.com/en/Tarifa_apartamento/tarifa-guide/</loc>
+    <xhtml:link rel="alternate" hreflang="es" href="https://casitasdemar.com/Tarifa_apartamento/guia-tarifa/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://casitasdemar.com/en/Tarifa_apartamento/tarifa-guide/"/>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
     <loc>https://casitasdemar.com/en/La_Almeza/events/</loc>
     <xhtml:link rel="alternate" hreflang="es" href="https://casitasdemar.com/La_Almeza/eventos/"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://casitasdemar.com/en/La_Almeza/events/"/>
