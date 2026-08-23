@@ -70,6 +70,7 @@
     }
     .est-pendiente  { background: #fef9c3; color: #854d0e; }
     .est-confirmada { background: #dcfce7; color: #166534; }
+    .est-finalizada { background: #e0e7ff; color: #3730a3; }
     .est-cancelada  { background: #fee2e2; color: #991b1b; }
     .pago-sin_pagar { background: #f4f4f5; color: #52525b; }
     .pago-senal     { background: #fef9c3; color: #854d0e; }
@@ -92,6 +93,8 @@
     .stat-card.c-amber .val { color: #d97706; }
     .stat-card.c-blue  { border-color: #93c5fd; background: #eff6ff; }
     .stat-card.c-blue  .val { color: #2563eb; }
+    .stat-card.c-indigo { border-color: #a5b4fc; background: #eef2ff; }
+    .stat-card.c-indigo .val { color: #4338ca; }
     .dash-section { margin: 1.25rem 0 0.6rem; font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: #71717a; }
     .prop-bar-row { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.55rem; }
     .prop-bar-label { min-width: 160px; font-size: 0.8rem; color: #52525b; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -211,6 +214,7 @@
           <option value="">Todos los estados</option>
           <option value="pendiente">Pendiente</option>
           <option value="confirmada">Confirmada</option>
+          <option value="finalizada">Finalizada</option>
           <option value="cancelada">Cancelada</option>
         </select>
         <input type="date" id="filter-desde" onchange="renderReservas()" title="Entrada desde" />
@@ -315,6 +319,14 @@
           <label>Caduca el (opcional)</label>
           <input type="date" id="new-expires-at">
         </div>
+        <div>
+          <label>Estancia válida desde (opcional)</label>
+          <input type="date" id="new-valido-desde">
+        </div>
+        <div>
+          <label>Estancia válida hasta (opcional)</label>
+          <input type="date" id="new-valido-hasta">
+        </div>
         <button class="btn-create" onclick="crearCodigo()">Crear código</button>
       </div>
       <div id="codigos-error"></div>
@@ -330,6 +342,7 @@
               <th>Propiedad</th>
               <th>Usos</th>
               <th>Caduca</th>
+              <th>Estancia válida</th>
               <th>Creado</th>
               <th></th>
             </tr>
@@ -623,7 +636,7 @@
 
       const estado     = r.estado      || 'pendiente';
       const estadoPago = r.estado_pago || 'sin_pagar';
-      const estadoLabels = { pendiente: 'Pendiente', confirmada: 'Confirmada', cancelada: 'Cancelada' };
+      const estadoLabels = { pendiente: 'Pendiente', confirmada: 'Confirmada', finalizada: 'Finalizada', cancelada: 'Cancelada' };
       const pagoLabels   = { sin_pagar: 'Sin pagar', senal: 'Señal', completo: 'Pagado' };
 
       const paxText = `${esc(r.adultos||1)} ad${r.ninos > 0 ? ` · ${esc(r.ninos)} ni` : ''}`;
@@ -640,6 +653,7 @@
           <select class="est-badge est-${esc(estado)}" data-id="${r.id}" data-field="estado" onchange="handleBadgeChange(this)">
             <option value="pendiente"${estado==='pendiente'?' selected':''}>Pendiente</option>
             <option value="confirmada"${estado==='confirmada'?' selected':''}>Confirmada</option>
+            <option value="finalizada"${estado==='finalizada'?' selected':''}>Finalizada</option>
             <option value="cancelada"${estado==='cancelada'?' selected':''}>Cancelada</option>
           </select>
         </td>
@@ -793,8 +807,9 @@
     const in14  = dateAddDays(today, 14);
     const in30  = dateAddDays(today, 30);
 
-    const activas     = reservas.filter(r => (r.estado || 'pendiente') !== 'cancelada');
-    const confirmadas = reservas.filter(r => r.estado === 'confirmada');
+    const activas     = reservas.filter(r => ['pendiente', 'confirmada'].includes(r.estado || 'pendiente'));
+    const finalizadas = reservas.filter(r => r.estado === 'finalizada');
+    const confirmadas = reservas.filter(r => r.estado === 'confirmada' || r.estado === 'finalizada');
     const ingresos    = confirmadas.reduce((s, r) =>
       s + (parseFloat(r.precio_calculado) || parseFloat(r.precio_total) || 0), 0);
     const llegadas7   = activas.filter(r => r.entrada && r.entrada >= today && r.entrada <= in7);
@@ -808,6 +823,10 @@
       <div class="stat-card">
         <div class="val">${activas.length}</div>
         <div class="lbl">Reservas activas</div>
+      </div>
+      <div class="stat-card c-indigo">
+        <div class="val">${finalizadas.length}</div>
+        <div class="lbl">Reservas finalizadas</div>
       </div>
       <div class="stat-card c-green">
         <div class="val">${ingresos.toLocaleString('es-ES',{minimumFractionDigits:0,maximumFractionDigits:0})} €</div>
@@ -914,6 +933,9 @@
       const expiryHTML = c.expires_at
         ? `${formatDateShort(c.expires_at)}${expired ? ' <span class="badge badge-expired">Expirado</span>' : ''}`
         : '—';
+      const rangoHTML = (c.valido_desde || c.valido_hasta)
+        ? `${c.valido_desde ? formatDateShort(c.valido_desde) : '…'} – ${c.valido_hasta ? formatDateShort(c.valido_hasta) : '…'}`
+        : '—';
       tr.innerHTML = `
         <td style="color:#a1a1aa;font-size:0.8rem">${esc(String(c.id))}</td>
         <td><strong>${esc(c.codigo)}</strong></td>
@@ -923,6 +945,7 @@
         <td>${esc(c.propiedad || 'Todas')}</td>
         <td>${esc(usosText)}</td>
         <td>${expiryHTML}</td>
+        <td style="font-size:0.8rem;white-space:nowrap">${rangoHTML}</td>
         <td style="font-size:0.8rem;color:#71717a;white-space:nowrap">${formatDate(c.created_at)}</td>
         <td><button class="btn-danger" onclick="eliminarCodigo(${c.id}, this)">Eliminar</button></td>
       `;
@@ -940,9 +963,16 @@
     const propiedad  = document.getElementById('new-propiedad').value;
     const usos_max   = document.getElementById('new-usos-max').value;
     const expires_at = document.getElementById('new-expires-at').value || null;
+    const valido_desde = document.getElementById('new-valido-desde').value || null;
+    const valido_hasta = document.getElementById('new-valido-hasta').value || null;
 
     if (!codigo || isNaN(valor) || valor <= 0) {
       errEl.textContent = 'Código y valor son obligatorios.';
+      errEl.style.display = 'block';
+      return;
+    }
+    if (valido_desde && valido_hasta && valido_hasta < valido_desde) {
+      errEl.textContent = 'La fecha "hasta" de la estancia válida no puede ser anterior a "desde".';
       errEl.style.display = 'block';
       return;
     }
@@ -950,7 +980,7 @@
     const res = await fetch(`${WORKER_URL}/admin/discount-codes`, {
       method: 'POST',
       headers: { Authorization: `Bearer ${token}`, 'X-Admin-User': adminUser, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ codigo, descripcion, tipo, valor, propiedad, usos_max: usos_max || null, expires_at })
+      body: JSON.stringify({ codigo, descripcion, tipo, valor, propiedad, usos_max: usos_max || null, expires_at, valido_desde, valido_hasta })
     });
     const data = await res.json();
     if (!data.ok) {
@@ -958,7 +988,7 @@
       errEl.style.display = 'block';
       return;
     }
-    ['new-codigo','new-descripcion','new-valor','new-usos-max','new-expires-at'].forEach(id =>
+    ['new-codigo','new-descripcion','new-valor','new-usos-max','new-expires-at','new-valido-desde','new-valido-hasta'].forEach(id =>
       document.getElementById(id).value = ''
     );
     codigosLoaded = false;
@@ -1002,7 +1032,7 @@
         "7":{"weekday":330,"weekend":400}, "8":{"weekday":330,"weekend":400}, "9":{"weekday":330,"weekend":400},
         "10":{"weekday":330,"weekend":400}, "11":{"weekday":330,"weekend":400}, "12":{"weekday":330,"weekend":400}
       },
-      specialDates: { "2026-12-31": 1300 }
+      specialDates: { "2026-10-25": 520, "2026-10-26": 520, "2026-10-31": 600, "2026-12-05": 550, "2026-12-06": 550, "2026-12-07": 550, "2026-12-31": 1300, "2027-01-01": 550 }
     }
   };
 
@@ -1239,7 +1269,7 @@
     } catch (e) { console.error('iCal fetch failed:', e); }
 
     reservas
-      .filter(r => r.propiedad === propiedad && r.estado === 'confirmada' && r.entrada && r.salida)
+      .filter(r => r.propiedad === propiedad && (r.estado === 'confirmada' || r.estado === 'finalizada') && r.entrada && r.salida)
       .forEach(r => expandirRangoBloqueos(r.entrada, r.salida).forEach(k => { bloqueosWeb.add(k); bloqueosOcupadas.add(k); }));
   }
 

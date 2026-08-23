@@ -526,3 +526,15 @@ footer { background: #ede3d8; color: var(--gris-oscuro); padding: 3rem 0 1.5rem;
   .events-banner { margin: 1.5rem 1rem 0; }
   .events-banner h2 { font-size: 1.4rem; }
 }
+
+/* ── Banner estacional (evento con fecha fija) ───────────── */
+.seasonal-banner { background: linear-gradient(120deg, #fbeee7 0%, var(--gris-claro) 100%); border: 1px solid var(--rojo); border-left: 4px solid var(--rojo); border-radius: 12px; padding: 1.1rem 1.4rem; margin: 1.4rem auto 0; max-width: 1120px; display: flex; gap: 1rem; align-items: center; justify-content: space-between; flex-wrap: wrap; }
+.seasonal-banner .seasonal-tag { display: inline-block; background: var(--rojo); color: #fff; font-size: 0.72rem; font-weight: 600; letter-spacing: 0.03em; text-transform: uppercase; padding: 0.25rem 0.6rem; border-radius: 20px; margin-bottom: 0.4rem; }
+.seasonal-banner h2 { margin: 0; color: var(--verde-oscuro); font-family: var(--font-display); font-size: 1.4rem; font-weight: 500; }
+.seasonal-banner p { margin: 0.35rem 0 0; color: var(--gris-oscuro); font-size: 0.95rem; line-height: 1.5; max-width: 700px; }
+.seasonal-banner .seasonal-link { background: var(--rojo); color: #fff; text-decoration: none; padding: 0.6rem 1rem; border-radius: 0; font-size: 0.9rem; font-weight: 500; white-space: nowrap; transition: background 0.2s ease; }
+.seasonal-banner .seasonal-link:hover { background: #9c2d20; }
+@media (max-width: 768px) {
+  .seasonal-banner { margin: 1rem 1rem 0; }
+  .seasonal-banner h2 { font-size: 1.2rem; }
+}
