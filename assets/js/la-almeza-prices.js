@@ -18,6 +18,8 @@ window.LA_ALMEZA_PRICES = {
     "12": { "weekday": 330, "weekend": 400 }
   },
   specialDates: {
+    "2026-10-25": 520,
+    "2026-10-26": 520,
     "2026-12-31": 1300
   }
 };
