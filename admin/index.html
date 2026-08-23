@@ -70,6 +70,7 @@
     }
     .est-pendiente  { background: #fef9c3; color: #854d0e; }
     .est-confirmada { background: #dcfce7; color: #166534; }
+    .est-finalizada { background: #e0e7ff; color: #3730a3; }
     .est-cancelada  { background: #fee2e2; color: #991b1b; }
     .pago-sin_pagar { background: #f4f4f5; color: #52525b; }
     .pago-senal     { background: #fef9c3; color: #854d0e; }
@@ -92,6 +93,8 @@
     .stat-card.c-amber .val { color: #d97706; }
     .stat-card.c-blue  { border-color: #93c5fd; background: #eff6ff; }
     .stat-card.c-blue  .val { color: #2563eb; }
+    .stat-card.c-indigo { border-color: #a5b4fc; background: #eef2ff; }
+    .stat-card.c-indigo .val { color: #4338ca; }
     .dash-section { margin: 1.25rem 0 0.6rem; font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: #71717a; }
     .prop-bar-row { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.55rem; }
     .prop-bar-label { min-width: 160px; font-size: 0.8rem; color: #52525b; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -211,6 +214,7 @@
           <option value="">Todos los estados</option>
           <option value="pendiente">Pendiente</option>
           <option value="confirmada">Confirmada</option>
+          <option value="finalizada">Finalizada</option>
           <option value="cancelada">Cancelada</option>
         </select>
         <input type="date" id="filter-desde" onchange="renderReservas()" title="Entrada desde" />
@@ -632,7 +636,7 @@
 
       const estado     = r.estado      || 'pendiente';
       const estadoPago = r.estado_pago || 'sin_pagar';
-      const estadoLabels = { pendiente: 'Pendiente', confirmada: 'Confirmada', cancelada: 'Cancelada' };
+      const estadoLabels = { pendiente: 'Pendiente', confirmada: 'Confirmada', finalizada: 'Finalizada', cancelada: 'Cancelada' };
       const pagoLabels   = { sin_pagar: 'Sin pagar', senal: 'Señal', completo: 'Pagado' };
 
       const paxText = `${esc(r.adultos||1)} ad${r.ninos > 0 ? ` · ${esc(r.ninos)} ni` : ''}`;
@@ -649,6 +653,7 @@
           <select class="est-badge est-${esc(estado)}" data-id="${r.id}" data-field="estado" onchange="handleBadgeChange(this)">
             <option value="pendiente"${estado==='pendiente'?' selected':''}>Pendiente</option>
             <option value="confirmada"${estado==='confirmada'?' selected':''}>Confirmada</option>
+            <option value="finalizada"${estado==='finalizada'?' selected':''}>Finalizada</option>
             <option value="cancelada"${estado==='cancelada'?' selected':''}>Cancelada</option>
           </select>
         </td>
@@ -802,8 +807,9 @@
     const in14  = dateAddDays(today, 14);
     const in30  = dateAddDays(today, 30);
 
-    const activas     = reservas.filter(r => (r.estado || 'pendiente') !== 'cancelada');
-    const confirmadas = reservas.filter(r => r.estado === 'confirmada');
+    const activas     = reservas.filter(r => ['pendiente', 'confirmada'].includes(r.estado || 'pendiente'));
+    const finalizadas = reservas.filter(r => r.estado === 'finalizada');
+    const confirmadas = reservas.filter(r => r.estado === 'confirmada' || r.estado === 'finalizada');
     const ingresos    = confirmadas.reduce((s, r) =>
       s + (parseFloat(r.precio_calculado) || parseFloat(r.precio_total) || 0), 0);
     const llegadas7   = activas.filter(r => r.entrada && r.entrada >= today && r.entrada <= in7);
@@ -817,6 +823,10 @@
       <div class="stat-card">
         <div class="val">${activas.length}</div>
         <div class="lbl">Reservas activas</div>
+      </div>
+      <div class="stat-card c-indigo">
+        <div class="val">${finalizadas.length}</div>
+        <div class="lbl">Reservas finalizadas</div>
       </div>
       <div class="stat-card c-green">
         <div class="val">${ingresos.toLocaleString('es-ES',{minimumFractionDigits:0,maximumFractionDigits:0})} €</div>
@@ -1259,7 +1269,7 @@
     } catch (e) { console.error('iCal fetch failed:', e); }
 
     reservas
-      .filter(r => r.propiedad === propiedad && r.estado === 'confirmada' && r.entrada && r.salida)
+      .filter(r => r.propiedad === propiedad && (r.estado === 'confirmada' || r.estado === 'finalizada') && r.entrada && r.salida)
       .forEach(r => expandirRangoBloqueos(r.entrada, r.salida).forEach(k => { bloqueosWeb.add(k); bloqueosOcupadas.add(k); }));
   }
 

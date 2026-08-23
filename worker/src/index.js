@@ -450,7 +450,7 @@ export default {
         const propiedad = decodeURIComponent(url.pathname.split('/blocked-dates/')[1] || '');
         if (!propiedad) return json({ ok: false, error: 'Propiedad requerida' }, 400, cors);
         const [reservasRes, bloqueosRes] = await Promise.all([
-          env.DB.prepare(`SELECT entrada, salida FROM reservas WHERE propiedad = ? AND estado = 'confirmada'`).bind(propiedad).all(),
+          env.DB.prepare(`SELECT entrada, salida FROM reservas WHERE propiedad = ? AND estado IN ('confirmada', 'finalizada')`).bind(propiedad).all(),
           env.DB.prepare(`SELECT entrada, salida FROM bloqueos WHERE propiedad = ?`).bind(propiedad).all(),
         ]);
         return json({ ok: true, ranges: [...reservasRes.results, ...bloqueosRes.results] }, 200, cors);
@@ -463,7 +463,7 @@ export default {
         if (!propiedad) return new Response('Not found', { status: 404, headers: cors });
 
         const [reservasRes, bloqueosRes] = await Promise.all([
-          env.DB.prepare(`SELECT id, entrada, salida FROM reservas WHERE propiedad = ? AND estado = 'confirmada'`).bind(propiedad).all(),
+          env.DB.prepare(`SELECT id, entrada, salida FROM reservas WHERE propiedad = ? AND estado IN ('confirmada', 'finalizada')`).bind(propiedad).all(),
           env.DB.prepare(`SELECT id, entrada, salida FROM bloqueos WHERE propiedad = ?`).bind(propiedad).all(),
         ]);
 

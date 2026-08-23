@@ -24,6 +24,9 @@ CREATE TABLE IF NOT EXISTS reservas (
   promo_code TEXT,
   precio_calculado TEXT,
   precio_discrepancia INTEGER DEFAULT 0,
+  estado TEXT NOT NULL DEFAULT 'pendiente',
+  notas TEXT,
+  estado_pago TEXT NOT NULL DEFAULT 'sin_pagar',
   created_at TEXT DEFAULT (datetime('now'))
 );
 
