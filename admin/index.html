@@ -315,6 +315,14 @@
           <label>Caduca el (opcional)</label>
           <input type="date" id="new-expires-at">
         </div>
+        <div>
+          <label>Estancia válida desde (opcional)</label>
+          <input type="date" id="new-valido-desde">
+        </div>
+        <div>
+          <label>Estancia válida hasta (opcional)</label>
+          <input type="date" id="new-valido-hasta">
+        </div>
         <button class="btn-create" onclick="crearCodigo()">Crear código</button>
       </div>
       <div id="codigos-error"></div>
@@ -330,6 +338,7 @@
               <th>Propiedad</th>
               <th>Usos</th>
               <th>Caduca</th>
+              <th>Estancia válida</th>
               <th>Creado</th>
               <th></th>
             </tr>
@@ -914,6 +923,9 @@
       const expiryHTML = c.expires_at
         ? `${formatDateShort(c.expires_at)}${expired ? ' <span class="badge badge-expired">Expirado</span>' : ''}`
         : '—';
+      const rangoHTML = (c.valido_desde || c.valido_hasta)
+        ? `${c.valido_desde ? formatDateShort(c.valido_desde) : '…'} – ${c.valido_hasta ? formatDateShort(c.valido_hasta) : '…'}`
+        : '—';
       tr.innerHTML = `
         <td style="color:#a1a1aa;font-size:0.8rem">${esc(String(c.id))}</td>
         <td><strong>${esc(c.codigo)}</strong></td>
@@ -923,6 +935,7 @@
         <td>${esc(c.propiedad || 'Todas')}</td>
         <td>${esc(usosText)}</td>
         <td>${expiryHTML}</td>
+        <td style="font-size:0.8rem;white-space:nowrap">${rangoHTML}</td>
         <td style="font-size:0.8rem;color:#71717a;white-space:nowrap">${formatDate(c.created_at)}</td>
         <td><button class="btn-danger" onclick="eliminarCodigo(${c.id}, this)">Eliminar</button></td>
       `;
@@ -940,9 +953,16 @@
     const propiedad  = document.getElementById('new-propiedad').value;
     const usos_max   = document.getElementById('new-usos-max').value;
     const expires_at = document.getElementById('new-expires-at').value || null;
+    const valido_desde = document.getElementById('new-valido-desde').value || null;
+    const valido_hasta = document.getElementById('new-valido-hasta').value || null;
 
     if (!codigo || isNaN(valor) || valor <= 0) {
       errEl.textContent = 'Código y valor son obligatorios.';
+      errEl.style.display = 'block';
+      return;
+    }
+    if (valido_desde && valido_hasta && valido_hasta < valido_desde) {
+      errEl.textContent = 'La fecha "hasta" de la estancia válida no puede ser anterior a "desde".';
       errEl.style.display = 'block';
       return;
     }
@@ -950,7 +970,7 @@
     const res = await fetch(`${WORKER_URL}/admin/discount-codes`, {
       method: 'POST',
       headers: { Authorization: `Bearer ${token}`, 'X-Admin-User': adminUser, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ codigo, descripcion, tipo, valor, propiedad, usos_max: usos_max || null, expires_at })
+      body: JSON.stringify({ codigo, descripcion, tipo, valor, propiedad, usos_max: usos_max || null, expires_at, valido_desde, valido_hasta })
     });
     const data = await res.json();
     if (!data.ok) {
@@ -958,7 +978,7 @@
       errEl.style.display = 'block';
       return;
     }
-    ['new-codigo','new-descripcion','new-valor','new-usos-max','new-expires-at'].forEach(id =>
+    ['new-codigo','new-descripcion','new-valor','new-usos-max','new-expires-at','new-valido-desde','new-valido-hasta'].forEach(id =>
       document.getElementById(id).value = ''
     );
     codigosLoaded = false;

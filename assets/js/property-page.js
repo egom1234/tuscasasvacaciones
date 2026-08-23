@@ -1066,7 +1066,11 @@ async function aplicarCodigoPromo() {
     const res = await fetch(FORM_WORKER + '/discount-codes/validate', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ codigo: code, propiedad })
+      body: JSON.stringify({
+        codigo: code, propiedad,
+        entrada: fechaEntrada ? toKey(fechaEntrada) : null,
+        salida:  fechaSalida  ? toKey(fechaSalida)  : null
+      })
     });
     const data = await res.json();
 

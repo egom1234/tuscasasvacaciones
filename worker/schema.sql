@@ -43,6 +43,9 @@ CREATE TABLE IF NOT EXISTS discount_codes (
   usos_max INTEGER,
   usos_usados INTEGER NOT NULL DEFAULT 0,
   activo INTEGER NOT NULL DEFAULT 1,
+  expires_at TEXT,
+  valido_desde TEXT,
+  valido_hasta TEXT,
   created_at TEXT DEFAULT (datetime('now'))
 );
 

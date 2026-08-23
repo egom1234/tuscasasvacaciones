@@ -196,6 +196,16 @@ function obtenerTarifaNocheW(fecha, config) {
   return base;
 }
 
+// A promo code with valido_desde/valido_hasta only applies when the whole
+// stay (entrada..salida) falls inside that range; entrada/salida here are
+// "YYYY-MM-DD" strings, comparable lexicographically.
+function estaDentroDeRango(promoRow, entrada, salida) {
+  if (!promoRow) return true;
+  if (promoRow.valido_desde && (!entrada || entrada < promoRow.valido_desde)) return false;
+  if (promoRow.valido_hasta && (!salida || salida > promoRow.valido_hasta)) return false;
+  return true;
+}
+
 function calcularPrecioW(config, entrada, salida, isGap, promoRow) {
   const noches = Math.ceil((salida - entrada) / 86400000);
   let subtotal = 0;
@@ -230,7 +240,7 @@ function calcularPrecioW(config, entrada, salida, isGap, promoRow) {
   const subtotalFinal = subtotalAfterTier - gapDiscount;
 
   let promoDiscount = 0;
-  if (promoRow) {
+  if (promoRow && estaDentroDeRango(promoRow, toKeyW(entrada), toKeyW(salida))) {
     promoDiscount = promoRow.tipo === 'pct'
       ? Math.round(subtotalFinal * promoRow.valor / 100)
       : Math.min(promoRow.valor, subtotalFinal);
@@ -314,15 +324,16 @@ export default {
         }
         if (request.method === 'POST') {
           const body = await request.json();
-          const { codigo, descripcion, tipo, valor, propiedad, usos_max, expires_at } = body;
+          const { codigo, descripcion, tipo, valor, propiedad, usos_max, expires_at, valido_desde, valido_hasta } = body;
           if (!codigo || !tipo || valor == null) return json({ ok: false, error: 'Faltan campos' }, 400, cors);
+          if (valido_desde && valido_hasta && valido_hasta < valido_desde) return json({ ok: false, error: 'Rango de fechas válido inválido' }, 400, cors);
           await env.DB.prepare(
-            `INSERT INTO discount_codes (codigo, descripcion, tipo, valor, propiedad, usos_max, expires_at)
-             VALUES (?, ?, ?, ?, ?, ?, ?)`
+            `INSERT INTO discount_codes (codigo, descripcion, tipo, valor, propiedad, usos_max, expires_at, valido_desde, valido_hasta)
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`
           ).bind(
             codigo.toUpperCase().trim(), descripcion || null, tipo,
             parseFloat(valor), propiedad || null, usos_max ? parseInt(usos_max) : null,
-            expires_at || null
+            expires_at || null, valido_desde || null, valido_hasta || null
           ).run();
           return json({ ok: true }, 200, cors);
         }
@@ -408,7 +419,7 @@ export default {
       // ---- Public: validate discount code ----
       if (url.pathname === '/discount-codes/validate' && request.method === 'POST') {
         const body = await request.json();
-        const { codigo, propiedad } = body;
+        const { codigo, propiedad, entrada, salida } = body;
         if (!codigo) return json({ ok: false, error: 'Código requerido' }, 400, cors);
         const row = await env.DB.prepare(
           `SELECT * FROM discount_codes WHERE UPPER(codigo) = UPPER(?) AND activo = 1`
@@ -417,6 +428,7 @@ export default {
         if (row.usos_max != null && row.usos_usados >= row.usos_max) return json({ ok: false, error: 'Código agotado' }, 200, cors);
         if (row.expires_at && row.expires_at < new Date().toISOString().slice(0, 10)) return json({ ok: false, error: 'Código expirado' }, 200, cors);
         if (row.propiedad && propiedad && row.propiedad !== propiedad) return json({ ok: false, error: 'Código no aplicable a esta propiedad' }, 200, cors);
+        if (!estaDentroDeRango(row, entrada, salida)) return json({ ok: false, error: 'Código no válido para esas fechas' }, 200, cors);
         return json({ ok: true, discount: { codigo: row.codigo, tipo: row.tipo, valor: row.valor, descripcion: row.descripcion } }, 200, cors);
       }
 
