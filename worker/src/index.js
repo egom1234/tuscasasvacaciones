@@ -136,9 +136,24 @@ function parsearIcalW(texto) {
   return fechas;
 }
 
-function computarGapsW(fechasReservadas, minNoches) {
+// Resolves the applicable min-nights for a given check-in date: base
+// `config.minNoches`, overridden by a matching `minNochesRangos` interval
+// (config: [{ desde: "YYYY-MM-DD", hasta: "YYYY-MM-DD", minNoches: N }]).
+// Intervals are expected disjoint; if more than one matches, the strictest wins.
+function resolverMinNochesW(config, fecha) {
+  const base   = config.minNoches || 1;
+  const rangos = config.minNochesRangos || [];
+  if (!rangos.length) return base;
+  const key = toKeyW(fecha);
+  let best = base;
+  rangos.forEach(r => {
+    if (r.desde && r.hasta && key >= r.desde && key <= r.hasta && r.minNoches > best) best = r.minNoches;
+  });
+  return best;
+}
+
+function computarGapsW(fechasReservadas, config) {
   const gapDays = new Set();
-  if (minNoches <= 1) return gapDays;
   const hoy = new Date(); hoy.setHours(0,0,0,0);
   const fin = new Date(hoy.getFullYear(), hoy.getMonth() + 10, 0);
   let cur = new Date(hoy.getTime());
@@ -147,8 +162,9 @@ function computarGapsW(fechasReservadas, minNoches) {
   while (cur <= fin) {
     const key = toKeyW(cur);
     if (fechasReservadas.has(key)) {
-      if (freeRun.length > 0 && prevBooked && freeRun.length < minNoches) {
-        freeRun.forEach(k => gapDays.add(k));
+      if (freeRun.length > 0 && prevBooked) {
+        const runMin = resolverMinNochesW(config, new Date(freeRun[0] + 'T00:00:00'));
+        if (freeRun.length < runMin) freeRun.forEach(k => gapDays.add(k));
       }
       freeRun = [];
       prevBooked = true;
@@ -266,8 +282,10 @@ const ICAL_SLUGS_BY_PROPERTY = {
 
 async function determinarIsGap(config, entrada, salida, propiedad, env) {
   if (config.noGapDiscount) return false;
-  const minNoches = config.minNoches || 1;
-  if (minNoches <= 1) { console.log(`isGap check [${propiedad}]: minNoches=${minNoches} <= 1, skipping`); return false; }
+  const baseMin = config.minNoches || 1;
+  const rangos  = config.minNochesRangos || [];
+  if (baseMin <= 1 && rangos.length === 0) { console.log(`isGap check [${propiedad}]: minNoches=${baseMin} <= 1 and no minNochesRangos, skipping`); return false; }
+  const minNoches = resolverMinNochesW(config, entrada);
   const slugs = config.icalSlugs || ICAL_SLUGS_BY_PROPERTY[propiedad] || [];
   if (slugs.length === 0) { console.log(`isGap check [${propiedad}]: no icalSlugs found (config.icalSlugs=${JSON.stringify(config.icalSlugs)})`); return false; }
   try {
@@ -278,7 +296,7 @@ async function determinarIsGap(config, entrada, salida, propiedad, env) {
     const texts = await Promise.all(responses.map(r => r.ok ? r.text() : ''));
     responses.forEach((r, i) => { if (!r.ok) console.log(`isGap check [${propiedad}]: ical fetch for slug "${slugs[i]}" failed HTTP ${r.status}`); });
     const fechasReservadas = new Set(texts.flatMap(t => [...parsearIcalW(t)]));
-    const gapDays = computarGapsW(fechasReservadas, minNoches);
+    const gapDays = computarGapsW(fechasReservadas, config);
     const result = isGapSelectionW(gapDays, entrada, salida);
     console.log(`isGap check [${propiedad}]: slugs=${JSON.stringify(slugs)} minNoches=${minNoches} fechasReservadas=${fechasReservadas.size} gapDays=${gapDays.size} entrada=${toKeyW(entrada)} salida=${toKeyW(salida)} result=${result}`);
     return result;

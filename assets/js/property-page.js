@@ -212,11 +212,29 @@ function parseFecha(s) {
   return new Date(+s.slice(0,4), +s.slice(4,6) - 1, +s.slice(6,8));
 }
 
+// Resolves the applicable min-nights for a given check-in date: base
+// `minNoches`, overridden by a matching `minNochesRangos` interval
+// (config: [{ desde: "YYYY-MM-DD", hasta: "YYYY-MM-DD", minNoches: N }]).
+// Intervals are expected disjoint; if more than one matches, the strictest wins.
+function resolverMinNoches(fecha) {
+  const cfg    = window.PAGE_CONFIG || {};
+  const base   = cfg.minNoches || 1;
+  const rangos = cfg.minNochesRangos || [];
+  if (!rangos.length) return base;
+  const key = toKey(fecha);
+  let best = base;
+  rangos.forEach(r => {
+    if (r.desde && r.hasta && key >= r.desde && key <= r.hasta && r.minNoches > best) best = r.minNoches;
+  });
+  return best;
+}
+
 function computarGaps() {
   gapDays = new Set();
   if ((window.PAGE_CONFIG || {}).noGapDiscount) return;
-  const minNoches = (window.PAGE_CONFIG || {}).minNoches || 1;
-  if (minNoches <= 1) return;
+  const baseMin = (window.PAGE_CONFIG || {}).minNoches || 1;
+  const rangos  = (window.PAGE_CONFIG || {}).minNochesRangos || [];
+  if (baseMin <= 1 && rangos.length === 0) return;
 
   const hoy = new Date(); hoy.setHours(0,0,0,0);
   const fin = new Date(hoy.getFullYear(), hoy.getMonth() + MAX_MESES_VISTA + 1, 0);
@@ -228,8 +246,9 @@ function computarGaps() {
   while (cur <= fin) {
     const key = toKey(cur);
     if (fechasReservadas.has(key)) {
-      if (freeRun.length > 0 && prevBooked && freeRun.length < minNoches) {
-        freeRun.forEach(k => gapDays.add(k));
+      if (freeRun.length > 0 && prevBooked) {
+        const runMin = resolverMinNoches(new Date(freeRun[0] + 'T00:00:00'));
+        if (freeRun.length < runMin) freeRun.forEach(k => gapDays.add(k));
       }
       freeRun = [];
       prevBooked = true;
@@ -372,7 +391,7 @@ function seleccionarFecha(fecha) {
     fechaEntrada = fecha;
     fechaSalida  = null;
   } else if (fecha > fechaEntrada) {
-    const minNoches = (window.PAGE_CONFIG || {}).minNoches || 1;
+    const minNoches = resolverMinNoches(fechaEntrada);
     const noches = Math.ceil((fecha - fechaEntrada) / 86400000);
     if (noches < minNoches && !isGapSelection(fechaEntrada, fecha)) {
       showCalendarError(t('alertMinNights', minNoches));
