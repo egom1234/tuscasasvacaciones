@@ -626,6 +626,10 @@ function obtenerTarifaNoche(fecha) {
   const dateKey = `${fecha.getFullYear()}-${String(m).padStart(2,'0')}-${String(fecha.getDate()).padStart(2,'0')}`;
   if (specialDates[dateKey] !== undefined) return specialDates[dateKey];
 
+  const specialRanges = cfg.specialDateRanges || [];
+  const rangeMatch = specialRanges.find(r => r.desde && r.hasta && dateKey >= r.desde && dateKey <= r.hasta);
+  if (rangeMatch) return rangeMatch.precio;
+
   function isNightBeforeHoliday(d) {
     const holidays = (cfg.holidays || []);
     const next = new Date(d.getTime() + 86400000);
