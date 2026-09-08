@@ -195,6 +195,10 @@ function obtenerTarifaNocheW(fecha, config) {
   const dateKey = `${fecha.getFullYear()}-${String(m).padStart(2,'0')}-${String(fecha.getDate()).padStart(2,'0')}`;
   if (specialDates[dateKey] !== undefined) return specialDates[dateKey];
 
+  const specialRanges = config.specialDateRanges || [];
+  const rangeMatch = specialRanges.find(r => r.desde && r.hasta && dateKey >= r.desde && dateKey <= r.hasta);
+  if (rangeMatch) return rangeMatch.precio;
+
   function isNightBeforeHoliday(d) {
     const next = new Date(d.getTime() + 86400000);
     const mmdd = `${String(next.getMonth()+1).padStart(2,'0')}-${String(next.getDate()).padStart(2,'0')}`;
