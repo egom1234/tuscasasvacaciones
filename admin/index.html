@@ -1080,6 +1080,12 @@
           <button type="button" onclick="addRangoRow('${slug}')" style="font-size:0.75rem;padding:0.25rem 0.6rem;background:#f4f4f5;border:1px solid #d4d4d8;border-radius:6px;cursor:pointer;">+ Añadir intervalo</button>
           <div style="font-size:0.7rem;color:#999;margin-top:0.35rem;">Fuera de estos intervalos se usa el "minNoches" base del JSON de abajo. Si editas el JSON a mano, recarga la pestaña para que estas filas se sincronicen.</div>
         </div>
+        <div style="padding:0.6rem 0.75rem;border-top:1px solid #e4e4e7;background:#fff;">
+          <div style="font-weight:600;font-size:0.78rem;margin-bottom:0.4rem;color:#444;">Precio por fecha exacta (specialDates)</div>
+          <div id="specialdates-${slug}"></div>
+          <button type="button" onclick="addSpecialDateRow('${slug}')" style="font-size:0.75rem;padding:0.25rem 0.6rem;background:#f4f4f5;border:1px solid #d4d4d8;border-radius:6px;cursor:pointer;">+ Añadir fecha</button>
+          <div style="font-size:0.7rem;color:#999;margin-top:0.35rem;">Precio fijo (€) esa noche concreta, ignora la tarifa del mes. Si editas el JSON a mano, recarga la pestaña para que estas filas se sincronicen.</div>
+        </div>
         <textarea id="cfg-${slug}" style="width:100%;min-height:220px;font-family:monospace;font-size:0.8rem;padding:0.75rem;border:none;border-top:1px solid #e4e4e7;resize:vertical;">${esc(pretty)}</textarea>
         <div style="padding:0.5rem 0.75rem;background:#fafafa;border-top:1px solid #e4e4e7;display:flex;gap:0.5rem;align-items:center;">
           <button class="btn-export" style="font-size:0.8rem;padding:0.35rem 0.75rem;" onclick="guardarConfig('${slug}','${esc(prop)}')">Guardar</button>
@@ -1089,6 +1095,7 @@
       el.appendChild(div);
       const currentCfg = row ? JSON.parse(row.config_json) : (DEFAULT_CONFIGS[prop] || {});
       renderRangosRows(slug, currentCfg.minNochesRangos);
+      renderSpecialDatesRows(slug, currentCfg.specialDates);
     });
   }
 
@@ -1138,12 +1145,58 @@
     ta.value = JSON.stringify(cfg, null, 2);
   }
 
+  // ---- Exact-date price rows (feed into the JSON textarea on change) ----
+
+  function specialDateRowEl(slug, fecha, precio) {
+    const row = document.createElement('div');
+    row.className = 'specialdate-row';
+    row.style.cssText = 'display:flex;gap:0.4rem;align-items:center;margin-bottom:0.3rem;';
+    row.innerHTML = `
+      <input type="date" value="${fecha || ''}" data-field="fecha" style="font-size:0.78rem;padding:0.2rem;">
+      <input type="number" min="0" step="0.01" value="${precio ?? ''}" placeholder="precio €" data-field="precio" style="font-size:0.78rem;padding:0.2rem;width:90px;">
+      <button type="button" title="Eliminar fecha" style="font-size:0.75rem;background:none;border:none;color:#dc2626;cursor:pointer;">✕</button>
+    `;
+    row.querySelectorAll('input').forEach(inp => inp.addEventListener('change', () => syncSpecialDatesToTextarea(slug)));
+    row.querySelector('button').addEventListener('click', () => { row.remove(); syncSpecialDatesToTextarea(slug); });
+    return row;
+  }
+
+  function renderSpecialDatesRows(slug, specialDates) {
+    const cont = document.getElementById(`specialdates-${slug}`);
+    if (!cont) return;
+    cont.innerHTML = '';
+    Object.entries(specialDates || {})
+      .sort(([a], [b]) => a.localeCompare(b))
+      .forEach(([fecha, precio]) => cont.appendChild(specialDateRowEl(slug, fecha, precio)));
+  }
+
+  function addSpecialDateRow(slug) {
+    document.getElementById(`specialdates-${slug}`)?.appendChild(specialDateRowEl(slug, null, null));
+  }
+
+  function syncSpecialDatesToTextarea(slug) {
+    const ta = document.getElementById(`cfg-${slug}`);
+    if (!ta) return;
+    let cfg;
+    try { cfg = JSON.parse(ta.value); } catch { return; }
+    const rows = document.querySelectorAll(`#specialdates-${slug} .specialdate-row`);
+    const specialDates = {};
+    rows.forEach(row => {
+      const fecha = row.querySelector('[data-field="fecha"]').value;
+      const precio = parseFloat(row.querySelector('[data-field="precio"]').value);
+      if (fecha && !isNaN(precio) && precio >= 0) specialDates[fecha] = precio;
+    });
+    if (Object.keys(specialDates).length) cfg.specialDates = specialDates; else delete cfg.specialDates;
+    ta.value = JSON.stringify(cfg, null, 2);
+  }
+
   function loadDefaults(slug, propiedad) {
     const ta = document.getElementById(`cfg-${slug}`);
     if (!ta || !DEFAULT_CONFIGS[propiedad]) return;
     if (!confirm('Esto reemplaza el contenido actual del cuadro por los valores por defecto. Los cambios sin guardar se perderán. ¿Continuar?')) return;
     ta.value = JSON.stringify(DEFAULT_CONFIGS[propiedad], null, 2);
     renderRangosRows(slug, DEFAULT_CONFIGS[propiedad].minNochesRangos);
+    renderSpecialDatesRows(slug, DEFAULT_CONFIGS[propiedad].specialDates);
   }
 
   async function guardarConfig(slug, propiedad) {
