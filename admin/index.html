@@ -220,7 +220,37 @@
         <input type="date" id="filter-desde" onchange="renderReservas()" title="Entrada desde" />
         <input type="date" id="filter-hasta" onchange="renderReservas()" title="Entrada hasta" />
         <span class="count" id="count-reservas"></span>
+        <button class="btn-export" onclick="toggleNuevaReserva()">+ Nueva reserva manual</button>
         <button class="btn-export" onclick="exportReservas()">Excel</button>
+      </div>
+      <div id="panel-nueva-reserva" style="display:none;border:1px solid #e4e4e7;border-radius:8px;padding:0.75rem;margin-bottom:1rem;background:#fafafa;">
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:0.5rem;">
+          <select id="nr-propiedad"><option value="">Propiedad *</option></select>
+          <input type="text" id="nr-nombre" placeholder="Nombre *">
+          <input type="email" id="nr-email" placeholder="Email">
+          <input type="tel" id="nr-telefono" placeholder="Teléfono">
+          <input type="date" id="nr-entrada" title="Entrada *">
+          <input type="date" id="nr-salida" title="Salida *">
+          <input type="number" id="nr-adultos" placeholder="Adultos" min="1" value="2">
+          <input type="number" id="nr-ninos" placeholder="Niños" min="0" value="0">
+          <input type="number" id="nr-precio" placeholder="Precio total €" min="0" step="0.01">
+          <select id="nr-estado">
+            <option value="confirmada" selected>Confirmada</option>
+            <option value="pendiente">Pendiente</option>
+            <option value="finalizada">Finalizada</option>
+          </select>
+          <select id="nr-estado-pago">
+            <option value="sin_pagar">Sin pagar</option>
+            <option value="senal">Señal</option>
+            <option value="completo">Pagado</option>
+          </select>
+          <input type="text" id="nr-notas" placeholder="Notas (ej: vía Instagram)" style="grid-column:1/-1;">
+        </div>
+        <div style="margin-top:0.6rem;display:flex;gap:0.5rem;align-items:center;">
+          <button class="btn-export" onclick="crearReservaManual()">Guardar reserva</button>
+          <button onclick="toggleNuevaReserva()" style="background:#f4f4f5;border:1px solid #d4d4d8;border-radius:6px;padding:0.35rem 0.75rem;cursor:pointer;">Cancelar</button>
+          <span id="nr-msg" style="font-size:0.8rem;display:none;"></span>
+        </div>
       </div>
       <div class="table-wrap">
         <table>
@@ -461,6 +491,84 @@
     else if (activeTab === 'codigos') fetchCodigos();
     else if (activeTab === 'config') fetchConfig();
     else if (activeTab === 'bloqueos') { initBloqueosPropiedadSelect(); fetchBloqueos(); }
+  }
+
+  // ---- Reservas manuales (WhatsApp, Instagram, directas) ----
+
+  const MANUAL_PROPS = ['Casa Gonda','Casa Blava','Loft Binibeca','Apartamento Tarifa','Loft Tarifa','Casa Pepita'];
+
+  function toggleNuevaReserva() {
+    const panel = document.getElementById('panel-nueva-reserva');
+    const opening = panel.style.display === 'none';
+    panel.style.display = opening ? 'block' : 'none';
+    const msg = document.getElementById('nr-msg');
+    msg.style.display = 'none';
+    if (opening) {
+      const sel = document.getElementById('nr-propiedad');
+      if (sel.options.length <= 1) {
+        MANUAL_PROPS.forEach(p => {
+          const opt = document.createElement('option');
+          opt.value = p; opt.textContent = p;
+          sel.appendChild(opt);
+        });
+      }
+    }
+  }
+
+  async function crearReservaManual() {
+    const msg = document.getElementById('nr-msg');
+    const btn = document.querySelector('#panel-nueva-reserva .btn-export');
+    const propiedad = document.getElementById('nr-propiedad').value;
+    const nombre    = document.getElementById('nr-nombre').value.trim();
+    const entrada   = document.getElementById('nr-entrada').value;
+    const salida    = document.getElementById('nr-salida').value;
+
+    if (!propiedad || !nombre || !entrada || !salida) {
+      msg.style.color = '#dc2626'; msg.textContent = 'Propiedad, nombre y fechas son obligatorios'; msg.style.display = 'inline';
+      return;
+    }
+    if (salida <= entrada) {
+      msg.style.color = '#dc2626'; msg.textContent = 'La salida debe ser posterior a la entrada'; msg.style.display = 'inline';
+      return;
+    }
+
+    const body = {
+      propiedad, nombre,
+      email:        document.getElementById('nr-email').value.trim(),
+      telefono:     document.getElementById('nr-telefono').value.trim(),
+      entrada, salida,
+      adultos:      document.getElementById('nr-adultos').value,
+      ninos:        document.getElementById('nr-ninos').value,
+      precio_total: document.getElementById('nr-precio').value,
+      notas:        document.getElementById('nr-notas').value.trim(),
+      estado:       document.getElementById('nr-estado').value,
+      estado_pago:  document.getElementById('nr-estado-pago').value,
+    };
+
+    btn.disabled = true;
+    try {
+      const res = await fetch(`${WORKER_URL}/admin/reservas`, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}`, 'X-Admin-User': adminUser, 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      });
+      const d = await res.json();
+      if (d.ok) {
+        ['nr-nombre','nr-email','nr-telefono','nr-entrada','nr-salida','nr-precio','nr-notas'].forEach(id => document.getElementById(id).value = '');
+        document.getElementById('nr-adultos').value = 2;
+        document.getElementById('nr-ninos').value = 0;
+        document.getElementById('nr-estado').value = 'confirmada';
+        document.getElementById('nr-estado-pago').value = 'sin_pagar';
+        toggleNuevaReserva();
+        fetchReservas();
+      } else {
+        msg.style.color = '#dc2626'; msg.textContent = d.error || 'Error'; msg.style.display = 'inline';
+      }
+    } catch (e) {
+      msg.style.color = '#dc2626'; msg.textContent = 'Error de conexión'; msg.style.display = 'inline';
+    } finally {
+      btn.disabled = false;
+    }
   }
 
   // ---- Fetch ----
