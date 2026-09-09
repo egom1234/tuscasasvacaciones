@@ -326,6 +326,34 @@ export default {
       // ---- Admin: reservas ----
       if (url.pathname === '/admin/reservas') {
         if (!isAuthorized(request, env)) return json({ ok: false, error: 'Unauthorized' }, 401, cors);
+
+        if (request.method === 'POST') {
+          // Manual entry for bookings that arrive off-site (WhatsApp, Instagram, walk-in, etc).
+          const body = await request.json();
+          const propiedad = (body.propiedad || '').trim();
+          const nombre    = (body.nombre    || '').trim();
+          const entrada   = body.entrada || '';
+          const salida    = body.salida  || '';
+          if (!propiedad || !nombre || !entrada || !salida) return json({ ok: false, error: 'Faltan campos obligatorios' }, 400, cors);
+          if (salida <= entrada) return json({ ok: false, error: 'Rango de fechas inválido' }, 400, cors);
+
+          const noches = Math.round((new Date(salida + 'T00:00:00') - new Date(entrada + 'T00:00:00')) / 86400000);
+          const estado      = ['pendiente', 'confirmada', 'finalizada', 'cancelada'].includes(body.estado) ? body.estado : 'confirmada';
+          const estadoPago  = ['sin_pagar', 'senal', 'completo'].includes(body.estado_pago) ? body.estado_pago : 'sin_pagar';
+
+          await env.DB.prepare(
+            `INSERT INTO reservas (propiedad, nombre, email, telefono, entrada, salida, adultos, ninos, noches,
+               precio_total, comentarios, notas, estado, estado_pago)
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+          ).bind(
+            propiedad, nombre, (body.email || '').trim(), (body.telefono || '').trim(), entrada, salida,
+            body.adultos ? parseInt(body.adultos, 10) : null, body.ninos ? parseInt(body.ninos, 10) : 0, noches,
+            body.precio_total ? String(body.precio_total) : null, null,
+            (body.notas || '').trim() || null, estado, estadoPago
+          ).run();
+          return json({ ok: true }, 200, cors);
+        }
+
         const { results } = await env.DB.prepare('SELECT * FROM reservas ORDER BY created_at DESC').all();
         return json({ ok: true, data: results }, 200, cors);
       }
