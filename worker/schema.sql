@@ -27,6 +27,7 @@ CREATE TABLE IF NOT EXISTS reservas (
   estado TEXT NOT NULL DEFAULT 'pendiente',
   notas TEXT,
   estado_pago TEXT NOT NULL DEFAULT 'sin_pagar',
+  importe_pagado REAL,
   created_at TEXT DEFAULT (datetime('now'))
 );
 

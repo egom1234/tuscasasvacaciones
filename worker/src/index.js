@@ -340,16 +340,19 @@ export default {
           const noches = Math.round((new Date(salida + 'T00:00:00') - new Date(entrada + 'T00:00:00')) / 86400000);
           const estado      = ['pendiente', 'confirmada', 'finalizada', 'cancelada'].includes(body.estado) ? body.estado : 'confirmada';
           const estadoPago  = ['sin_pagar', 'senal', 'completo'].includes(body.estado_pago) ? body.estado_pago : 'sin_pagar';
+          const importePagadoN = body.importe_pagado === undefined || body.importe_pagado === null || body.importe_pagado === ''
+            ? null : parseFloat(body.importe_pagado);
 
           await env.DB.prepare(
             `INSERT INTO reservas (propiedad, nombre, email, telefono, entrada, salida, adultos, ninos, noches,
-               precio_total, comentarios, notas, estado, estado_pago)
-             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+               precio_total, comentarios, notas, estado, estado_pago, importe_pagado)
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
           ).bind(
             propiedad, nombre, (body.email || '').trim(), (body.telefono || '').trim(), entrada, salida,
             body.adultos ? parseInt(body.adultos, 10) : null, body.ninos ? parseInt(body.ninos, 10) : 0, noches,
             body.precio_total ? String(body.precio_total) : null, null,
-            (body.notas || '').trim() || null, estado, estadoPago
+            (body.notas || '').trim() || null, estado, estadoPago,
+            Number.isFinite(importePagadoN) ? importePagadoN : null
           ).run();
           return json({ ok: true }, 200, cors);
         }
@@ -394,11 +397,17 @@ export default {
         const id = parseInt(url.pathname.split('/').pop());
         if (!id) return json({ ok: false, error: 'ID inválido' }, 400, cors);
         const body = await request.json();
-        const allowed = ['estado', 'notas', 'estado_pago'];
+        const allowed = ['estado', 'notas', 'estado_pago', 'importe_pagado'];
         const fields = [];
         const values = [];
         for (const key of allowed) {
-          if (body[key] !== undefined) { fields.push(`${key} = ?`); values.push(body[key]); }
+          if (body[key] === undefined) continue;
+          if (key === 'importe_pagado') {
+            const n = body[key] === null || body[key] === '' ? null : parseFloat(body[key]);
+            fields.push(`${key} = ?`); values.push(Number.isFinite(n) ? n : null);
+          } else {
+            fields.push(`${key} = ?`); values.push(body[key]);
+          }
         }
         if (fields.length === 0) return json({ ok: false, error: 'Sin campos válidos' }, 400, cors);
         values.push(id);

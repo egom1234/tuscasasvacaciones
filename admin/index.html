@@ -234,6 +234,7 @@
           <input type="number" id="nr-adultos" placeholder="Adultos" min="1" value="2">
           <input type="number" id="nr-ninos" placeholder="Niños" min="0" value="0">
           <input type="number" id="nr-precio" placeholder="Precio total €" min="0" step="0.01">
+          <input type="number" id="nr-importe-pagado" placeholder="Señal/pagado €" min="0" step="0.01">
           <select id="nr-estado">
             <option value="confirmada" selected>Confirmada</option>
             <option value="pendiente">Pendiente</option>
@@ -259,6 +260,7 @@
               <th>#</th>
               <th>Estado</th>
               <th>Pago</th>
+              <th>Pagado €</th>
               <th>Propiedad</th>
               <th>Nombre</th>
               <th>Email</th>
@@ -539,7 +541,8 @@
       entrada, salida,
       adultos:      document.getElementById('nr-adultos').value,
       ninos:        document.getElementById('nr-ninos').value,
-      precio_total: document.getElementById('nr-precio').value,
+      precio_total:   document.getElementById('nr-precio').value,
+      importe_pagado: document.getElementById('nr-importe-pagado').value,
       notas:        document.getElementById('nr-notas').value.trim(),
       estado:       document.getElementById('nr-estado').value,
       estado_pago:  document.getElementById('nr-estado-pago').value,
@@ -554,7 +557,7 @@
       });
       const d = await res.json();
       if (d.ok) {
-        ['nr-nombre','nr-email','nr-telefono','nr-entrada','nr-salida','nr-precio','nr-notas'].forEach(id => document.getElementById(id).value = '');
+        ['nr-nombre','nr-email','nr-telefono','nr-entrada','nr-salida','nr-precio','nr-importe-pagado','nr-notas'].forEach(id => document.getElementById(id).value = '');
         document.getElementById('nr-adultos').value = 2;
         document.getElementById('nr-ninos').value = 0;
         document.getElementById('nr-estado').value = 'confirmada';
@@ -772,6 +775,12 @@
             <option value="completo"${estadoPago==='completo'?' selected':''}>Pagado</option>
           </select>
         </td>
+        <td>
+          <input type="number" class="importe-input" min="0" step="0.01" placeholder="€"
+            value="${r.importe_pagado != null ? esc(String(r.importe_pagado)) : ''}"
+            data-id="${r.id}" onchange="handleImporteChange(this)"
+            style="width:70px;font-size:0.8rem;padding:0.2rem 0.3rem;">
+        </td>
         <td><span class="badge badge-prop">${esc(r.propiedad)}</span></td>
         <td>${esc(r.nombre)}</td>
         <td><a href="mailto:${esc(r.email)}" style="color:#2563eb">${esc(r.email)}</a></td>
@@ -843,6 +852,18 @@
     } else {
       const r = reservas.find(r => r.id === id);
       if (r) sel.value = r[field] || (field === 'estado' ? 'pendiente' : 'sin_pagar');
+    }
+  }
+
+  async function handleImporteChange(inp) {
+    const id  = parseInt(inp.dataset.id);
+    const val = inp.value === '' ? null : parseFloat(inp.value);
+    const ok  = await patchReserva(id, { importe_pagado: val });
+    const r = reservas.find(r => r.id === id);
+    if (ok) {
+      if (r) r.importe_pagado = val;
+    } else if (r) {
+      inp.value = r.importe_pagado != null ? String(r.importe_pagado) : '';
     }
   }
 
@@ -1426,6 +1447,7 @@
       'ID':          r.id,
       'Estado':      r.estado      || 'pendiente',
       'Pago':        r.estado_pago || 'sin_pagar',
+      'Pagado €':    r.importe_pagado != null ? r.importe_pagado : '',
       'Propiedad':   r.propiedad,
       'Nombre':      r.nombre,
       'Email':       r.email,
