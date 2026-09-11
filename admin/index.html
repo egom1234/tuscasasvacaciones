@@ -785,8 +785,12 @@
         <td>${esc(r.nombre)}</td>
         <td><a href="mailto:${esc(r.email)}" style="color:#2563eb">${esc(r.email)}</a></td>
         <td>${esc(r.telefono)}</td>
-        <td style="white-space:nowrap;font-weight:600">${esc(r.entrada||'')}</td>
-        <td style="white-space:nowrap">${esc(r.salida||'')}</td>
+        <td style="white-space:nowrap;font-weight:600">
+          <input type="date" class="fecha-input" data-id="${r.id}" data-field="entrada" value="${esc(r.entrada||'')}" onchange="handleFechaChange(this)" style="font-size:0.8rem;padding:0.15rem;width:128px;">
+        </td>
+        <td style="white-space:nowrap">
+          <input type="date" class="fecha-input" data-id="${r.id}" data-field="salida" value="${esc(r.salida||'')}" onchange="handleFechaChange(this)" style="font-size:0.8rem;padding:0.15rem;width:128px;">
+        </td>
         <td>${esc(r.noches)}</td>
         <td style="white-space:nowrap;font-size:0.82rem">${paxText}</td>
         <td style="white-space:nowrap">${precioCell}</td>
@@ -864,6 +868,36 @@
       if (r) r.importe_pagado = val;
     } else if (r) {
       inp.value = r.importe_pagado != null ? String(r.importe_pagado) : '';
+    }
+  }
+
+  async function handleFechaChange(inp) {
+    const id      = parseInt(inp.dataset.id);
+    const field   = inp.dataset.field;
+    const val     = inp.value;
+    const r       = reservas.find(r => r.id === id);
+    const original = r ? r[field] : '';
+    if (!val) { inp.value = original || ''; return; }
+
+    inp.disabled = true;
+    try {
+      const res = await fetch(`${WORKER_URL}/admin/reservas/${id}`, {
+        method: 'PATCH',
+        headers: { Authorization: `Bearer ${token}`, 'X-Admin-User': adminUser, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ [field]: val })
+      });
+      const d = await res.json();
+      if (d.ok) {
+        fetchReservas();
+      } else {
+        inp.value = original || '';
+        alert(d.error || 'No se pudo actualizar la fecha');
+      }
+    } catch {
+      inp.value = original || '';
+      alert('Error de conexión');
+    } finally {
+      inp.disabled = false;
     }
   }
 
