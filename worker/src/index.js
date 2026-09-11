@@ -409,6 +409,38 @@ export default {
             fields.push(`${key} = ?`); values.push(body[key]);
           }
         }
+
+        if (body.entrada !== undefined || body.salida !== undefined) {
+          const current = await env.DB.prepare('SELECT propiedad, entrada, salida, promo_code FROM reservas WHERE id = ?').bind(id).first();
+          if (!current) return json({ ok: false, error: 'Reserva no encontrada' }, 404, cors);
+          const entrada = body.entrada || current.entrada;
+          const salida  = body.salida  || current.salida;
+          if (!entrada || !salida || salida <= entrada) return json({ ok: false, error: 'Rango de fechas inválido' }, 400, cors);
+
+          const noches = Math.round((new Date(salida + 'T00:00:00') - new Date(entrada + 'T00:00:00')) / 86400000);
+          fields.push('entrada = ?', 'salida = ?', 'noches = ?');
+          values.push(entrada, salida, noches);
+
+          // Best-effort price recalculation for the new dates — same pricing
+          // path as the public form. Left untouched if config lookup fails.
+          try {
+            const configRow = await env.DB.prepare('SELECT config_json FROM property_config WHERE propiedad = ?').bind(current.propiedad).first();
+            if (configRow) {
+              const config = JSON.parse(configRow.config_json);
+              const entradaDate = new Date(entrada + 'T00:00:00');
+              const salidaDate  = new Date(salida  + 'T00:00:00');
+              let promoRow = null;
+              if (current.promo_code) {
+                promoRow = await env.DB.prepare('SELECT * FROM discount_codes WHERE UPPER(codigo) = ? AND activo = 1').bind(current.promo_code).first();
+              }
+              const isGap = await determinarIsGap(config, entradaDate, salidaDate, current.propiedad, env);
+              const calc  = calcularPrecioW(config, entradaDate, salidaDate, isGap, promoRow);
+              fields.push('precio_calculado = ?', 'precio_discrepancia = ?');
+              values.push(calc.total.toFixed(2), 0);
+            }
+          } catch (e) { console.error('Recalc price on date edit failed:', e); }
+        }
+
         if (fields.length === 0) return json({ ok: false, error: 'Sin campos válidos' }, 400, cors);
         values.push(id);
         await env.DB.prepare(`UPDATE reservas SET ${fields.join(', ')} WHERE id = ?`).bind(...values).run();
