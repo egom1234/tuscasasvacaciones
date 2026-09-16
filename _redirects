@@ -16,4 +16,13 @@
 /en/Tarifa_loft.html             /en/Tarifa_loft/           301
 /en/privacy-policy.html          /en/privacy-policy/        301
 
+# La Almeza: a listing provider hardcodes the slug in lowercase, breaking
+# the link since Pages routing is case-sensitive. Redirect it back up.
+/la_almeza                       /La_Almeza/                301
+/la_almeza/                      /La_Almeza/                301
+/la_almeza/*                     /La_Almeza/:splat          301
+/en/la_almeza                    /en/La_Almeza/             301
+/en/la_almeza/                   /en/La_Almeza/             301
+/en/la_almeza/*                  /en/La_Almeza/:splat       301
+
 /en/* /en/:splat 200
