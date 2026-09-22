@@ -1,0 +1,7 @@
+name = "tuscasasvacaciones"
+main = "src/index.js"
+compatibility_date = "2025-01-01"
+account_id = "dba134a2aa6a703651d9b77d0098fec6"
+
+[observability]
+enabled = true
