@@ -124,6 +124,8 @@
     .bq-day.past { color: #d4d4d8; cursor: default; background: #fafafa; }
     .bq-day.ocupado-airbnb { background: #ffe1e0; color: #c0392b; cursor: not-allowed; }
     .bq-day.ocupado-booking { background: #dbeafe; color: #1e40af; cursor: not-allowed; }
+    .bq-day.ocupado-holidu { background: #cffafe; color: #155e75; cursor: not-allowed; }
+    .bq-day.ocupado-escapadarural { background: #fce7f3; color: #9d174d; cursor: not-allowed; }
     .bq-day.ocupado-web { background: #fef3c7; color: #92400e; cursor: not-allowed; }
     .bq-day.bloqueado { background: #ede9fe; color: #6d28d9; font-weight: 600; }
     .bq-day.seleccionado { background: #dcfce7; color: #166534; font-weight: 600; }
@@ -416,6 +418,8 @@
         <div style="display:flex;gap:1rem;padding:0.75rem 0;font-size:0.75rem;color:#52525b;flex-wrap:wrap;">
           <span><span style="display:inline-block;width:10px;height:10px;background:#ffe1e0;border-radius:3px;margin-right:4px;"></span>Airbnb</span>
           <span><span style="display:inline-block;width:10px;height:10px;background:#dbeafe;border-radius:3px;margin-right:4px;"></span>Booking.com</span>
+          <span><span style="display:inline-block;width:10px;height:10px;background:#cffafe;border-radius:3px;margin-right:4px;"></span>Holidu</span>
+          <span><span style="display:inline-block;width:10px;height:10px;background:#fce7f3;border-radius:3px;margin-right:4px;"></span>Escapada Rural</span>
           <span><span style="display:inline-block;width:10px;height:10px;background:#fef3c7;border-radius:3px;margin-right:4px;"></span>Web (reserva directa)</span>
           <span><span style="display:inline-block;width:10px;height:10px;background:#ede9fe;border-radius:3px;margin-right:4px;"></span>Bloqueado manual (click para quitar)</span>
           <span><span style="display:inline-block;width:10px;height:10px;background:#dcfce7;border-radius:3px;margin-right:4px;"></span>Inicio seleccionado</span>
@@ -461,6 +465,8 @@
   let bloqueosOcupadas = new Set();
   let bloqueosAirbnb = new Set();
   let bloqueosBooking = new Set();
+  let bloqueosHolidu = new Set();
+  let bloqueosEscapada = new Set();
   let bloqueosWeb = new Set();
   let bloqueosMes = new Date().getMonth();
   let bloqueosAnyo = new Date().getFullYear();
@@ -1582,6 +1588,8 @@
     bloqueosOcupadas = new Set();
     bloqueosAirbnb = new Set();
     bloqueosBooking = new Set();
+    bloqueosHolidu = new Set();
+    bloqueosEscapada = new Set();
     bloqueosWeb = new Set();
 
     const slugs = ICAL_SLUGS_BY_PROPERTY[propiedad] || [];
@@ -1589,7 +1597,11 @@
       const responses = await Promise.all(slugs.map(s => fetch(`${ICAL_WORKER_URL}/ical/${s}`)));
       const texts      = await Promise.all(responses.map(r => r.ok ? r.text() : ''));
       texts.forEach((t, i) => {
-        const dest = slugs[i].endsWith('-booking') ? bloqueosBooking : bloqueosAirbnb;
+        const slug = slugs[i];
+        const dest = slug.endsWith('-booking')       ? bloqueosBooking
+                   : slug.endsWith('-holidu')         ? bloqueosHolidu
+                   : slug.endsWith('-escapadarural')  ? bloqueosEscapada
+                   : bloqueosAirbnb;
         parsearIcalBloqueos(t).forEach(k => { dest.add(k); bloqueosOcupadas.add(k); });
       });
     } catch (e) { console.error('iCal fetch failed:', e); }
@@ -1667,6 +1679,12 @@
       } else if (bloqueosBooking.has(key)) {
         el.classList.add('ocupado-booking');
         el.title = 'Ocupado — Booking.com';
+      } else if (bloqueosHolidu.has(key)) {
+        el.classList.add('ocupado-holidu');
+        el.title = 'Ocupado — Holidu';
+      } else if (bloqueosEscapada.has(key)) {
+        el.classList.add('ocupado-escapadarural');
+        el.title = 'Ocupado — Escapada Rural';
       } else if (bloqueosWeb.has(key)) {
         el.classList.add('ocupado-web');
         el.title = 'Ocupado — reserva directa por la web';
