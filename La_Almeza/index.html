@@ -299,6 +299,16 @@
         <div class="property-location">📍 La Almeza, Alpuente · Comunidad Valenciana <span class="property-rating"><span class="rating-star">★</span><span class="rating-value">4,5</span><span class="rating-count">(22 · Google)</span></span></div>
         <a href="#reserva" class="cta-reserva">Reserva ya ↓</a>
 
+        <section class="promo-banner" id="promoAllDead" aria-label="All Dead La Yesa">
+          <button type="button" class="promo-close" onclick="cerrarPromoBanner()" aria-label="Cerrar aviso">✕</button>
+          <a class="promo-link" href="https://alldead.es/la-yesa-2026/" target="_blank" rel="noopener noreferrer">
+            <span class="promo-tag">31 octubre 2026 · La Yesa</span>
+            <h2>All Dead La Yesa</h2>
+            <p>Experiencia inmersiva de supervivencia y terror de 4 horas en un campamento abandonado, a un paso de Casa Pepita. Este Halloween, aloja a tu grupo aquí y vive la noche más extrema de la zona.</p>
+            <span class="promo-cta">Más información y reservas →</span>
+          </a>
+        </section>
+
         <section class="seasonal-banner" aria-label="Jornadas Paleontológicas de Alpuente">
           <div>
             <span class="seasonal-tag">25–26 octubre 2026</span>
@@ -690,5 +700,21 @@
     window.PAGE_CONFIG = { ...window.LA_ALMEZA_PRICES, icalSlugs: ['pepita-airbnb', 'pepita-booking', 'pepita-escapadarural', 'pepita-holidu'], lang: 'es', propiedad: 'Casa Pepita' };
   </script>
   <script src="../assets/js/property-page.js"></script>
+  <script>
+    (function () {
+      var el = document.getElementById('promoAllDead');
+      if (!el) return;
+      var KEY = 'promoClosed_alldead-la-yesa-2026';
+      // Hide once the event has passed, or if the visitor already closed it.
+      if (new Date() > new Date('2026-11-01T00:00:00') || localStorage.getItem(KEY) === '1') {
+        el.style.display = 'none';
+        return;
+      }
+      window.cerrarPromoBanner = function () {
+        el.style.display = 'none';
+        try { localStorage.setItem(KEY, '1'); } catch (e) {}
+      };
+    })();
+  </script>
 </body>
 </html>
