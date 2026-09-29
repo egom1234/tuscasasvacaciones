@@ -527,6 +527,12 @@ footer { background: #ede3d8; color: var(--gris-oscuro); padding: 3rem 0 1.5rem;
   .events-banner h2 { font-size: 1.4rem; }
 }
 
+/* ── Rótulo de la sección de eventos próximos ────────────── */
+.upcoming-events-label { margin: 1.4rem auto 0; max-width: 1120px; font-size: 0.75rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--verde-oscuro, #5a7452); opacity: 0.75; }
+@media (max-width: 768px) {
+  .upcoming-events-label { margin: 1rem 1rem 0; }
+}
+
 /* ── Banner estacional (evento con fecha fija) ───────────── */
 .seasonal-banner { background: linear-gradient(120deg, #fbeee7 0%, var(--gris-claro) 100%); border: 1px solid var(--rojo); border-left: 4px solid var(--rojo); border-radius: 12px; padding: 1.1rem 1.4rem; margin: 1.4rem auto 0; max-width: 1120px; display: flex; gap: 1rem; align-items: center; justify-content: space-between; flex-wrap: wrap; }
 .seasonal-banner .seasonal-tag { display: inline-block; background: var(--rojo); color: #fff; font-size: 0.72rem; font-weight: 600; letter-spacing: 0.03em; text-transform: uppercase; padding: 0.25rem 0.6rem; border-radius: 20px; margin-bottom: 0.4rem; }
