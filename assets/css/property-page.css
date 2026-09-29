@@ -538,3 +538,27 @@ footer { background: #ede3d8; color: var(--gris-oscuro); padding: 3rem 0 1.5rem;
   .seasonal-banner { margin: 1rem 1rem 0; }
   .seasonal-banner h2 { font-size: 1.2rem; }
 }
+
+/* ── Banner de promo externa (actividad de terceros, cerrable) ───────────── */
+.promo-banner { position: relative; overflow: hidden; background: linear-gradient(120deg, #1a1414 0%, #3d1f1f 100%); border: 1px solid #7a1f1f; border-left: 4px solid #d4342c; border-radius: 12px; padding: 1.1rem 2.2rem 1.1rem 1.4rem; margin: 1.4rem auto 0; max-width: 1120px; }
+.promo-banner::before { content: ''; position: absolute; top: 0; left: -150%; width: 60%; height: 100%; background: linear-gradient(120deg, transparent 0%, rgba(255,255,255,0.16) 50%, transparent 100%); animation: promo-shimmer 4.5s ease-in-out infinite; pointer-events: none; }
+@keyframes promo-shimmer {
+  0%   { left: -150%; }
+  55%  { left: 150%; }
+  100% { left: 150%; }
+}
+.promo-banner .promo-close { position: absolute; top: 0.5rem; right: 0.6rem; z-index: 2; background: none; border: none; color: #fff; opacity: 0.65; font-size: 1rem; line-height: 1; padding: 0.3rem; cursor: pointer; transition: opacity 0.2s ease; }
+.promo-banner .promo-close:hover { opacity: 1; }
+.promo-banner .promo-link { position: relative; z-index: 1; display: block; text-decoration: none; color: inherit; }
+.promo-banner .promo-tag { display: inline-block; background: #d4342c; color: #fff; font-size: 0.72rem; font-weight: 600; letter-spacing: 0.03em; text-transform: uppercase; padding: 0.25rem 0.6rem; border-radius: 20px; margin-bottom: 0.4rem; }
+.promo-banner h2 { margin: 0; color: #fff; font-family: var(--font-display); font-size: 1.4rem; font-weight: 500; }
+.promo-banner p { margin: 0.35rem 0 0; color: #e8d5d5; font-size: 0.95rem; line-height: 1.5; max-width: 700px; }
+.promo-banner .promo-cta { display: inline-block; margin-top: 0.6rem; color: #ff6b5e; font-weight: 600; font-size: 0.9rem; }
+.promo-banner .promo-link:hover .promo-cta { text-decoration: underline; }
+@media (max-width: 768px) {
+  .promo-banner { margin: 1rem 1rem 0; }
+  .promo-banner h2 { font-size: 1.2rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .promo-banner::before { animation: none; }
+}
