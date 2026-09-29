@@ -299,6 +299,8 @@
         <div class="property-location">📍 La Almeza, Alpuente · Comunidad Valenciana <span class="property-rating"><span class="rating-star">★</span><span class="rating-value">4,5</span><span class="rating-count">(22 · Google)</span></span></div>
         <a href="#reserva" class="cta-reserva">Reserva ya ↓</a>
 
+        <div class="upcoming-events-label">Próximos eventos</div>
+
         <section class="promo-banner" id="promoAllDead" aria-label="All Dead La Yesa">
           <button type="button" class="promo-close" onclick="cerrarPromoBanner()" aria-label="Cerrar aviso">✕</button>
           <a class="promo-link" href="https://alldead.es/la-yesa-2026/" target="_blank" rel="noopener noreferrer">
@@ -309,7 +311,7 @@
           </a>
         </section>
 
-        <section class="seasonal-banner" aria-label="Jornadas Paleontológicas de Alpuente">
+        <section class="seasonal-banner" id="seasonalPaleonto" aria-label="Jornadas Paleontológicas de Alpuente">
           <div>
             <span class="seasonal-tag">25–26 octubre 2026</span>
             <h2>Jornadas Paleontológicas de Alpuente</h2>
@@ -714,6 +716,11 @@
         el.style.display = 'none';
         try { localStorage.setItem(KEY, '1'); } catch (e) {}
       };
+    })();
+    (function () {
+      var el = document.getElementById('seasonalPaleonto');
+      if (!el) return;
+      if (new Date() > new Date('2026-10-27T00:00:00')) el.style.display = 'none';
     })();
   </script>
 </body>
