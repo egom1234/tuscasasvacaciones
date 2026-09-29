@@ -558,6 +558,9 @@ footer { background: #ede3d8; color: var(--gris-oscuro); padding: 3rem 0 1.5rem;
 @media (max-width: 768px) {
   .promo-banner { margin: 1rem 1rem 0; }
   .promo-banner h2 { font-size: 1.2rem; }
+  /* Sticks under the fixed header as the visitor scrolls, instead of
+     scrolling away with the rest of the hero content. */
+  .promo-banner { position: sticky; top: 80px; z-index: 500; box-shadow: 0 4px 14px rgba(0,0,0,0.25); }
 }
 @media (prefers-reduced-motion: reduce) {
   .promo-banner::before { animation: none; }
