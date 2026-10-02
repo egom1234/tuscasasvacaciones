@@ -397,7 +397,7 @@ export default {
         const id = parseInt(url.pathname.split('/').pop());
         if (!id) return json({ ok: false, error: 'ID inválido' }, 400, cors);
         const body = await request.json();
-        const allowed = ['estado', 'notas', 'estado_pago', 'importe_pagado'];
+        const allowed = ['estado', 'notas', 'estado_pago', 'importe_pagado', 'precio_calculado'];
         const fields = [];
         const values = [];
         for (const key of allowed) {
@@ -405,6 +405,12 @@ export default {
           if (key === 'importe_pagado') {
             const n = body[key] === null || body[key] === '' ? null : parseFloat(body[key]);
             fields.push(`${key} = ?`); values.push(Number.isFinite(n) ? n : null);
+          } else if (key === 'precio_calculado') {
+            // Manual override (e.g. a renegotiated price) — clears the
+            // auto-calc discrepancy flag since it's no longer meaningful.
+            const n = body[key] === null || body[key] === '' ? null : parseFloat(body[key]);
+            fields.push('precio_calculado = ?', 'precio_discrepancia = ?');
+            values.push(Number.isFinite(n) ? n.toFixed(2) : null, 0);
           } else {
             fields.push(`${key} = ?`); values.push(body[key]);
           }
@@ -422,8 +428,10 @@ export default {
           values.push(entrada, salida, noches);
 
           // Best-effort price recalculation for the new dates — same pricing
-          // path as the public form. Left untouched if config lookup fails.
-          try {
+          // path as the public form. Left untouched if config lookup fails,
+          // or skipped entirely if this same request also sets a manual
+          // precio_calculado override (that value wins).
+          if (body.precio_calculado === undefined) try {
             const configRow = await env.DB.prepare('SELECT config_json FROM property_config WHERE propiedad = ?').bind(current.propiedad).first();
             if (configRow) {
               const config = JSON.parse(configRow.config_json);
