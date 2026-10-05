@@ -1,6 +1,7 @@
 window.BINIBECA_PRICES = {
   maxPersonas: 2,
   minNoches:   3,
+  mesesVisibilidad: 9,
   cleaning:    60,
   seasonDiscounts: [
     { minNights: 4, pct: 0.10, months: [6, 9] },

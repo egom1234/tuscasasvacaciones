@@ -1,6 +1,7 @@
 window.CASA_GONDA_PRICES = {
   maxPersonas: 2,
   minNoches:   4,
+  mesesVisibilidad: 9,
   cleaning:    100,
   rates: {
     "1": 100, "2": 100, "3": 100, "4": 130,

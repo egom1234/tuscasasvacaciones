@@ -1,6 +1,7 @@
 window.LA_ALMEZA_PRICES = {
   maxPersonas: 12,
   minNoches:   2,
+  mesesVisibilidad: 9,
   cleaning:    100,
   noGapDiscount: true,
   rates: {
