@@ -1,6 +1,7 @@
 window.TARIFA_LOFT_PRICES = {
   maxPersonas: 2,
   minNoches:   4,
+  mesesVisibilidad: 9,
   cleaning:    40,
   discounts: [
     { minNights: 5, pct: 0.05 },

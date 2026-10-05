@@ -16,7 +16,14 @@ const MESES_ABREV_I18N = {
   es: ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'],
   en: ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']
 };
-const MAX_MESES_VISTA = 9;
+const DEFAULT_MESES_VISTA = 9;
+// How many months ahead guests can pick dates. Per-property, set in
+// <property>-prices.js (mesesVisibilidad) and overridable from the admin
+// panel's property config JSON — both land in window.PAGE_CONFIG.
+function mesesVisibilidad() {
+  const n = window.PAGE_CONFIG && window.PAGE_CONFIG.mesesVisibilidad;
+  return Number.isFinite(n) && n > 0 ? n : DEFAULT_MESES_VISTA;
+}
 
 const I18N = {
   es: {
@@ -237,7 +244,7 @@ function computarGaps() {
   if (baseMin <= 1 && rangos.length === 0) return;
 
   const hoy = new Date(); hoy.setHours(0,0,0,0);
-  const fin = new Date(hoy.getFullYear(), hoy.getMonth() + MAX_MESES_VISTA + 1, 0);
+  const fin = new Date(hoy.getFullYear(), hoy.getMonth() + mesesVisibilidad() + 1, 0);
 
   let cur = new Date(hoy.getTime());
   let freeRun = [];
@@ -432,7 +439,7 @@ function actualizarInputsFecha() {
 function cambiarMes(delta) {
   const hoy       = new Date();
   const minMes    = new Date(hoy.getFullYear(), hoy.getMonth(), 1);
-  const maxMes    = new Date(hoy.getFullYear(), hoy.getMonth() + MAX_MESES_VISTA, 1);
+  const maxMes    = new Date(hoy.getFullYear(), hoy.getMonth() + mesesVisibilidad(), 1);
   const siguiente = new Date(anyoActual, mesActual + delta, 1);
   if (siguiente < minMes || siguiente > maxMes) return;
   mesActual += delta;
@@ -444,7 +451,7 @@ function cambiarMes(delta) {
 (function initCalendario() {
   const hoy     = new Date();
   const hoyStr  = toKey(hoy);
-  const maxDate = new Date(hoy.getFullYear(), hoy.getMonth() + MAX_MESES_VISTA, hoy.getDate());
+  const maxDate = new Date(hoy.getFullYear(), hoy.getMonth() + mesesVisibilidad(), hoy.getDate());
   const maxStr  = toKey(maxDate);
   const iE = document.getElementById('fechaEntrada');
   const iS = document.getElementById('fechaSalida');
@@ -587,7 +594,7 @@ function validarFechas() {
   const iS  = document.getElementById('fechaSalida');
   const msg = document.getElementById('errorFechas');
   const hoy = new Date(); hoy.setHours(0,0,0,0);
-  const max = new Date(hoy.getFullYear(), hoy.getMonth() + MAX_MESES_VISTA, hoy.getDate());
+  const max = new Date(hoy.getFullYear(), hoy.getMonth() + mesesVisibilidad(), hoy.getDate());
   let ok    = true;
 
   if (!iE.value || new Date(iE.value + 'T00:00:00') < hoy || new Date(iE.value + 'T00:00:00') > max) {

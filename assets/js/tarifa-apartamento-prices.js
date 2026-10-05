@@ -1,6 +1,7 @@
 window.TARIFA_APARTAMENTO_PRICES = {
   maxPersonas: 4,
   minNoches:   4,
+  mesesVisibilidad: 9,
   cleaning:    50,
   discounts: [
     { minNights: 5, pct: 0.05 },
